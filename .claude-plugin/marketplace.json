@@ -1,0 +1,24 @@
+{
+  "name": "shukang-skills",
+  "owner": {
+    "name": "shukang11",
+    "url": "https://github.com/shukang11"
+  },
+  "description": "严谨软件工程、深度架构设计与 Agentic 协同技能体系。",
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./",
+      "description": "Agent skills for real engineering, domain modeling, handoffs, and architectural integrity.",
+      "category": "engineering",
+      "keywords": [
+        "engineering",
+        "skills",
+        "tdd",
+        "handoff",
+        "architecture",
+        "grilling"
+      ]
+    }
+  ]
+}
