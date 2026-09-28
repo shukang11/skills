@@ -1,18 +1,27 @@
 ---
 name: handoff
-description: 将当前会话状态、进展与待办紧凑提炼为便携式交接胶囊（Handoff），供新会话、跨 Agent 或跨 Harness 无缝接棒。
-argument-hint: "下一个会话/Agent 的具体核心目标是什么？"
+description: 会话续聊的状态交接胶囊。在上下文将满、被迫中断或主动收工时，把当前会话中断点与运行态提炼为临时交接文档，供下一个 Session 无缝接续同一任务。
 disable-model-invocation: true
+argument-hint: "（可选）下一 Session 想聚焦的目标；留空则由 Agent 从会话推断并标注为 [Pending]"
 ---
 
 # Handoff — 会话状态交接胶囊
 
-将当前对话上下文提炼为一份便携式的交接文档（Handoff Document），让全新的 Agent 或 Session 能够无摩擦地立刻继续工作。
+将当前对话上下文提炼为一份临时交接文档（Handoff Document），让下一个 Session 能够无摩擦地接续**同一个任务**。
+
+**默认场景是「被迫中断」**：上下文将满、任务做到一半要收工、需要甩掉上下文包袱但保留线程。这类场景的共同特征是——用户并不知道下阶段目标，接手方需要先恢复现场、再决定动作。
+
+> 本技能只负责 Session 续聊。**跨角色编排（Planner → Worker 的任务派发）不属于本技能范围**，那类交接需要明确的任务包与验收标准，应另用专用技能。
 
 ## 目标与落盘位置
 - 写入用户操作系统的临时目录（Windows: `%TEMP%`，Linux/macOS: `/tmp` 或 `$TMPDIR`）。
 - 文件命名规范：`handoff-<task-slug>-<timestamp>.md`。
 - 生成后向用户清晰打印文件的**绝对路径**。
+
+## 与笔记 (notes) 的关系
+- **本技能 standalone**：不要求事先存在笔记，没有笔记也一样能生成交接文档。
+- **单向引用**：交接文档可以用指针引用已有笔记（如 `.agents/notes/proposed/2025-01-01-foo.md`，**带状态标签**），但不抄录正文。
+- 本文件是临时耗材，**不应被其他任何文档引用**。
 
 ## 核心撰写纪律（避免信息漂移与污染）
 
@@ -24,31 +33,49 @@ disable-model-invocation: true
    - 明确标注：
      - `[Verified Fact]`：通过测试或工具实际验证过的事实。
      - `[Pending / Unverified]`：当前假设、待探明的边界或推测。
-3. **脱敏保密（Redaction）**：
+3. **禁止补齐（No Fabrication）**：
+   - 会话内没有明确记录的内容，**不写**。空缺本身就是有效信息。
+   - 尤其针对：下阶段目标、否决某项方案的理由、卡点的根因。**有记录则写，无记录则显式写「无明确记录」，严禁推断编造或事后合理化。**
+   - 原因：接收方无法交叉核对，编造的内容会被当作 `[Verified Fact]` 直接采信，危害远大于留白。
+4. **脱敏保密（Redaction）**：
    - 彻底过滤任何 API Key、密码、Token 或敏感个人信息。
-4. **下一阶段技能与动作指引（Actionable Directives）**：
-   - 包含 `Suggested Skills`，指明下一任 Agent 第一步应该调用的 Skill（如 `/tdd`、`/code-review` 等）。
-   - 如果用户传入了参数，将其作为下一个会话的目标并针对性裁剪交接内容。
+5. **生成前自检（Self-Audit）**：
+   - 逐条回溯每个 `[Verified Fact]` 的验证证据（跑过哪条命令、看过哪个输出）。
+   - **无法回溯的，一律降级为 `[Pending / Unverified]`。**
 
 ## 交付文档标准骨架
 
 ```markdown
 # Handoff: <任务简述>
 - **Generated**: <ISO-Timestamp>
-- **Context / Primary Goal**: <下阶段核心目标>
+- **Context / Primary Goal**: <用户明示 | [Pending / Unverified] Agent 推断>
 
-## 1. 架构与领域锚点 (Anchors & References)
-- 相关规范/ADR: [路径]
+## 1. 中断点 (Where I Left Off)
+- 最后完成的操作 / 最后成功的命令或提交
+- 进行中但未完成的事项
+- 中断前原本打算做的下一步（无记录则写「无明确记录」）
+- 工作区状态：分支、是否有未提交改动
+
+## 2. 架构与领域锚点 (Anchors & References)
+- 相关规范/ADR/Spec 指针（仅路径，不抄正文）
 - 核心涉及模块/Seams: [路径与行号区间]
 
-## 2. 关键决议 (Decisions Made)
-- 已拍板的约束或方案（列出明确放弃的替代方案及理由，防止接手者重新争论）
+## 3. 关键决议 (Decisions Made)
+- 已拍板的约束或方案
+- 放弃的替代方案及理由（**仅限会话内明确讨论过的**；无则写「无明确否决记录」）
 
-## 3. 当前运行态 (Runtime State)
+## 4. 当前运行态 (Runtime State)
 - [Verified Fact] ... (跑通了哪些命令/测试)
 - [Pending / Unverified] ... (当前的卡点或待验证假说)
 
-## 4. 接棒行动指令 (Next Agent Directives)
-- **Immediate Next Step**: 接手后执行的第一项具体操作
-- **Suggested Skills**: 下一任 Agent 建议启动的 Skill
+## 5. 接棒指令 (Next Agent Directives)
+- **Verify First**: 接手后先复验的 Fact 及具体命令（确认 `[Verified Fact]` 是否仍然成立）
+- **Immediate Next Step**: 验证通过后的第一项具体操作
+- **Suggested Skills**: （可选）验证通过后再考虑启动的 Skill
 ```
+
+> `Context / Primary Goal` 与中断点并列，不单独置顶为权威目标——它常由 Agent 推断，必须带可靠性标签：`<用户明示>` 或 `[Pending / Unverified] <推断>`。
+
+## 参数处理
+- 用户传入了目标：写入 `Context / Primary Goal` 并标为 `<用户明示>`，据此裁剪交接内容。
+- **未传入（常态）**：从会话推断并标为 `[Pending / Unverified]`，**不得因为参数缺失而停下来追问用户**。
