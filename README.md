@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景矩阵（目前已收纳 10 个核心基石）
+## 技能全景矩阵（目前已收纳 11 个核心基石）
 
 ```text
                                【个人核心技能库矩阵】
@@ -16,7 +16,7 @@
   【需求与探索战区】              【架构与实施战区】              【排错与质量战区】
 • grilling (对抗盘问消除盲区)   • codebase-design (深模块设计)   • diagnosing-bugs (根因排错闭环)
 • prototype (用完即扔探路原型)   • tdd (红绿契约实施/里程碑触发)   • code-review (双轴独立审查)
-• domain-modeling (术语与状态机)                                • handoff (会话无损上下文交接)
+• domain-modeling (术语与状态机)   • code-simplify (残留清理/收敛)   • handoff (会话无损上下文交接)
 • to-spec (标准化规格沉淀)
                                          │
                                          ▼
@@ -26,7 +26,36 @@
 
 ---
 
-## 本地极速开发与挂载使用（Windows Junction 机制）
+## macOS / Linux 安装（软链接，推荐）
+
+整层软链接，仓库即真源，改动**实时生效、零复制**：
+
+```bash
+ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills/shukang"
+```
+
+安装后布局（`shukang` 为链接，指向本仓库 `skills/`）：
+
+```text
+~/.agents/skills/
+└── shukang -> /Volumes/Storage/Documents/project/skills/skills
+    ├── engineering/
+    │   ├── code-review/  code-simplify/  codebase-design/
+    │   ├── diagnosing-bugs/  domain-modeling/  prototype/
+    │   └── tdd/  to-spec/
+    └── productivity/
+        ├── grilling/  handoff/  writing-for-agents/
+```
+
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `11`
+- **卸载**：`rm ~/.agents/skills/shukang`
+- **注意**：pi 递归发现任意深度的 `SKILL.md`；但技能 `name` 是**全局扁平命名空间**，同名技能只加载先发现的那个。
+
+> `handoff` 设置了 `disable-model-invocation: true`，不会出现在模型自动路由列表中，需用 `/skill:handoff` 显式唤醒。
+
+---
+
+## Windows 挂载使用（Junction 机制）
 
 为了支持在调整技能时**零复制、零构建、实时热生效**，并且支持**按需挑选安装**，本项目提供了原生的 `manage-skills.ps1` 管理脚本。
 
