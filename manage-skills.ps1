@@ -10,7 +10,7 @@
     查看所有技能及当前挂载状态。
 
 .PARAMETER Install
-    按需挂载一个或多个技能（逗号分隔或传递数组），如: -Install grilling,to-spec 或 -Install all
+    按需挂载一个或多个技能（逗号分隔或传递数组），如: -Install grilling,tdd 或 -Install all
 
 .PARAMETER Uninstall
     卸载一个或多个技能挂载，如: -Uninstall grilling 或 -Uninstall all
@@ -20,10 +20,10 @@
 
 .EXAMPLE
     .\manage-skills.ps1 -List
-    .\manage-skills.ps1 -Install grilling,to-spec,prototype
+    .\manage-skills.ps1 -Install grilling,tdd,codebase-design
     .\manage-skills.ps1 -Install all
-    .\manage-skills.ps1 -Uninstall prototype
-    .\manage-skills.ps1 -Install prototype -Project "D:\wiki\project\spec-anchor"
+    .\manage-skills.ps1 -Uninstall tdd
+    .\manage-skills.ps1 -Install tdd -Project "D:\wiki\project\spec-anchor"
 #>
 
 [CmdletBinding(DefaultParameterSetName = "List")]
