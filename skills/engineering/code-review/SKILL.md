@@ -27,8 +27,10 @@ argument-hint: "指定 review 的基准点（例如 main, HEAD~1, 或具体 comm
 4. 若无 Spec，则注明“无 Spec 规格”，仅执行 Standards 轴审查。
 
 ### 3. 定位 Standards 来源
-优先遵循项目根目录的编码规范文档（如 `CODING_STANDARDS.md`、`CONTRIBUTING.md`）。
-若无，则自动套用 **Martin Fowler 重构经典坏味道基线**：
+按以下顺序叠加，不互相替代：
+1. 项目有 `.agents/skills/spec-anchor/references/evolution-principles.md` 的，逐条对照七条演进原则；违反的发现类别写「原则 N」。
+2. 项目根 `AGENTS.md` 的实现原则与禁区，以及编码规范文档（如 `CODING_STANDARDS.md`、`CONTRIBUTING.md`）。
+3. 上面都没有覆盖到的，套用 **Martin Fowler 重构经典坏味道基线**：
 - **Mysterious Name（晦涩命名）**：命名无法直观表达其意图。
 - **Duplicated Code（重复代码）**：同一逻辑形态在多处重复出现。
 - **Feature Envy（依恋情结）**：某个函数/方法过度访问另一个对象的数据，而非自身。

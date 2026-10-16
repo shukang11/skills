@@ -8,4 +8,5 @@
 
 ### 本地化改进：
 1. **脱离外部 Issue Tracker**：直接对齐本地 `to-spec` 产生的 `.agents/notes/proposed/` 或 `docs/` 规范文件；
-2. **坏味道基线内置**：开箱即带 8 种高频 Martin Fowler 代码坏味道诊断，即便项目未提供单独的 Lint/规范文件也能给出高质量架构反馈。
+2. **坏味道基线内置**：开箱即带 8 种高频 Martin Fowler 代码坏味道诊断，即便项目未提供单独的 Lint/规范文件也能给出高质量架构反馈；
+3. **演进原则优先**：项目装了 spec-anchor 技能的，Standards 轴先逐条对照 `evolution-principles.md` 七条，违反的发现类别写「原则 N」。
