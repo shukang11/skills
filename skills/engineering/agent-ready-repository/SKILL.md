@@ -26,7 +26,7 @@ disable-model-invocation: true
 - 用户接受建议后另行进入实施阶段时，整改顺序与复验清单见 [implementation-sequence.md](references/implementation-sequence.md)。
 - 移动、删除目录，替换权威来源或改变模块所有权前，必须单独说明影响并取得确认。
 - 不强制项目采用 `README.md`、`AGENTS.md`、`docs/topics/` 或 spec-anchor；先识别现有约定。
-- 若项目已接入 spec-anchor，可用 `spec-anchor verify --verbose` 增强验证；未接入时不要为完成审计自动执行 `spec-anchor init`。
+- 项目根有 `site.config.yaml`（已接入 spec-anchor）时，读 [spec-anchor-projects.md](references/spec-anchor-projects.md)：它说明 `init` 已铺的哪些东西不必再建议、要检查哪些是否真的接上，以及问题类别如何对齐「原则 N」。未接入时不要为完成审计在项目里执行 `spec-anchor init`。
 - **不做价值判断**：“这个项目还该不该继续”“精力配比对不对”归用户 vault 的 `01-项目库/00-项目台账.base`（`is_at_risk` / `days_idle`）与 `99-项目方法论/`，不进本技能。
 
 ## 第一步：定义真实任务与仓库认知地图
@@ -76,6 +76,7 @@ disable-model-invocation: true
 **完成判据**（三者同时满足才算交付）：
 
 - 表中每条建议都有出口归属（①/②/③），无空缺。
+- 每条出口③都写明落在哪个人的关口动作上（例如定意图、合并审查、发版），并说明为什么归不进①或②。两样都写不出的，退回重想。
 - 人侧两桶要么附观察证据，要么明确标「缺源」，不含任何推断。
 - 仍会影响工作的残留事项已在表后列出。
 
