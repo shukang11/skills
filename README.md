@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景矩阵（目前已收纳 11 个核心基石）
+## 技能全景矩阵（目前已收纳 7 个核心基石）
 
 ```text
                                【个人核心技能库矩阵】
@@ -14,14 +14,15 @@
         ┌────────────────────────────────┼────────────────────────────────┐
         ▼                                ▼                                ▼
   【需求与探索战区】              【架构与实施战区】              【排错与质量战区】
-• grilling (对抗盘问消除盲区)   • codebase-design (深模块设计)   • diagnosing-bugs (根因排错闭环)
-• prototype (用完即扔探路原型)   • tdd (红绿契约实施/里程碑触发)   • code-review (双轴独立审查)
-• domain-modeling (术语与状态机)   • code-simplify (残留清理/收敛)   • handoff (会话无损上下文交接)
-• to-spec (标准化规格沉淀)
+• grilling (对抗盘问消除盲区)   • codebase-design (深模块设计)   • handoff (会话无损上下文交接)
+                                • tdd (红绿契约实施/里程碑触发)
+                                • code-simplify (残留清理/收敛)
                                          │
-                                         ▼
-                            【元技能基座 (Meta-Skill)】
-                            • writing-for-agents (编写高执行力技能)
+                    ┌────────────────────┴────────────────────┐
+                    ▼                                         ▼
+          【项目治理战区】                          【元技能基座 (Meta-Skill)】
+• agent-ready-repository                  • writing-for-agents
+  (仓库环境 + 人侧注意力审计)                 (编写高执行力技能)
 ```
 
 ---
@@ -40,18 +41,18 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 ~/.agents/skills/
 └── shukang -> /Volumes/Storage/Documents/project/skills/skills
     ├── engineering/
-    │   ├── code-review/  code-simplify/  codebase-design/
-    │   ├── diagnosing-bugs/  domain-modeling/  prototype/
-    │   └── tdd/  to-spec/
+    │   ├── code-simplify/  codebase-design/  tdd/
+    │   └── agent-ready-repository/
     └── productivity/
         ├── grilling/  handoff/  writing-for-agents/
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `11`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `7`
 - **卸载**：`rm ~/.agents/skills/shukang`
 - **注意**：pi 递归发现任意深度的 `SKILL.md`；但技能 `name` 是**全局扁平命名空间**，同名技能只加载先发现的那个。
+- **`to-spec` / `prototype` / `diagnosing-bugs` / `domain-modeling` / `code-review` 不在本库**：它们引用 spec-anchor 契约或产出被其复核，随引擎同捆，经 `spec-anchor skills install` 装进项目的 `.agents/skills/`。本库不再保留同名副本，避免 pi 加载到旧版。
 
-> `handoff` 设置了 `disable-model-invocation: true`，不会出现在模型自动路由列表中，需用 `/skill:handoff` 显式唤醒。
+> `handoff` 与 `agent-ready-repository` 设置了 `disable-model-invocation: true`，不会出现在模型自动路由列表中，需显式唤醒（`/skill:handoff`、`/skill:agent-ready-repository`）。后者是高成本、高破坏面的项目级元操作，不应被模型自动路由。
 
 ---
 
@@ -70,7 +71,7 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 挂载后，在系统内任何项目目录中启动 Agent 均可使用：
 ```powershell
 # 安装单个或多个技能（支持逗号分隔）
-.\manage-skills.ps1 -Install grilling,to-spec,codebase-design
+.\manage-skills.ps1 -Install grilling,tdd,codebase-design
 
 # 或者一次性挂载所有技能
 .\manage-skills.ps1 -Install all
@@ -79,7 +80,7 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 #### 3. 卸载技能挂载
 ```powershell
 # 卸载指定技能
-.\manage-skills.ps1 -Uninstall prototype
+.\manage-skills.ps1 -Uninstall tdd
 
 # 或者全部卸载
 .\manage-skills.ps1 -Uninstall all
@@ -88,7 +89,7 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 #### 4. 项目级私有挂载（仅在某个项目内生效）
 如果不希望某个技能污染全局，仅在特定项目（如 `spec-anchor`）内启用：
 ```powershell
-.\manage-skills.ps1 -Install prototype -Project "D:\wiki\project\spec-anchor"
+.\manage-skills.ps1 -Install tdd -Project "D:\wiki\project\spec-anchor"
 ```
 
 ---
@@ -97,10 +98,8 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 
 1. **显式唤醒（推荐，100% 遵循纪律）**：
    - `/skill:grilling`：进入对抗盘问模式；
-   - `/skill:to-spec`：将上下文决策合成输出为 `.agents/notes/proposed/` 规范；
-   - `/skill:prototype`：在 `prototypes/` 目录下生成可点击的探路单文件 HTML；
    - `/skill:codebase-design`：按 Ousterhout 深模块原则审查与重构模块；
-   - `/skill:diagnosing-bugs`：进入单命令复现、根因定位的排错循环；
-   - `/skill:handoff`：生成跨会话无损交接胶囊。
+   - `/skill:handoff`：生成跨会话无损交接胶囊；
+   - `/skill:agent-ready-repository`：对某个仓库跑"环境 + 人侧注意力"两遍基线审计，产出逐条可裁决的建议表（只读，止于建议）。
 2. **自然语言隐式唤醒**：
    - 当对话中提到 *“帮我 grill 一下这个方案”*、*“用 tdd 方式实现”* 时，Agent 也会基于技能 Description 自发调起对应规范。
