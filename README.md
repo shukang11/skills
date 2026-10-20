@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景矩阵（目前已收纳 7 个核心基石）
+## 技能全景矩阵（目前已收纳 12 个核心基石）
 
 ```text
                                【个人核心技能库矩阵】
@@ -15,7 +15,8 @@
         ▼                                ▼                                ▼
   【需求与探索战区】              【架构与实施战区】              【排错与质量战区】
 • grilling (对抗盘问消除盲区)   • codebase-design (深模块设计)   • handoff (会话无损上下文交接)
-                                • tdd (红绿契约实施/里程碑触发)
+• to-spec (讨论收敛成规格)      • domain-modeling (领域词汇与决策) • diagnosing-bugs (红信号排错)
+• prototype (用完即扔的探路原型) • tdd (红绿契约实施/里程碑触发)  • code-review (双轴审查)
                                 • code-simplify (残留清理/收敛)
                                          │
                     ┌────────────────────┴────────────────────┐
@@ -42,15 +43,16 @@ ln -sfn "/Volumes/Storage/Documents/project/skills/skills" "$HOME/.agents/skills
 └── shukang -> /Volumes/Storage/Documents/project/skills/skills
     ├── engineering/
     │   ├── code-simplify/  codebase-design/  tdd/
+    │   ├── domain-modeling/  diagnosing-bugs/  code-review/
+    │   ├── to-spec/  prototype/
     │   └── agent-ready-repository/
     └── productivity/
         ├── grilling/  handoff/  writing-for-agents/
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `7`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `12`
 - **卸载**：`rm ~/.agents/skills/shukang`
 - **注意**：pi 递归发现任意深度的 `SKILL.md`；但技能 `name` 是**全局扁平命名空间**，同名技能只加载先发现的那个。
-- **`to-spec` / `prototype` / `diagnosing-bugs` / `domain-modeling` / `code-review` 不在本库**：它们引用 spec-anchor 契约或产出被其复核，随引擎同捆，经 `spec-anchor skills install` 装进项目的 `.agents/skills/`。本库不再保留同名副本，避免 pi 加载到旧版。
 
 > `handoff` 与 `agent-ready-repository` 设置了 `disable-model-invocation: true`，不会出现在模型自动路由列表中，需显式唤醒（`/skill:handoff`、`/skill:agent-ready-repository`）。后者是高成本、高破坏面的项目级元操作，不应被模型自动路由。
 
