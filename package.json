@@ -1,0 +1,12 @@
+{
+  "name": "shukang-skills",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Install shukang agent skills. User scope symlinks the checkout. Project scope copies skills into that repo.",
+  "bin": {
+    "shukang-skills": "./scripts/install.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

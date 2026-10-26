@@ -2,6 +2,7 @@
 name: domain-modeling
 description: 构建与校准项目的领域模型（Domain Model）。当讨论代码库术语、定义状态机实体、维护领域词汇表（docs/glossary.md 或 docs/domain-models.md）以及提炼核心架构决策记录（ADR）时使用。
 argument-hint: "你想建立或澄清哪个领域概念/名词/实体？"
+disable-model-invocation: true
 ---
 
 # Domain Modeling

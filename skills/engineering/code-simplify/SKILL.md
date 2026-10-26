@@ -7,6 +7,7 @@ description: >
   protocol. Use when the user asks to simplify, clean up, polish, run
   code-simplify, evaluate a module, or tighten a recent change. Do not
   use for correctness bugs, feature review, or feature implementation.
+disable-model-invocation: true
 ---
 
 # Code Simplify
@@ -39,6 +40,10 @@ was pulled in during unrelated feature work, stop and do nothing.
    - **Cleanup:** reuse, structure, quality, and efficiency. If the
      scoped diff is under ~20 lines and a single concern, run only the
      most relevant reviewer.
+   - Reviewer files: quality `references/reviewers/quality.md`, reuse
+     `references/reviewers/reuse.md`, structure
+     `references/reviewers/structure.md`, efficiency
+     `references/reviewers/efficiency.md`.
    - If the host can run isolated subagents in parallel, launch the
      chosen reviewers in one turn. Each subagent receives the reviewer
      file verbatim plus the payload. Subagents must not edit files or

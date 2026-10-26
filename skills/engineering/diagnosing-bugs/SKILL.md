@@ -2,6 +2,7 @@
 name: diagnosing-bugs
 description: "疑难杂症与 Bug 诊断排查循环。适用于用户提出 'diagnose'/'debug this'，或反馈程序报错、抛出异常、失败或性能明显退化时。"
 argument-hint: "Bug 的具体报错信息、重现场景或异常现象描述"
+disable-model-invocation: true
 ---
 
 # Diagnosing Bugs

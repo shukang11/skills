@@ -2,11 +2,12 @@
 name: to-spec
 description: 将讨论充分的方案、决议与上下文，无损梳理并固化为符合工程规范的标准 Spec 文档。不进行新访谈，专注合成与收敛。
 argument-hint: "本 Spec 的核心主题/文件名 slug 是什么？"
+disable-model-invocation: true
 ---
 
 # To-Spec — 规格化沉淀
 
-在需求与架构通过讨论（如 `grilling`）基本明确后，将当前上下文中的所有共识、边界和测试策略，一键沉淀为一份严谨的标准规格文档（Spec）。
+在需求与架构通过讨论（如 `clarify-decisions`）基本明确后，将当前上下文中的所有共识、边界和测试策略，一键沉淀为一份严谨的标准规格文档（Spec）。
 
 ## 核心工作法则
 
@@ -54,6 +55,6 @@ Status: proposed
 
 ## 执行流程
 
-1. **提取信息**：解析对话中的核心共识、测试策略与范围限制。
+1. **提取信息**：解析对话中的核心共识、测试策略与范围限制。本轮若有 `prototypes/compare-shapes-<slug>/decision.md`，取舍以该文件为准，写进 Implementation Decisions。
 2. **生成并落盘**：将合成好的内容写入 `.agents/notes/proposed/<yyyy-mm-dd-slug>.md`。
 3. **输出摘要与路径**：向用户展示落盘文档的相对/绝对路径，并提示下一步可以衔接的技能（如 `codebase-design` 或 `tdd`）。

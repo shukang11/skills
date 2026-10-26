@@ -1,29 +1,30 @@
 <#
 .SYNOPSIS
-    管理个人 Agent Skills 的 Windows Junction（目录联接）挂载脚本。
+    安装个人 Agent Skills。用户级用链接，项目级用拷贝。
 
 .DESCRIPTION
-    支持按需在全局 (~/.agents/skills) 或指定项目内热挂载、卸载和状态查看。
-    修改 skills 仓库代码后实时生效，无需重复复制或构建。
+    不带 -Project 时，在 ~/.agents/skills 建立指向本仓库的符号链接（Windows 上为 Junction）。
+    带 -Project 时，把技能目录复制到该仓库的 .agents/skills/<技能名>/。
+    实现在 scripts/install.mjs，本脚本只转发参数。
 
 .PARAMETER List
-    查看所有技能及当前挂载状态。
+    查看技能及当前安装状态。
 
 .PARAMETER Install
-    按需挂载一个或多个技能（逗号分隔或传递数组），如: -Install grilling,tdd 或 -Install all
+    安装一个或多个技能（逗号分隔或数组）。all 表示全部。
 
 .PARAMETER Uninstall
-    卸载一个或多个技能挂载，如: -Uninstall grilling 或 -Uninstall all
+    卸载一个或多个技能。all 表示全部。
 
 .PARAMETER Project
-    可选。指定项目根目录；若不指定则默认挂载到全局 (~/.agents/skills)。
+    可选。指定项目根目录后改为拷贝安装。不指定则安装到用户级。
 
 .EXAMPLE
     .\manage-skills.ps1 -List
-    .\manage-skills.ps1 -Install grilling,tdd,codebase-design
     .\manage-skills.ps1 -Install all
-    .\manage-skills.ps1 -Uninstall tdd
+    .\manage-skills.ps1 -Install clarify-decisions,tdd
     .\manage-skills.ps1 -Install tdd -Project "D:\wiki\project\spec-anchor"
+    .\manage-skills.ps1 -Uninstall tdd -Project "D:\wiki\project\spec-anchor"
 #>
 
 [CmdletBinding(DefaultParameterSetName = "List")]
@@ -43,132 +44,28 @@ param (
     [string]$Project
 )
 
-$RepoRoot = $PSScriptRoot
-$SkillsSourceDir = Join-Path $RepoRoot "skills"
+$Installer = Join-Path $PSScriptRoot "scripts\install.mjs"
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    Write-Error "未找到 node。需要 Node.js 18 或更高版本。"
+    exit 1
+}
 
-# 确定目标挂载基准目录
+$nodeArgs = @($Installer)
+if ($PSCmdlet.ParameterSetName -eq "List") {
+    $nodeArgs += "--list"
+}
 if ($Project) {
-    $TargetBase = Join-Path (Resolve-Path $Project) ".agents\skills"
-} else {
-    $TargetBase = Join-Path $env:USERPROFILE ".agents\skills"
+    $nodeArgs += @("--project", $Project)
+} elseif ($PSCmdlet.ParameterSetName -ne "List") {
+    $nodeArgs += "--user"
+}
+if ($PSCmdlet.ParameterSetName -eq "Install") {
+    $nodeArgs += @("--install", (($Install | ForEach-Object { $_.Trim() }) -join ","))
+}
+if ($PSCmdlet.ParameterSetName -eq "Uninstall") {
+    $nodeArgs += "--uninstall"
+    $nodeArgs += @("--install", (($Uninstall | ForEach-Object { $_.Trim() }) -join ","))
 }
 
-# 发现当前仓库中的所有技能
-$AvailableSkills = @{}
-Get-ChildItem -Path $SkillsSourceDir -Recurse -Filter "SKILL.md" | ForEach-Object {
-    $skillName = $_.Directory.Name
-    $AvailableSkills[$skillName] = $_.Directory.FullName
-}
-
-function Ensure-TargetDir {
-    if (-not (Test-Path $TargetBase)) {
-        New-Item -ItemType Directory -Path $TargetBase -Force | Out-Null
-    }
-}
-
-function Show-Status {
-    Write-Host "`n=== Agent Skills 挂载状态 ===" -ForegroundColor Cyan
-    Write-Host "目标目录: $TargetBase" -ForegroundColor Gray
-    Write-Host ("-" * 60) -ForegroundColor Gray
-
-    $installedCount = 0
-    foreach ($name in ($AvailableSkills.Keys | Sort-Object)) {
-        $targetPath = Join-Path $TargetBase $name
-        $isLinked = $false
-        $linkTarget = ""
-
-        if (Test-Path $targetPath) {
-            $item = Get-Item $targetPath -Force
-            if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-                $isLinked = $true
-                $linkTarget = $item.Target
-                $installedCount++
-            }
-        }
-
-        if ($isLinked) {
-            Write-Host " [已挂载] " -ForegroundColor Green -NoNewline
-            Write-Host "$name" -ForegroundColor Yellow -NoNewline
-            Write-Host " -> $linkTarget" -ForegroundColor DarkGray
-        } else {
-            Write-Host " [未挂载] " -ForegroundColor DarkGray -NoNewline
-            Write-Host "$name" -ForegroundColor White
-        }
-    }
-    Write-Host ("-" * 60) -ForegroundColor Gray
-    Write-Host "共收纳 $($AvailableSkills.Count) 个技能，当前已挂载 $installedCount 个。`n" -ForegroundColor Cyan
-}
-
-function Install-Skill([string]$Name) {
-    if (-not $AvailableSkills.ContainsKey($Name)) {
-        Write-Warning "未找到名为 [$Name] 的技能，请检查拼写。"
-        return
-    }
-
-    Ensure-TargetDir
-    $source = $AvailableSkills[$Name]
-    $dest = Join-Path $TargetBase $Name
-
-    if (Test-Path $dest) {
-        $item = Get-Item $dest -Force
-        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Write-Host "[$Name] 已经处于挂载状态，跳过。" -ForegroundColor Yellow
-            return
-        } else {
-            Write-Error "目标位置 [$dest] 已存在同名普通目录/文件，为避免数据丢失，未进行覆盖。"
-            return
-        }
-    }
-
-    New-Item -ItemType Junction -Path $dest -Target $source | Out-Null
-    Write-Host "✓ 成功挂载技能: " -ForegroundColor Green -NoNewline
-    Write-Host "$Name" -ForegroundColor Yellow -NoNewline
-    Write-Host " -> $dest" -ForegroundColor DarkGray
-}
-
-function Uninstall-Skill([string]$Name) {
-    $dest = Join-Path $TargetBase $Name
-    if (-not (Test-Path $dest)) {
-        Write-Host "[$Name] 当前未挂载，无需操作。" -ForegroundColor DarkGray
-        return
-    }
-
-    $item = Get-Item $dest -Force
-    if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-        $item.Delete()
-        Write-Host "✓ 成功卸载挂载点: [$Name]" -ForegroundColor Green
-    } else {
-        Write-Error "目标位置 [$dest] 不是 Junction 软链接，请手动确认，脚本拒绝执行物理删除。"
-    }
-}
-
-# --- 执行入口 ---
-if ($PSCmdlet.ParameterSetName -eq "List" -or $List) {
-    Show-Status
-}
-elseif ($PSCmdlet.ParameterSetName -eq "Install") {
-    $names = @()
-    foreach ($item in $Install) {
-        $names += $item.Split(',') | ForEach-Object { $_.Trim() }
-    }
-    if ($names -contains "all") {
-        $names = $AvailableSkills.Keys
-    }
-    foreach ($n in $names) {
-        if ($n) { Install-Skill -Name $n }
-    }
-    Show-Status
-}
-elseif ($PSCmdlet.ParameterSetName -eq "Uninstall") {
-    $names = @()
-    foreach ($item in $Uninstall) {
-        $names += $item.Split(',') | ForEach-Object { $_.Trim() }
-    }
-    if ($names -contains "all") {
-        $names = $AvailableSkills.Keys
-    }
-    foreach ($n in $names) {
-        if ($n) { Uninstall-Skill -Name $n }
-    }
-    Show-Status
-}
+& node @nodeArgs
+exit $LASTEXITCODE

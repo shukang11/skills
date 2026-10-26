@@ -2,6 +2,7 @@
 name: writing-for-agents
 description: "编写 Agent 文档与技能的指导规范。适用于创建、重构、审查技能（SKILL.md），或编写项目级指导文档（如 AGENTS.md / SPEC.md / README.md）时。"
 argument-hint: "待创建或优化的技能名称、文档目标或需求"
+disable-model-invocation: true
 ---
 
 # Writing for Agents
@@ -19,6 +20,7 @@ argument-hint: "待创建或优化的技能名称、文档目标或需求"
 - 技能描述（Description）本质上是一个上下文指针；
 - **首词触发（Front-load leading words）**：把最重要的触发动词和场景词置于开头；
 - **一分支一触发**：不用同义词堆砌重复触发条件。
+- 技能写上 `disable-model-invocation: true`。何时读它由 `kstack-mode` 的 playbook 决定。
 
 ## 写什么、不写什么
 
@@ -71,6 +73,7 @@ argument-hint: "待创建或优化的技能名称、文档目标或需求"
 name: <kebab-case 技能名称>
 description: "<首词前置的触发场景与功能描述，1-2 句>"
 argument-hint: "<调用时需要用户提供的入参提示（可选）>"
+disable-model-invocation: true
 ---
 
 # <技能标题>

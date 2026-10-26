@@ -2,6 +2,7 @@
 name: codebase-design
 description: 依据《软件设计的哲学》深模块标准，进行系统架构与模块边界设计。语言无关，优先感知既有文档，消除浅层封装与信息泄露。
 argument-hint: "你想针对哪个模块、子系统或架构重构展开深模块设计？"
+disable-model-invocation: true
 ---
 
 # Codebase Design — 深模块架构设计

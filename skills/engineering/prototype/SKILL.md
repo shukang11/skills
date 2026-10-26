@@ -1,37 +1,29 @@
 ---
 name: prototype
-description: Build a throwaway prototype to answer a design question. Use when the user wants to sanity-check whether a state model or logic feels right, or explore what a UI should look like.
+description: "做一套保真的产品逻辑或交互模拟。用 HTML 双击打开，不启本地服务。左导航右内容，内容区用相对路径跳本地文件。"
+disable-model-invocation: true
+argument-hint: "要模拟的产品逻辑或交互是什么"
 ---
 
 # Prototype
 
-A prototype is **throwaway code that answers a specific question**. The question decides the shape.
+一套保真模拟，让人点得动产品逻辑或交互。模拟留在 `prototypes/`，不打进生产构建。验证过的决定写进 `docs/` 里对应 topic 的契约，再由正式代码实现。
 
-## 1. Pick a Branch
+## 判据
 
-Identify which question is being answered:
+- 一个产品一套模拟。另一种结构方案交给 `compare-shapes`，不在这里做多套外观切换。
+- 入口是 `prototypes/index.html`。左侧导航，右侧内容。内容区的链接用相对路径指向本地 HTML，跳转后导航还在。
+- 双击 `index.html` 就能用。不启本地服务。
+- 共用样式放 `prototypes/css/`，共用脚本放 `prototypes/js/`，共用逻辑放 `prototypes/shared/`。脚本用普通 `<script src>`，不用 `type="module"`。
+- 导航只列这套模拟的页面，不列 `prototypes/compare-shapes-*`。
+- 不写生产数据库，不把 `prototypes/` 打进生产构建。
 
-- **"Does this logic / state model feel right?"** → **Logic Prototype**
-  - Build a single, self-contained, zero-dependency HTML file.
-  - Save to `prototypes/<topic>-prototype.html` (aligned with `spec-anchor` preview conventions).
-  - Include:
-    1. **Visible intro**: 1 paragraph stating the exact question being answered.
-    2. **State panel**: clean, human-readable display of the current internal state (not raw JSON).
-    3. **Free-play buttons**: 1 button per action/event to trigger state transitions in any order.
-    4. **Guided walkthroughs**: tabbed scenarios representing tricky edge cases with step-by-step ordered buttons.
-  - **Portable module constraint**: Keep the core logic (reducer/state machine/pure functions) in a clean, pure `<script>` block without DOM references, so it can be lifted directly into production code later.
+## 收工检查
 
-- **"What should this look like?"** → **UI Prototype**
-  - Generate 3 radically different UI structural variants (not just different colors/tweaks).
-  - Mount on an existing page/route via `?variant=A/B/C`, or create a throwaway preview under `prototypes/`.
-  - Provide a floating bottom-center switcher bar with keyboard arrow navigation (`←` / `→`) to flip between variants seamlessly.
+- 双击 `prototypes/index.html`，左导航能打开各页，内容区的本地链接能跳转，导航仍在。
+- 回复里有入口路径，以及这次模拟要让人看清的那一段逻辑或交互。
+- 已经确认要留下的契约，写进 `docs/` 对应 topic，不写进模拟文件里当第二份规格。
 
-## 2. Core Rules (Throwaway Discipline)
+## 产出
 
-1. **Throwaway from day one**: Code is written under prototype constraints (skip tests, skip deep error handling, skip abstractions).
-2. **Trivial to run**: Double-click to open in browser, or run zero-config in `spec-anchor dev`.
-3. **No production persistence**: In-memory state only. Never mutate production databases.
-4. **Extract only the validated core**:
-   - For logic prototypes: lift only the validated reducer / state machine into production.
-   - For UI prototypes: take the winning structural elements and rewrite cleanly into the production component.
-5. **No production pollution**: Prototypes stay in `prototypes/` as primary source evidence, and must never be bundled into production builds.
+`prototypes/index.html`、各内容页，以及用到的 `css/`、`js/`、`shared/`。

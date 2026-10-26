@@ -1,13 +1,8 @@
-## 原型探路（Prototype）设计说明
+## Prototype
 
-本技能基于 Matt Pocock 的经典原型哲学，并与单人本地开发及 `spec-anchor` 原生预览生态进行了深度打通。
+一套保真的产品逻辑或交互模拟，不是生产代码，也不是多套外观草稿。
 
-### 核心定位
-原型不是生产代码，而是**用于回答特定设计疑问的“用完即扔”探路石**：
-- **逻辑探路（Logic Prototype）**：单文件 HTML，内嵌纯状态机/Reducer，支持可视化状态面板、自由点击事件与边缘场景分步演练；
-- **界面探路（UI Prototype）**：3 种结构迥异的变体，配合浮动切换条，秒级对比布局与信息层级。
-
-### 与 `spec-anchor` 的协同
-- 原型文件统一输出至 `prototypes/` 目录；
-- 在 `spec-anchor dev` 中开箱即用、天然在侧边栏提供预览与试玩入口；
-- 支持结合 `spec-anchor` 的标注系统直接在原型上进行视觉批注。
+- 入口 `prototypes/index.html`：左导航，右内容。双击打开，不启本地服务。
+- 内容区用相对路径跳本地 HTML，跳转后导航还在。
+- 共用样式、脚本、逻辑分别放 `prototypes/css/`、`prototypes/js/`、`prototypes/shared/`。
+- 另一种结构方案走 `compare-shapes`。确认后的契约写进 `docs/` 对应 topic，模拟文件留在 `prototypes/`。

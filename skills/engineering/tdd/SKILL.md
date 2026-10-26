@@ -2,6 +2,7 @@
 name: tdd
 description: 测试驱动开发（Test-Driven Development）。遵循 Red-Green 循环，基于公共接口与行为接缝编写测试。在开发过程中，除非到达里程碑或用户明确要求，否则不主动高频触发完整测试套件。
 argument-hint: "你想对哪个特性或 Bug 修复采用测试驱动开发？"
+disable-model-invocation: true
 ---
 
 # Test-Driven Development (TDD)

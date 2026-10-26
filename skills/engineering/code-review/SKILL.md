@@ -2,6 +2,7 @@
 name: code-review
 description: "针对自指定锚点（commit、branch、tag 或 HEAD~N）以来的代码变更进行【双轴独立审查】：Standards 轴（代码规范与 Martin Fowler 坏味道体检）与 Spec 轴（是否忠实满足原始需求规格）。"
 argument-hint: "指定 review 的基准点（例如 main, HEAD~1, 或具体 commit SHA）及对应的 Spec 路径"
+disable-model-invocation: true
 ---
 
 # Code Review
