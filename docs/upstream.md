@@ -47,7 +47,7 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 
 | 本地 | 上游角色 |
 | --- | --- |
-| `kstack-mode` | Matt `ask-matt`、poteto `poteto-mode` |
+| `pstack-mode` | Matt `ask-matt`、poteto `poteto-mode` |
 | `how-it-works` | poteto `how` |
 | `why-this-way` | poteto `why` |
 | `compare-shapes` | poteto `arena`、`principle-exhaust-the-design-space` |
@@ -64,7 +64,7 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 
 | 技能 | 路径 | 做什么 | 本地 | 处置 |
 | --- | --- | --- | --- | --- |
-| [ask-matt](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/ask-matt/SKILL.md) | `skills/engineering/ask-matt` | 问该用哪个技能。本地入口是 kstack-mode | `kstack-mode` | 已吸收 |
+| [ask-matt](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/ask-matt/SKILL.md) | `skills/engineering/ask-matt` | 问该用哪个技能。本地入口是 pstack-mode | `pstack-mode` | 已吸收 |
 | [code-review](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/code-review/SKILL.md) | `skills/engineering/code-review` | 从固定基点审 diff，规范和规格两条线 | `code-review` | 已吸收 |
 | [codebase-design](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/codebase-design/SKILL.md) | `skills/engineering/codebase-design` | 按深模块来设计或改进接口 | `codebase-design` | 已吸收 |
 | [diagnosing-bugs](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/diagnosing-bugs/SKILL.md) | `skills/engineering/diagnosing-bugs` | 难 bug 和性能回退的诊断循环 | `diagnosing-bugs` | 已吸收 |
@@ -145,7 +145,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [make-bot-ui](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/make-bot-ui/SKILL.md) | `pstack/skills/make-bot-ui` | 做一页按钮能唤 Grok Bot 的界面，含 sender-key 交接与 Tailscale | — | 不需要 |
 | [no-comments](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/no-comments/SKILL.md) | `pstack/skills/no-comments` | 派 Comment Sicko 清注释，接受的发现就地修，约束型注释先编码成机制再删 | `code-simplify` | 已吸收 |
 | [poteto-help](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/poteto-help/SKILL.md) | `pstack/skills/poteto-help` | pstack 上手路由：问你想干什么，给出该敲哪条命令 | — | 不需要 |
-| [poteto-mode](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/poteto-mode/SKILL.md) | `pstack/skills/poteto-mode` | 统一风格的入口。本地入口是 kstack-mode | `kstack-mode` | 已吸收 |
+| [poteto-mode](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/poteto-mode/SKILL.md) | `pstack/skills/poteto-mode` | 统一风格的入口。本地入口是 pstack-mode | `pstack-mode` | 已吸收 |
 | [principle-attack-the-premise](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-attack-the-premise/SKILL.md) | `pstack/skills/principle-attack-the-premise` | 同一前提下两次修法都没过同一道门，先普查再质疑前提 | `principle-attack-the-premise` | 已吸收 |
 | [principle-boundary-discipline](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-boundary-discipline/SKILL.md) | `pstack/skills/principle-boundary-discipline` | 校验和适配只放在系统边界 | `principle-boundary-discipline` | 已吸收 |
 | [principle-build-the-lever](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-build-the-lever/SKILL.md) | `pstack/skills/principle-build-the-lever` | 先做能完成或证明这件事的工具 | `principle-build-the-lever` | 已吸收 |
@@ -184,10 +184,10 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 
 跳过的 7 条，理由是本地没有它们赖以成立的那层东西：
 
-- `automate-me`：靠 cursor 的 `agent-transcripts` 挖偏好生成 `-mode` 技能。本地 `kstack-mode` 就是那个 mode，转录路径也不通用。
+- `automate-me`：靠 cursor 的 `agent-transcripts` 挖偏好生成 `-mode` 技能。本地 `pstack-mode` 就是那个 mode，转录路径也不通用。
 - `bro`：7 行「用大白话重述上一条」，`unslop` 已经覆盖。
 - `make-bot-ui`：Grok Bot webhook 加 Tailscale，纯 cursor 生态。
-- `poteto-help`：pstack 自家的上手路由，本地 `kstack-mode` 就是入口。
+- `poteto-help`：pstack 自家的上手路由，本地 `pstack-mode` 就是入口。
 - `recall`：绑死 `~/.cursor/projects/*/agent-transcripts` 与七类 MCP。本地 `handoff` 管往后交，往前捞是另一件事。
 - `setup-pstack`：按角色写一份模型规则文件，本地没有那一层。
 - `tdd`：已删掉，纪律落在 `bug-fix` playbook 和 `diagnosing-bugs` 里。

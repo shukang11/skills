@@ -8,10 +8,10 @@
 
 ## 技能全景（52 个技能，一个入口）
 
-干活从 `/kstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
+干活从 `/pstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
 ```text
-入口  kstack-mode
+入口  pstack-mode
   │
   ├─ playbook   feature  bug-fix  design  prototype  refactor
   │             review  simplify  handoff  authoring  repo-audit  investigate
@@ -56,6 +56,8 @@
 - **项目级**：把技能目录**复制**到目标仓库的 `.agents/skills/<技能名>/`。副本不依赖本机路径，可以提交，云端 Agent 也能读到。再次执行同一命令会覆盖同名副本。
 
 技能 `name` 是扁平命名空间，同名只加载先发现的那个。目标仓库若已通过用户级链接看到同名技能，不要再在项目里装一份。
+
+入口在 2026-10 从 `kstack-mode` 改名回 `pstack-mode`。旧装过的要清一次：用户级单独链过的用 `./scripts/install.sh --uninstall --user kstack-mode` 拆掉旧链接；项目级副本脚本已经找不到它了，手动 `rm -rf <仓库>/.agents/skills/kstack-mode`。
 
 需要 Node.js 18+。macOS / Linux 用 `scripts/install.sh`，Windows 用 `manage-skills.ps1`（转发给同一个 `scripts/install.mjs`）。
 
@@ -125,6 +127,6 @@ npx --yes github:shukang11/skills --project .
 
 ## 日常调用姿势
 
-1. **从入口进**（一套任务走完）：`/kstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
+1. **从入口进**（一套任务走完）：`/pstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
 2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
 3. **直接点判据**（只校准一件事）：`/principle-*` 共 22 条，见上面清单。同样不走 playbook。

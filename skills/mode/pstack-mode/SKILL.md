@@ -1,6 +1,6 @@
 ---
-name: kstack-mode
-description: "统一编排入口。修 bug、做功能、定契约、写规格、做原型、重构、审查、交接、写技能或审计仓库时，先进入本技能，再按 playbook 打开叶子。人显式调用 /kstack-mode。"
+name: pstack-mode
+description: "统一编排入口。修 bug、做功能、定契约、写规格、做原型、重构、审查、交接、写技能或审计仓库时，先进入本技能，再按 playbook 打开叶子。人显式调用 /pstack-mode。"
 disable-model-invocation: true
 argument-hint: "这次要完成的任务，一句话"
 ---
