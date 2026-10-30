@@ -28,7 +28,7 @@ Playbook 跟本文件在同一目录：`playbooks/<name>.md`。判据是独立�
 1. **入口**。本文件。人显式唤醒，不凭描述自动开工。
 2. **Playbook**。任务的步骤顺序，不是斜杠命令。
 3. **会把工作交给下一步的叶子**。`wayfinder`、`clarify-decisions`、`domain-modeling`、`compare-shapes`、`arena`、`to-spec`、`codebase-design`、`architect`、`figure-it-out`。
-4. **做到本职就停的叶子**。`how-it-works`、`why-this-way`、`teach`、`prototype`、`diagnosing-bugs`、`code-review`、`interrogate`、`blast-radius`、`code-simplify`、`correct`、`handoff`、`writing-for-agents`、`agent-ready-repository`、`unslop`、`swarm`、`show-me-your-work`、`create-verification-skill`、`maintain-verification-skill`、`typescript-best-practices`。
+4. **做到本职就停的叶子**。`how-it-works`、`why-this-way`、`teach`、`prototype`、`diagnosing-bugs`、`code-review`、`interrogate`、`blast-radius`、`code-simplify`、`correct`、`handoff`、`writing-for-agents`、`agent-ready-repository`、`unslop`、`swarm`、`show-me-your-work`、`reflect`、`create-verification-skill`、`maintain-verification-skill`、`typescript-best-practices`。
 5. **判据**。`../../judgment/<name>/SKILL.md`，是独立技能，可以 `/` 直点。跨叶子反复要用的判据放这里；只属于某一个叶子的判据写在那个叶子的正文里（`diagnosing-bugs` 的判据段、`code-review` 的 Standards 轴）。
 
 根因和红信号在 `diagnosing-bugs`。领域结构在 `domain-modeling`。模块边界在 `codebase-design`。保真模拟在 `prototype`。审 diff 在 `code-review`。落地后的残留在 `code-simplify`。去 AI 腔与简明表达在 `unslop`。会话交接在 `handoff`。这九件事不另建判据。

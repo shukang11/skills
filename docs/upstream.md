@@ -15,8 +15,8 @@
 | Matt Pocock | [`mattpocock/skills`](https://github.com/mattpocock/skills) @ [`5beb35b`](https://github.com/mattpocock/skills/commit/5beb35b040e3de97e54fa9e386d7e42d15c295c2)，2026-10-19，38 个 |
 | poteto | [`poteto/plugins`](https://github.com/poteto/plugins) @ [`74dd229`](https://github.com/poteto/plugins/commit/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12)，2026-06-06，69 个（不含 pstack） |
 | pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)，2026-10-10，51 个（v0.15.16） |
-| 已吸收 | 56 |
-| 不需要 | 8 |
+| 已吸收 | 57 |
+| 不需要 | 7 |
 | 未标记 | 60 |
 
 处置只有三格：`已吸收`、`不需要`、`未标记`。标了`不需要`的都在表后附了理由。
@@ -171,7 +171,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [principle-test-behavior-not-implementation](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-test-behavior-not-implementation/SKILL.md) | `pstack/skills/principle-test-behavior-not-implementation` | 测试像用户那样调用并断言精确结果；导入全返回 undefined 还能过的测试要重写或删 | `principle-test-behavior-not-implementation` | 已吸收 |
 | [principle-type-system-discipline](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-type-system-discipline/SKILL.md) | `pstack/skills/principle-type-system-discipline` | 用类型让不合法状态写不出来 | `principle-type-system-discipline` | 已吸收 |
 | [recall](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/recall/SKILL.md) | `pstack/skills/recall` | 从自己的聊天记录与共享记录重建最近上下文，交一份当前状态胶囊 | — | 不需要 |
-| [reflect](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/reflect/SKILL.md) | `pstack/skills/reflect` | 用三个子代理看会话，把教训写回已有技能 | — | 不需要 |
+| [reflect](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/reflect/SKILL.md) | `pstack/skills/reflect` | 用三个子代理看会话，把教训写回已有技能 | `reflect` | 已吸收 |
 | [setup-pstack](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/setup-pstack/SKILL.md) | `pstack/skills/setup-pstack` | 给 pstack 各角色选模型 | — | 不需要 |
 | [show-me-your-work](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/show-me-your-work/SKILL.md) | `pstack/skills/show-me-your-work` | 长时间工作记一张决策表：做了什么、为什么、证据 | `show-me-your-work` | 已吸收 |
 | [swarm](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/swarm/SKILL.md) | `pstack/skills/swarm` | 并行 N 个 worker，切片或赛马，父级收口成一份报告 | `swarm` | 已吸收 |
@@ -182,14 +182,13 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [unslop](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/unslop/SKILL.md) | `pstack/skills/unslop` | 去掉文字里的生成腔 | `unslop` | 已吸收 |
 | [why](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/why/SKILL.md) | `pstack/skills/why` | 追溯为什么长这样，证据来自提交、笔记和文档 | `why-this-way` | 已吸收 |
 
-跳过的 8 条，理由是本地没有它们赖以成立的那层东西：
+跳过的 7 条，理由是本地没有它们赖以成立的那层东西：
 
 - `automate-me`：靠 cursor 的 `agent-transcripts` 挖偏好生成 `-mode` 技能。本地 `kstack-mode` 就是那个 mode，转录路径也不通用。
 - `bro`：7 行「用大白话重述上一条」，`unslop` 已经覆盖。
 - `make-bot-ui`：Grok Bot webhook 加 Tailscale，纯 cursor 生态。
 - `poteto-help`：pstack 自家的上手路由，本地 `kstack-mode` 就是入口。
 - `recall`：绑死 `~/.cursor/projects/*/agent-transcripts` 与七类 MCP。本地 `handoff` 管往后交，往前捞是另一件事。
-- `reflect`：三个审查者读转录、把教训路由成技能编辑。同样依赖 cursor 转录，而且这活现在是人工在做。
 - `setup-pstack`：按角色写一份模型规则文件，本地没有那一层。
 - `tdd`：已删掉，纪律落在 `bug-fix` playbook 和 `diagnosing-bugs` 里。
 
