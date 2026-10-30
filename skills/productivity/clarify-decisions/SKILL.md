@@ -1,47 +1,38 @@
 ---
 name: clarify-decisions
-description: 对抗式深度盘问。通过构建设计决策树并按轮次推进前沿，在动手编写任何代码前，彻底澄清方案、挤压假设并消除盲区。
-argument-hint: "你想让我针对哪个方案、计划或需求进行高强度盘问？"
+description: "Adversarial interview before any code: build the design-decision tree, advance its frontier a round at a time, and settle the plan before implementation starts."
 disable-model-invocation: true
+argument-hint: "which plan, decision, or requirement to grill"
 ---
 
-# Clarify decisions
+Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
-在开始编写代码之前，把还没拍板的决策问清。每一轮只问当前前沿上的问题，事实自己查，决定交给用户。决策清空并得到确认之前，不写实现。
+Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
 
-## 核心工作法则
+Format a round like so:
 
-1. **构建设计决策树与决策前沿（Design Tree & Frontier in Rounds）**：
-   - 方案是一棵决策树：每个大决策都会衍生出下级决策分支。
-   - **决策前沿（Frontier）**：是指当前所有“前置依赖条件已被确定”的待决问题集合。
-   - **按轮次推进**：每一轮只抛出当前处于 Frontier 上的问题。依赖尚未明确的深层问题，坚决不提前抛出。
-2. **事实由 Agent 探查，决策由用户拍板（Facts are Agent's, Decisions are User's）**：
-   - 严禁将可以通过查阅代码库、配置文件或文档确定的“事实问题”丢给用户。
-   - 涉及现有系统状态时，Agent 必须**先调用工具（grep/read/git）自行查明**，仅在发现矛盾或缺少业务决策时才向用户发问。
-3. **给出推荐倾向（Always Provide Recommended Answers）**：
-   - 每一个问题都必须附带一个明确的推荐选项及其理由，让用户可以以最小阻力直接拍板（如“同意推荐”或“选 B”）。
-4. **决策清空之前不写代码**：
-   - 在所有前沿决策清空、并且用户明确确认“我们理解一致，开始执行”之前，**严禁写出任何业务功能代码或进行不可逆的文件修改**。
+```
+❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
 
-## 提问轮次标准格式
+➡️ <your recommended answer>
 
-在每一轮盘问中，按照以下结构输出问题列表：
+---
 
-```markdown
-### 决策前沿推进（第 N 轮）
+❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
 
-❓ **Q1: [关于某个关键分支/依赖的决策点]**
-- 背景与权衡：[为什么这里需要抉择？选项各自的利弊是什么？]
-➡️ **推荐答案**：[推荐选择的方案及其简明理由]
-
-❓ **Q2: [另一个并行的待决问题]**
-- 背景与权衡：...
-➡️ **推荐答案**：...
+➡️ <your recommended answer>
 ```
 
-## 结束判据（Completion Criteria）
+Word each question so "yes" accepts your recommended answer.
 
-盘问流程只在以下条件同时满足时才告一段落：
-1. **决策前沿已清空**：所有涉及范围、核心架构、依赖项、测试策略与异常处理的关键决策均已敲定；
-2. **获得用户确认**：向用户做一次紧凑的方案总结，并获得用户对方案一致性的明确认可；
-3. **指引后续流转**：盘问结束后，主动建议用户启动规格化技能（如 `to-spec`），将本次讨论沉淀为标准规格文档。
+Each round the user answers reshapes the tree: settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
+
+Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent with a fresh context window to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
+
+The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
+
+## Before the interview is over
+
+- **Write no code and make no irreversible file change** until the frontier is empty and the user has said the understanding is shared.
+- Each round's question body carries the trade-off: why this branch needs a call, what each option costs.
+- The interview ends when three things hold at once: every key decision on the frontier is settled (scope, core architecture, dependencies, test strategy, failure handling); you have given a compact summary of the plan and the user explicitly agreed it is the same plan you have; and you have named the skill that picks it up, usually `to-spec`.

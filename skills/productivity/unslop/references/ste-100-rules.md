@@ -1,62 +1,54 @@
-# ASD-STE100 简明技术规范规则速查与替换表
+# ASD-STE100 quick rules and replacement table
 
-本文件回答：改文档时哪些具体词汇和句型属于违规，如何改写。
+This file answers: which words and sentence shapes break the rule, and what to write instead.
 
-## 一、 长度硬指标
+## Length limits
 
-| 文本类型 | 英文上限 | 中文上限 | 允许结构 |
-| --- | --- | --- | --- |
-| 操作指示句（Procedural） | 20 词 | 25 字 | 动词祈使句，单指令 |
-| 说明描述句（Descriptive） | 25 词 | 35 字 | 主动语态，单事实 |
-
-## 二、 禁用形容词与模糊词
-
-| 违规词（中/英） | 问题 | 改写方向 |
+| Text type | English limit | Shape allowed |
 | --- | --- | --- |
-| 适当、适度 (properly, adequately) | 无边界，无法判定 | 写明确切数值或条件，如“差距小于 0.5%” |
-| 容易、轻易 (easily) | 主观感受 | 写具体操作步数或前置条件 |
-| 充分 (sufficiently) | 无判定标准 | 写具体阈值，如“至少 3 次” |
-| 正常、合理 (normal, reasonable) | 依赖隐性共识 | 列出允许的输入范围或状态机条件 |
-| 各种、众多 (various, numerous) | 信息量为零 | 列出全部具体项，或写明数量 |
-| 快速、极速 (fast, rapid) | 无量化 | 写明毫秒数、吞吐量或复杂度级别 |
+| Procedural instruction | 20 words | imperative verb, one instruction |
+| Descriptive statement | 25 words | active voice, one fact |
 
-## 三、 指令句改写（Imperative & Active）
+## Banned adjectives and vague words
 
-| 错误写法（被动/主观） | 正确写法（祈使/主动） |
+| Offender | Problem | Rewrite direction |
+| --- | --- | --- |
+| properly, adequately | no boundary, cannot be judged | state the number or condition, such as "the gap is under 0.5%" |
+| easily | a feeling | state the number of steps or the precondition |
+| sufficiently | no threshold | state the threshold, such as "at least 3 retries" |
+| normal, reasonable | relies on unstated agreement | list the accepted inputs or the state-machine condition |
+| various, numerous | carries no information | list the items, or say how many |
+| fast, rapid | unquantified | state milliseconds, throughput, or complexity class |
+
+## Rewriting instructions
+
+| Wrong (passive or hedged) | Right (imperative or active) |
 | --- | --- |
-| 用户应该确保配置文件已正确更新 | 更新配置文件 |
-| 数据库会被初始化 | 初始化脚本创建数据库 |
-| 建议在修改前执行一次测试 | 修改代码前，运行测试命令 |
-| 系统能够自动处理异常情况 | 处理器拦截异常，并写入 `error.log` |
+| The user should ensure the config file is properly updated | Update the config file |
+| The database will be initialized | The init script creates the database |
+| It is recommended to run the tests before changing code | Run the tests before changing code |
+| The system is able to handle exceptions automatically | The handler catches the exception and writes `error.log` |
 
-## 四、 AI 行话平替词表
+## Word swaps
 
-| AI 高频词 | 直白替换词 |
+| Fancy | Plain |
 | --- | --- |
-| additionally（此外） | also（另外）或直接删除 |
-| crucial（至关重要的） | necessary（必需的）或 required（要求的） |
-| delve into（深入探索） | read（阅读）或 investigate（调查） |
-| enhance（赋能/增强） | improve（改进）或 add（添加） |
-| fostering（培育） | supporting（支持）或 causing（导致） |
-| intricate（错综复杂的） | complicated（复杂的）或 specific（具体的） |
-| pivotal（中枢的） | main（主要的）或 key（关键的） |
-| showcase（彰显/展示） | show（展示） |
-| tapestry（织锦/宏伟画卷） | 直接删除或改为 system（系统） |
-| testament（有力见证） | proof（证据） |
-| underscore（深刻凸显） | show（表明）或 emphasize（强调） |
-| vibrant（充满活力的） | active（活跃的）或直接删除 |
+| utilize, leverage | use |
+| facilitate | help |
+| numerous | many |
+| in the event that | if |
+| in order to | to |
+| due to the fact that | because |
+| serves as, boasts, features | is, has |
+| delve into | read, investigate |
+| enhance | improve, add |
 
-## 五、 标点与格式修正
+## Sentence shapes to cut
 
-- **破折号（—）**：拆成独立短句。示例：“该接口已废弃——请改用 v2 版本” → “该接口已废弃。请改用 v2 版本”。
-- **中句冒号（:）**：改为句号或逗号。示例：“如果从传统方案迁移：不用注册回调，直接描述条件” → “从传统方案迁移时，不要注册回调。直接描述条件”。
-- **嵌套名词堆叠**：避免超过 3 个名词。示例：“用户登录凭证失效异常处理器” → “处理用户登录凭证失效异常的处理器”。
-- **悬空指代**：示例：“解析器碰到非法格式会直接阻断，这保护了后续流程” → “解析器碰到非法格式会直接阻断。阻断机制保护了后续流程”。
-
-## 六、 收工检查项
-
-1. 逐句核对长度是否超标。
-2. 搜索全文标点：`—`、中句 `:` 是否清理干净。
-3. 搜索全文是否有“适当、合理、正常、各种、分别”。
-4. 确认同一个概念在全文只使用一种叫法。
-5. 确认操作步骤均以动词原形开头。
+- "Not just X, but Y": state Y.
+- Forced groups of three: use the real number.
+- Same idea in three synonyms: pick one and repeat it.
+- "from X to Y" where the two ends are not on one scale: list the items.
+- A colon mid-sentence as a connector: end the sentence instead.
+- An em dash: end the sentence, or use a comma.
+- An adverb propping up a weak verb: use the stronger verb or the number.

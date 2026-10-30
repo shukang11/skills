@@ -1,89 +1,96 @@
 ---
 name: unslop
-description: "文档与技术文本去 AI 生成腔，遵循 ASD-STE100 简明技术规范（严格控制句长、消除行话套话、单义词一致性、主动祈使句）。"
-argument-hint: "待清洗或重写的文档路径、文本段落或范围"
+description: "Strip AI tells from prose and hold it to ASD-STE100 sentence rules: one word one meaning, sentence length limits, active imperative voice. Use on docs, specs, READMEs, PR bodies, and text output."
 disable-model-invocation: true
+argument-hint: "the file, section, or passage to clean"
 ---
 
-# Unslop：简明技术文本与去 AI 腔（ASD-STE100）
+# Unslop
 
-对技术文档、规范、README、PR 描述或文本输出进行脱水清洗。
-核心目标：**彻底清除大模型生成腔调与虚浮噪音，严格遵循国际简明技术写作规范 ASD-STE100（Simplified Technical English），产出零歧义、低认知负荷、高信息密度的工程级文本。**
+Edit text to remove AI patterns. Scan for the patterns below, then rewrite. Preserve meaning and match the intended tone.
 
-## 核心判据：ASD-STE100 结构标准
+## Patterns to detect and fix
 
-在审阅和改写任何段落时，必须满足以下 6 条硬性约束：
+Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
 
-1. **单义词与一致性（One Word, One Meaning）**：
-   - 同一个概念在全文中**只使用唯一指定的术语**，严禁同义词轮换（如在同一处混用“模块”、“组件”、“单元”；或混用“删除”、“清理”、“废弃”）。
-   - 词义直白具体，严禁隐喻化或抽象修辞。
-2. **句子长度硬指标（Sentence Length Limits）**：
-   - **操作步骤/指示句（Procedural）**：英文 ≤ 20 词，中文 ≤ 25 字。
-   - **说明/描述句（Descriptive）**：英文 ≤ 25 词，中文 ≤ 35 字。
-   - **一句话只讲一个指令或一个事实**。长句、带多重嵌套从句的复合句必须拆分为独立短句。
-3. **祈使句与主动语态（Active Voice & Imperative Mood）**：
-   - 规则与操作步骤必须使用动词原形开头的祈使句（如：“运行构建脚本”、“更新配置字段”；严禁写成“用户应该运行……”或“构建脚本将被运行”）。
-   - 描述客观过程必须指明执行主体（Actor）：“加载器解析该文件”，严禁无主句和滥用被动语态。
-4. **名词串联限制（Noun String Discipline）**：
-   - 严禁连续堆叠超过 3 个名词进行连环修饰。使用介词展开逻辑从属关系，避免读者解码障碍。
-5. **杜绝模糊修饰与主观形容（Zero Vague Qualifiers）**：
-   - 彻底删除模糊修饰词：*“适度”、“适当”、“正常”、“轻易”、“充分”、“各种各样”*（英文：*properly, adequately, sufficiently, easily, appropriate, various*）。
-   - 必须替换为可衡量的具体数字、物理机制或严格边界（如：“重试达到 3 次”、“超时阈值设为 5000ms”）。
-6. **消除悬空代词（No Ambiguous Pronouns）**：
-   - 严禁出现指代模糊的“这”、“它”、“其”（this, it, they）。直接重复具体所指的名词。
+### Content
 
----
+3. **Superficial -ing phrases.** "highlighting...", "ensuring...", "reflecting...", "showcasing...", "fostering...". Delete or expand with real sources.
+5. **Vague attributions.** "Experts believe", "Industry reports suggest", "Some critics argue". Name the source or delete.
 
-## 核心判据：AI 生成腔（AI Tells）黑名单
+### Language
 
-凡发现以下 AI 模式，立即重写或删除：
+7. **AI vocabulary.** Additionally, crucial, delve, enduring, enhance, fostering, garner, interplay, intricate, landscape (abstract), pivotal, showcase, tapestry (abstract), testament, underscore, vibrant. Replace with plain words.
+8. **Fancy ways to say "is".** "serves as", "stands as", "boasts", "features". Say "is" or "has".
+9. **"Not just X, but Y."** State the point directly instead.
+10. **Rule of three.** Don't force ideas into groups of three. Use the natural number.
+11. **Synonym cycling.** Protagonist, main character, central figure, hero all in one paragraph. Pick one, repeat it.
+12. **False ranges.** "from X to Y" where X and Y aren't on a meaningful scale. List topics directly.
 
-### 1. 词汇与词套
-- **高频 AI 行话**：*additionally, crucial, delve, enduring, enhance, fostering, garner, interplay, intricate, landscape（抽象场景）, pivotal, showcase, tapestry（织锦/体系）, testament, underscore, vibrant* 等。直接换为最平实的词（如 delve → investigate/read，enhance → improve/add）。
-- **花哨系动词**：*“serves as”、“stands as”、“boasts”、“features”*。一律直白改用“是（is）”或“包含（has）”。
-- **二元句式**：*“Not just X, but Y”（不仅……而且……）*。删掉前半句铺垫，直接陈述 Y。
-- **生硬排比**：严禁无逻辑地凑齐“三个并列动词”或“三个名词短语”（Rule of Three）。依客观事实确定数量。
-- **客服套话与阿谀奉承**：*“I hope this helps!”、“Let me know if...”、“Great question!”、“Certainly!”、“Of course!”* 一律彻底删除。
+### Style
 
-### 2. 格式与标点噪音
-- **滥用破折号（—）**：禁止用长破折号断句。直接句号断句或用逗号。
-- **滥用中句冒号（:）**：冒号仅用于列表或示例引出，严禁在句子中间充当转折连接符。
-- **全篇加粗与标题滥用**：严禁每个专业名词都加粗；标题使用首字母大写（Sentence case），严禁使用装饰性 Emoji。
+13. **Em dash overuse.** Avoid em dashes entirely. Use periods or commas only (no parentheses, no en dashes, no hyphen-as-dash substitutes). If a thought needs separation, end the sentence or use a comma.
+14. **Colon overuse.** Colons are fine before a list or example, not as mid-sentence connectors. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
+15. **Boldface overuse.** Don't bold every proper noun or acronym.
+16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**Performance:** Performance improved...". Convert those to prose. A bold lead-in that ends in a period, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a tell.
+17. **Title case headings.** Use sentence case.
+18. **Decorative emojis.** Remove from headings and bullets.
+19. **Curly quotes.** Use straight quotes.
 
-### 3. 内容脱水
-- **谈机制与数字，不谈感觉**：
-  - ❌ “数据库触手可及，让你体验极速的响应”
-  - ✅ “`.toSQL()` 返回发送给数据库的原始字符串，查询耗时控制在 5ms 以内”
-  - 凡是放到别的项目也“通顺可用”的空话，直接删掉。
-- **删除废话前缀**：*“In order to” → “To”*；*“Due to the fact that” → “Because”*；*“It is important to note that”（值得注意的是）* → 直接删除。
+### Communication artifacts
 
----
+20. **Chatbot phrases.** "I hope this helps!", "Let me know if...", "Of course!", "Certainly!", "Found the smoking gun!" Remove.
+22. **Sycophantic tone.** "Great question! You're absolutely right!" Respond directly.
 
-## 先定模式（Diátaxis）
+### Filler
 
-一份文档一个模式。两个问题定它：内容是在教，还是在干活；是在讲怎么做，还是在讲为什么。
+23. **Filler phrases.** "In order to" becomes "To". "Due to the fact that" becomes "Because". Delete "It is important to note that".
+24. **Excessive hedging.** "could potentially possibly be argued that it might" becomes "may".
+25. **Generic conclusions.** "The future looks bright." State specific plans or facts.
 
-| 意图 | 面向学 | 面向工作 |
+### Jargon
+
+26. **Abstract metaphor nouns.** Substrate (base), wedge, wedge in (add), vector (way, method), locus, vantage, nexus, primitive as a noun, harness as a metaphor, surface as in "API surface", bedrock, scaffolding as a metaphor, modality, paradigm, gold-plating (more than the job needs), ratchet as a metaphor (the mechanism's real name, or a limit that only tightens), evacuate for moving code (move out), endgame (the last phase), north star, flywheel. These read as technical but usually have a plainer concrete word. Pick the concrete word.
+
+### Plain speech
+
+27. **Say what it does, not how it feels.** "the database stays close at hand", "SQL you can read", "types that follow your schema" name a feeling. The fix names the mechanism or a number: "`.toSQL()` returns the exact string sent to the database", "a column rename fails the build". Ask what the sentence tells the reader to do or know, then write that. If you can't restate it as a concrete instruction, fact, or number, cut it. One more check: if the sentence could appear unchanged in another project's docs, it says nothing about this one. Cut it.
+28. **Shorten or split dense sentences.** If the reader has to backtrack to parse a sentence, break it in two or drop clauses. One idea per sentence.
+29. **Active voice.** Prefer it. Catch "is/are/was/were + past participle" and name the actor: "queries are validated" becomes "the compiler validates queries", "the file is parsed by the loader" becomes "the loader parses the file". Passive is fine only when the actor is unknown or genuinely doesn't matter.
+30. **Cut adverbs, or use a stronger verb.** "runs quickly" becomes "is fast" or the number, and "significantly improves" becomes the measured delta. An adverb propping up a weak verb means the verb is wrong.
+31. **Prefer the plain word.** "utilize" and "leverage" become "use", "facilitate" becomes "help", "numerous" becomes "many", "in the event that" becomes "if". The fancier synonym is rarely clearer.
+32. **Mannered prose.** Metaphor or flourish where a literal phrase exists: aphorisms ("wire it or delete it"), rhetorical fragments for effect, personified code ("the plan holds it"), figurative verbs ("rides along", "stands on"), stock framing phrases. "A dial worth turning" becomes "a parameter worth varying". Say what you mean. Rule 26 covers the metaphor nouns.
+33. **Over-compression.** Dropped articles, verbless fragments, symbol-speak, and abbreviations that make the reader decode instead of read. "Parser rejects bad date → exit 2, no write" becomes "The parser rejects a bad date, exits with code 2, and writes nothing." Write whole sentences with their articles and verbs, and spell out arrows and abbreviations.
+
+## Sentence shape (ASD-STE100)
+
+Six hard constraints, checked on every paragraph. The full rule sheet and replacement table is [references/ste-100-rules.md](references/ste-100-rules.md).
+
+1. **One word, one meaning.** One term per concept, everywhere. Never rotate synonyms ("module" then "component" then "unit"; "delete" then "clean up" then "remove"). No metaphor where a concrete word exists.
+2. **Sentence length.** Instructions: at most 20 words in English. Descriptions: at most 25. One instruction or one fact per sentence; split the rest.
+3. **Imperative and active.** Rules and steps start with the verb: "Run the build script", not "The build script should be run". When describing a process, name the actor: "the loader parses the file".
+4. **No noun piles.** More than three stacked nouns gets prepositions instead.
+5. **No vague qualifiers.** "properly", "adequately", "sufficiently", "easily", "normal", "various" have no boundary. Replace each with a number, a mechanism, or a condition.
+6. **No dangling pronouns.** "this", "it", "they" point at one obvious noun or the sentence repeats the noun.
+
+## Pick the mode first (Diátaxis)
+
+One document, one mode. Two questions pick it: is the content teaching or doing, and is it explaining how or why.
+
+| Intent | For learning | For work |
 |---|---|---|
-| 动手做 | tutorial：手把手，每步有可见结果，不讲原理 | how-to：解决具体问题，假定已经会了 |
-| 理解 | explanation：讲取舍、历史、约束，可以有观点 | reference：只描述事实，不劝、不表态 |
+| Doing | tutorial: step by step, a visible result each step, no theory | how-to: solves one problem, assumes competence |
+| Understanding | explanation: trade-offs, history, constraints, opinion allowed | reference: describes only, never advises |
 
-混了就拆。tutorial 里塞参考表、how-to 里讲原理、reference 里写「推荐这样做」，都是串味。拆不开就先砍到只剩一个模式。
+Mixing is the tell: a reference table inside a tutorial, theory inside a how-to, "we recommend" inside reference. Split the document, or cut it down to one mode.
 
-## PR 描述和 commit message 也算写作
+## PR descriptions and commit messages
 
-除 Diátaxis 外，上面所有判据都适用。PR 正文是一分钟能读完的简报：改了什么、为什么、怎么验。不贴日志、SHA 列表和指标表，链接过去。
+Everything above applies except Diátaxis. A PR body is a briefing read in under a minute: what changed, why, how it was verified. No logs, no SHA lists, no metric tables; link them.
 
-## 执行流程
+## Done when
 
-1. **扫描文本**：对照 ASD-STE100 六条标准与 AI Tells 黑名单逐段扫描。
-2. **定点改写**：
-   - 拆解超长句与复杂从句，落实主动祈使句；
-   - 替换 AI 行话与花哨句型为单义平实表达；
-   - 将主观形容换为机制、数字或明确判据。
-3. **收工检查**：
-   - 检查是否有单句超过长度限制；
-   - 检查是否存在未指明的模糊代词或同义词混用；
-   - 对比改写前后，含义完全保真且信息密度显著提升。
-
-详细规则清单与词汇替换表，参阅 [references/ste-100-rules.md](references/ste-100-rules.md)。
+- No sentence exceeds its length limit.
+- Every term is the same term it was on the previous page.
+- No vague qualifier, dangling pronoun, or metaphor noun survives.
+- The rewrite preserves the meaning exactly and carries more information per line than the original.
