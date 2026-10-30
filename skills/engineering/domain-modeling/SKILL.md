@@ -1,46 +1,89 @@
 ---
 name: domain-modeling
-description: 构建与校准项目的领域模型（Domain Model）。当讨论代码库术语、定义状态机实体、维护领域词汇表（docs/glossary.md 或 docs/domain-models.md）以及提炼核心架构决策记录（ADR）时使用。
-argument-hint: "你想建立或澄清哪个领域概念/名词/实体？"
+description: Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, or recording or editing an ADR.
 disable-model-invocation: true
 ---
 
 # Domain Modeling
 
-在方案设计与架构推演中，主动构建并锐化项目的领域模型。这是一个**主动纠偏**纪律：挑战模糊术语、推演边缘场景，并在概念一旦结晶时即刻更新词汇表与决策记录。
+Actively build and sharpen the project's domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `GLOSSARY.md` for vocabulary is not this skill: that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
 
-## 文档组织契约
+## File structure
 
-先按项目已有约定落点，没有约定才用默认：
+Most repos have a single context:
 
-| 产物 | 项目有约定时 | 默认 |
-|------|------|------|
-| 词汇表 | `docs/AGENTS.md`（或同类文档宪法）规定的位置 | `docs/glossary.md` |
-| 决策记录 | 项目有 `.agents/notes/` 的，写进那里（spec-anchor 项目用 `to-spec`），不另建 `docs/adr/` | `docs/adr/NNNN-<slug>.md` |
+```
+/
+├── GLOSSARY.md
+├── docs/
+│   └── adr/
+│       ├── 0001-event-sourced-orders.md
+│       └── 0002-postgres-for-write-model.md
+└── src/
+```
 
-- spec-anchor 项目里，`docs/` 下未登记的子目录会被 `verify` 报警告，所以不要自建 `docs/adr/`。
-- **延迟创建**：仅在有实际概念需要沉淀时才创建对应文档。
-- **纯粹性**：词汇表仅存放领域名词与概念定义，不放实现细节或临时草稿。
+If a `GLOSSARY-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
 
-## 运行准则
+```
+/
+├── GLOSSARY-MAP.md
+├── docs/
+│   └── adr/                          ← system-wide decisions
+├── src/
+│   ├── ordering/
+│   │   ├── GLOSSARY.md
+│   │   └── docs/adr/                 ← context-specific decisions
+│   └── billing/
+│       ├── GLOSSARY.md
+│       └── docs/adr/
+```
 
-### 1. 对照既有词汇表就地纠偏（Challenge against the glossary）
-当上下文或用户使用的术语与 `docs/glossary.md` 中的既有定义冲突时，Agent 必须立即指明并对齐：“词汇表将 X 定义为 A，但当前用法似乎指向 B，请问以哪个为准？”
+Create files lazily: only when you have something to write. If no `GLOSSARY.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
 
-### 2. 锐化模糊语言（Sharpen fuzzy language）
-当出现多义、笼统的名词时，提炼出精准的规范术语（例如：“你说的 'Account' 指的是 Customer 还是 User？”）。
+## Where the files go
 
-### 3. 用极限场景推演边界（Discuss concrete scenarios）
-讨论领域实体关系时，设计具体极限场景施压测试（例如：“如果订单处于 '已支付待发货' 状态，用户发起部分退款，系统状态机该如何流转？”）。
+Default to what the project already does; these are the fallbacks.
 
-### 4. 与代码自查对照（Cross-reference with code）
-检查当前代码事实是否与领域描述相符，发现矛盾主动指出。
+| Artifact | Project has a convention | Default |
+|---|---|---|
+| Glossary | the location `AGENTS.md` (or the equivalent doc-as-constitution) names | `docs/glossary.md` |
+| Decision record | projects with `.agents/notes/` write it there (spec-anchor projects route it through `to-spec`) | `docs/adr/NNNN-<slug>.md` |
 
-### 5. 即时更新词汇表（Update inline）
-一旦某个领域概念达成共识，立即就地同步更新 `docs/glossary.md`，不积压到最后。
+- In a spec-anchor project, an unregistered subdirectory under `docs/` makes `verify` warn, so do not create `docs/adr/` on your own.
+- A glossary holds domain nouns and concept definitions only. No implementation detail, no scratch notes.
 
-### 6. ADR 极简三铁律（Offer ADRs sparingly）
-只有当且仅当满足以下全部 3 个条件时，才建议建立 ADR（落点见上方「文档组织契约」）：
-1. **极难逆转**：推翻决策的成本和代价极大；
-2. **缺乏背景会令人意外**：未来维护者阅读代码会困惑“为什么当初采用这种方案”；
-3. **真实权衡的结果**：在多个可行方案中做了深度 Trade-off。
+## During the session
+
+### Challenge against the glossary
+
+When the user uses a term that conflicts with the existing language in `GLOSSARY.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y. Which is it?"
+
+### Sharpen fuzzy language
+
+When the user uses vague or overloaded terms, propose a precise canonical term. "You're saying 'account': do you mean the Customer or the User? Those are different things."
+
+### Discuss concrete scenarios
+
+When domain relationships are being discussed, stress-test them with specific scenarios. Invent scenarios that probe edge cases and force the user to be precise about the boundaries between concepts.
+
+### Cross-reference with code
+
+When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible. Which is right?"
+
+### Update GLOSSARY.md inline
+
+When a term is resolved, update `GLOSSARY.md` right there. Don't batch these up: capture them as they happen. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+
+`GLOSSARY.md` should be totally devoid of implementation details. Do not treat `GLOSSARY.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+
+### Offer ADRs sparingly
+
+Only offer to create an ADR when all three are true:
+
+1. **Hard to reverse**: the cost of changing your mind later is meaningful
+2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
+3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
+
+If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+
+**Reply:** the terms you resolved and where they landed, the scenarios that changed a boundary, and the contradictions you surfaced and left open. When you offered no ADR, say which of the three conditions failed.

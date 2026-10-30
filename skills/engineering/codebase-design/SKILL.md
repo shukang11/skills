@@ -1,47 +1,126 @@
 ---
 name: codebase-design
-description: 依据《软件设计的哲学》深模块标准，进行系统架构与模块边界设计。语言无关，优先感知既有文档，消除浅层封装与信息泄露。
-argument-hint: "你想针对哪个模块、子系统或架构重构展开深模块设计？"
+description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
 disable-model-invocation: true
 ---
 
-# Codebase Design — 深模块架构设计
+# Codebase Design
 
-指导 Agent 按照 John Ousterhout《软件设计的哲学》（A Philosophy of Software Design）核心标准，进行架构梳理、模块边界划分与接口设计。
+Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
 
-无论使用何种编程语言（TypeScript、Rust、Go、Python 等），始终追求**“接口极简、功能极深（Deep Modules）”**的高内聚架构。
+## Glossary
 
-## 核心设计准则
+Use these terms exactly: don't substitute "component," "service," "API," or "boundary." Consistent language is the whole point.
 
-1. **追求深模块（Deep Modules vs. Shallow Modules）**：
-   - **Interface 极小**：外部暴露的公开 API 必须尽可能少、纯粹且稳定（最好只有 1~2 个干净的入口契约）。
-   - **Functionality 极大**：将复杂的错误处理、环境适配、重试机制、状态流转和校验逻辑深深封装在内部。
-   - 警惕“浅模块”：严禁创建仅有 2~3 行代码、单纯向下一层透传参数的中间层（如无业务价值的 Pass-through Services / Generic Wrappers）。
-2. **严格的信息隐藏（Information Hiding）**：
-   - 明确划分“公共契约”与“私有细节”。
-   - 模块内部使用的数据结构、临时状态、缓存策略严禁泄漏到调用方。调用方不应该需要了解模块内部是如何实现的。
-3. **消除时序耦合（Eliminate Temporal Coupling）**：
-   - 避免设计出必须按特定顺序调用的脆弱 API（例如：严禁要求调用方“必须先调 init()，再调 configure()，最后才能调 run()”）。
-   - 优先通过单一原子函数或自包含的配置对象完成调用。
-4. **语言与技术栈自适应（Language-Agnostic）**：
-   - 自动探测当前项目的技术栈（读取项目根目录的配置/依赖描述文件），遵循该语言社区中最自然地道的深模块组织习惯。
+**Module**: anything with an interface and an implementation. Deliberately scale-agnostic: a function, class, package, or tier-spanning slice. _Avoid_: unit, component, service.
 
-## 执行流程
+**Interface**: everything a caller must know to use the module correctly: the type signature, but also invariants, ordering constraints, error modes, required configuration, and performance characteristics. _Avoid_: API, signature (too narrow, they refer only to the type-level surface).
 
-### 1. 探照灯：既有文档与现状感知
-- 在动手设计之前，**强制检索代码库中的既有文档**（如 `docs/`、`README.md`、`.agents/notes/` 等）。
-- 吸收现有架构约定、术语定义与历史决策，严禁在未阅读既有架构文档的情况下拍脑袋另起炉灶。
+**Implementation**: what's inside a module, its body of code. Distinct from **Adapter**: a thing can be a small adapter with a large implementation (a Postgres repo) or a large adapter with a small implementation (an in-memory fake). Reach for "adapter" when the seam is the topic; "implementation" otherwise.
 
-### 2. 识别与审查坏味道
-- 审查当前规划或既有代码：
-  - 是否存在信息泄露？
-  - 是否存在职责被拆得过碎导致的过度通信？
-  - 模块对外暴露的认知负担是否超过了它所提供的功能？
+**Depth**: leverage at the interface. The amount of behaviour a caller (or test) can exercise per unit of interface they have to learn. A module is **deep** when a large amount of behaviour sits behind a small interface, **shallow** when the interface is nearly as complex as the implementation.
 
-### 3. 产出模块边界与公共契约
-- 明确划分深模块职责。
-- 给出清晰的公共 API 契约原型（在当前语言下的函数签名、请求/响应结构体或类型声明），并明确指出哪些属于“内部隐藏知识”。
+**Seam** _(Michael Feathers)_: a place where you can alter behaviour without editing in that place; the *location* at which a module's interface lives. Where to put the seam is its own design decision, distinct from what goes behind it. _Avoid_: boundary (overloaded with DDD's bounded context).
 
-### 4. 架构文档闭环回写（Living Docs）
-- **稳态更新**：如果项目中存在长期的架构文档（如 `docs/architecture.md`、`docs/design/`），主动增量同步更新模块定义与公开边界，防止架构与文档漂移。
-- **决策提案**：若是涉及重大技术选型或破坏性重构，项目装了 `to-spec` 就交给它沉淀（它的模板过得了笔记门禁）；没装就按项目既有的决策记录约定写，不自创格式。
+**Adapter**: a concrete thing that satisfies an interface at a seam. Describes *role* (what slot it fills), not substance (what's inside).
+
+**Leverage**: what callers get from depth. More capability per unit of interface they learn. One implementation pays back across N call sites and M tests.
+
+**Locality**: what maintainers get from depth. Change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
+
+## Deep vs shallow
+
+**Deep module** = small interface + lots of implementation:
+
+```
+┌─────────────────────┐
+│   Small Interface   │  ← Few methods, simple params
+├─────────────────────┤
+│                     │
+│  Deep Implementation│  ← Complex logic hidden
+│                     │
+└─────────────────────┘
+```
+
+**Shallow module** = large interface + little implementation (avoid):
+
+```
+┌─────────────────────────────────┐
+│       Large Interface           │  ← Many methods, complex params
+├─────────────────────────────────┤
+│  Thin Implementation            │  ← Just passes through
+└─────────────────────────────────┘
+```
+
+When designing an interface, ask:
+
+- Can I reduce the number of methods?
+- Can I simplify the parameters?
+- Can I hide more complexity inside?
+
+## Principles
+
+- **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
+- **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
+- **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is probably the wrong shape.
+- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam unless something actually varies across it.
+
+## Designing for testability
+
+Good interfaces make testing natural:
+
+1. **Accept dependencies, don't create them.**
+
+   ```typescript
+   // Testable
+   function processOrder(order, paymentGateway) {}
+
+   // Hard to test
+   function processOrder(order) {
+     const gateway = new StripeGateway();
+   }
+   ```
+
+2. **Return results, don't produce side effects.**
+
+   ```typescript
+   // Testable
+   function calculateDiscount(cart): Discount {}
+
+   // Hard to test
+   function applyDiscount(cart): void {
+     cart.total -= discount;
+   }
+   ```
+
+3. **Small surface area.** Fewer methods = fewer tests needed. Fewer params = simpler test setup.
+
+## Relationships
+
+- A **Module** has exactly one **Interface** (the surface it presents to callers and tests).
+- **Depth** is a property of a **Module**, measured against its **Interface**.
+- A **Seam** is where a **Module**'s **Interface** lives.
+- An **Adapter** sits at a **Seam** and satisfies the **Interface**.
+- **Depth** produces **Leverage** for callers and **Locality** for maintainers.
+
+## Rejected framings
+
+- **Depth as ratio of implementation-lines to interface-lines** (Ousterhout): rewards padding the implementation. We use depth-as-leverage instead.
+- **"Interface" as the TypeScript `interface` keyword or a class's public methods**: too narrow: interface here includes every fact a caller must know.
+- **"Boundary"**: overloaded with DDD's bounded context. Say **seam** or **interface**.
+
+## Going deeper
+
+- **Deepening a cluster given its dependencies**, see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
+- **Exploring alternative interfaces**, see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.
+
+## Working the repo
+
+Four steps, in order. The vocabulary above is what you use to do them.
+
+1. **Read what exists first.** The current shape, the project's own docs and conventions, and the owning module of everything you will touch. Proposing a design without this is guessing.
+2. **Name the smells.** Shallow modules, information leaks, a seam in the wrong place, an interface nobody can state from memory. Say which smell and where.
+3. **Produce the boundary and the public contract.** The module boundary, what crosses it, and the interface a caller has to learn. This is the deliverable; do not write the implementation here.
+4. **Write it back.** When the shape is agreed, update the architecture note the project keeps for it, so the next agent reads the decision instead of re-deriving it. `.agents/notes/` is the default when the project has no convention.
+
+**Reply:** the boundary and public contract you settled, the smells you named and where, or why the current shape stays. Reference the note you wrote back, or say why none was needed.
