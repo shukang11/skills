@@ -1,24 +1,18 @@
 ---
 name: principle-redesign-from-first-principles
-description: "要把一个新需求接进既有设计时读。当成它一开始就是地基假设，重做设计，不要再往外挂一层。"
+description: "Apply when integrating a new requirement into an existing design."
 disable-model-invocation: true
 ---
 
-# Redesign from first principles
+# Redesign From First Principles
 
-要把一个新需求接进既有设计时读。
+When integrating a change, don't bolt it onto the existing design. Redesign as if the requirement had been a foundational assumption from the start.
 
-## 判据
+- Read all affected files and understand the current design
+- Ask: "if we were writing this from scratch with this new requirement, what would we build?"
+- Propagate the change through every reference: types, docs, examples, rationale sections
+- Think about the whole redesign, then deliver it incrementally
 
-- 先把受影响的文件读完，弄清现在这个设计靠什么成立。
-- 问一句：如果一开始就带着这个新需求写，我们会建成什么样。答不出来说明还没读懂现有设计。
-- 按那个答案改，不往外挂。挂上去的补丁每一处都在提醒后来者"这里本来不该这样"。
-- **把改动传导到每一个引用**：类型、签名、文档、示例、说明段、测试。留一处旧形状，它就会成为下一个模板。
-- 先想完整设计，再增量交付。完整设计指心里那张图，不是一次提交全做完。
-- 和"重做"的区别：不是重写全部代码，是让设计对新要求自洽。范围照旧，形状重来。
+This is the method for preserving option value when integrating changes into an existing design.
 
-## 收工
-
-- 回复里写明"从零写会是什么样"，以及这次的改动离它还有多远。
-- 挂在外面的补丁仍在的，说清为什么这次只能这样，以及它什么时候该被拆掉。
-- 传导漏掉的引用（文档、示例、测试）写成待办。
+**Reply:** say what a from-scratch build would look like and how far this change is from it. For every patch still bolted on, say why this change could only go that far and when it gets removed. References you failed to propagate (docs, examples, tests) become todos.

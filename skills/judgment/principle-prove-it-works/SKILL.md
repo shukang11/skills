@@ -1,22 +1,26 @@
 ---
 name: principle-prove-it-works
-description: "准备说做完了时读。对着任务真正的产物跑检查；没跑的检查写成没跑。"
+description: "Apply after completing a task, before declaring done. Verify against the real artifact (run the feature, read the actual value, inspect the diff), not a proxy, self-report, or 'it compiles.'"
 disable-model-invocation: true
 ---
 
-# Prove it works
+# Prove It Works
 
-准备说做完了时读。
+Verify every task output by checking the real thing directly. Do not infer from proxies, self-reports, or "it compiles."
 
-## 判据
+**Why:** Unverified work has unknown correctness. Indirect verification (file mtimes, output freshness, agent self-reports, cached screenshots) feels cheaper than direct observation. Acting on a wrong inference costs far more than checking the source.
 
-- 对着任务真正的产物跑检查。编译通过或类型通过，只有任务本身就是编译或类型时才算数。
-- 说"修好了"，就把它原来那个症状再跑一遍。说"实现了"，就在真实入口上把它用一次。
-- 没跑的检查写成没跑，不写成"应该没问题"。跳过、没环境、太慢，都直接说。
-- 代理指标不算证明：mock 通过不等于真实调用通过，单测通过不等于功能可用。
-- 别人的检查不算你的证明：CI 绿了但你本地没跑过，就写 CI 绿了。
+Check the real thing, not a proxy:
+- Check process liveness directly, not indirectly through derived state
+- Read the actual value, not a cached or derived representation
+- When verification fails, suspect the observation method before suspecting the system
 
-## 收工
+## Script the check when you can
 
-- 回复里有命令和输出摘要。
-- 没跑的一并列出，写清为什么没跑。
+The strongest proof is a deterministic script that re-runs the same comparison, not a one-time eyeball. Write the script, run it, and keep its output as an artifact a reviewer can re-run instead of trusting your word.
+
+Keep the artifact visible for the human. Commit it only for large or complex work where the trail has to be auditable later, like a big port or migration (the **show-me-your-work** skill).
+
+Someone else's check is not your proof. CI green while you never ran it locally reads as "CI green", not "verified".
+
+**Reply:** the commands and their output summaries are in the reply. List what you did not run and why, instead of implying it would pass.

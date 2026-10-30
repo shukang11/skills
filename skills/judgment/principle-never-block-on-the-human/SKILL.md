@@ -1,23 +1,19 @@
 ---
 name: principle-never-block-on-the-human
-description: "想问「要不要我做 X」而这件事可逆时读。可逆的先做再让人纠正，不可逆的才停下确认。"
+description: "Apply when tempted to ask 'should I do X?' on reversible work."
 disable-model-invocation: true
 ---
 
-# Never block on the human
+# Never Block on the Human
 
-想问「要不要我做 X」而这件事可逆时读。
+The human supervises asynchronously. Agents must stay unblocked. Make reasonable decisions, proceed, and let the human course-correct after the fact. Since code changes are reversible and reviewable, a wrong decision usually costs less than blocking.
 
-## 判据
+- Proceed, then present. Do the work, show the result. Don't ask "should I do X?" Do X, explain why.
+- Make the system self-healing. When you notice a problem, log it and fix it in the next round.
+- Irreversible actions (force-push, delete production data, send external messages) still require confirmation.
+- Reversible actions (write code, edit notes, split tasks) should proceed without blocking.
+- Product direction comes from the human. Execution should not block.
 
-- **先做再报**。做 X，说明为什么这么做，让结果可以被纠正。不问"要不要做 X"。
-- **可逆的动作不等人**：写代码、改笔记、拆任务、跑只读检查、开分支。做错通常是可恢复、可复核的代价，比停下等人便宜。
-- **不可逆的动作才确认**：force-push、删生产数据、对外发消息、动别人的仓库、花钱。这几件停下来问。
-- 发现问题就记下来并在下一轮修，不停下来等指示。修不了就写成待办，继续推进。
-- 产品方向归人，执行不归人。拿不准新需求要不要做，那是方向，问；拿不准怎么实现，别问，做出来给人挑。
+- Log the problem you found and fix it in the next round. When you cannot fix it, file a todo and keep moving.
 
-## 收工
-
-- 回复里写明这次自己拍板了什么，理由是什么。
-- 碰到不可逆操作而停下确认的，写明是哪一件。
-- 有本该自己决定却去问了的，写出来。
+**Reply:** name what you decided on your own and why. Say which irreversible action made you stop and ask. Call out anything you asked about that you could have decided.

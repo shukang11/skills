@@ -1,22 +1,20 @@
 ---
 name: principle-guard-the-context-window
-description: "上下文在涨时读：大段输出、长文件、反复读同一个文件、要铺开并行。大块交给子代理，主线程只留摘要。"
+description: "Apply when context is filling up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents; keep summaries in the main thread, not raw payloads."
 disable-model-invocation: true
 ---
 
-# Guard the context window
+# Guard the Context Window
 
-上下文在涨时读：大段输出、长文件、反复读同一个文件、要铺开并行。
+The context window is finite and non-renewable within a session. Every token should be worth its cost.
 
-## 判据
+**Why:** Context overflow degrades reasoning quality, creates compression artifacts, and halts progress.
 
-- **隔离大块**。啰嗦的输出、截图、长文档、整份日志交给子代理处理，主线程只拿摘要，不拿原始载荷。
-- **每次调用都要用的内容内联**。模板和清单留在技能正文里，不拆成每次都要读一遍的独立文件。
-- **按阶段限规模**。每阶段限文件数、限轮次、算清每个机制的开销，别一口气吃满。
-- 上下文接近满时先收口：把已确认的事实写下来，再继续，不硬塞。
-- 一个文件读三遍还没抓到重点，改派子代理先去读，让它带回你要的那一段。
+**Pattern:**
+- **Isolate large payloads.** Route verbose outputs, screenshots, and large documents to subagents. The main context gets summaries, not raw data.
+- **Keep frequently used content inline.** Templates and references used on every invocation belong in the skill file, not in separate files that cost a read each time.
+- **Size phases and cap scope.** Limit files per phase, set turn budgets, account for mechanism costs.
 
-## 收工
+When the window is nearly full, close out before pushing on: write down what you confirmed, then continue. A file read three times without the point landing goes to a subagent that returns only the part you asked for.
 
-- 回复里写明哪些大块交给了子代理，主线程留下了什么摘要。
-- 有因为上下文压力而跳过的检查或阅读，逐个写出来，不装作读过。
+**Reply:** name which bulk went to subagents and what summary stayed in the main thread. List the reads and checks you skipped under context pressure; never imply you read them.

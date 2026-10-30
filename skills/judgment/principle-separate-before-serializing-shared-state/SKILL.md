@@ -1,21 +1,18 @@
 ---
 name: principle-separate-before-serializing-shared-state
-description: "两个步骤或两个并行工人会写同一个文件、同一分支或同一个键时读。先点名共享路径，能拆成各写各的就拆，拆不开才串行。"
+description: "Apply when concurrent actors might write to the same file, branch, key, or state object. Eliminate the sharing first; serialize structurally only when one shared writer is a real invariant."
 disable-model-invocation: true
 ---
 
-# Separate before serializing shared state
+# Separate Before Serializing Shared State
 
-两个步骤或两个并行工人会写同一个文件、同一分支或同一个键时读。
+When concurrent actors might share mutable state, first ask whether they need the same mutable object. If not, eliminate the sharing. When sharing is real, enforce serialization structurally: lockfiles, sequential phases, exclusive ownership. Instructions and conventions are not concurrency control.
 
-## 判据
+**Why:** Concurrent writes to shared state create race conditions that are intermittent, hard to reproduce, and expensive to debug.
 
-- 先点名共享的那条路径。写不出来是哪一条，就是还没看懂冲突。
-- 能拆成各写各的，就拆：一人一个文件、一个分支、一个键空间。
-- 拆不开的，一个写者顺序写，另一个不碰。加锁、重试、合并冲突都是串行的变体，不是另一条路。
-- 拆的时候先想所有权：这块状态归谁写。所有权不清时先定归属，别先定机制。
+**Pattern:**
+1. **Identify shared mutable state** (files both read and write, branches both push to, APIs both define and consume).
+2. **Default: eliminate the shared write target.** Ask: do these actors need one canonical object, or are they publishing independent facts? Give each actor its own owned file, key, branch, or state directory, and merge only at the read/reporting boundary. Two workers writing their own `lastX` field into one `state.json` is still shared mutation. `indexer-state.json` + `metrics-state.json` is not.
+3. **Only when one shared write target is a real invariant, serialize access structurally** (lockfiles, sequential phases, single-writer actor, or atomic compare-and-swap). Treat "we need a lock" as a design smell to check, not as the default answer.
 
-## 收工
-
-- 回复里写明共享点，以及选了拆开还是串行。
-- 选了串行的，写明为什么拆不开。
+**Reply:** name the shared point and whether you split it or serialized it. When you serialized, say why it could not be split.

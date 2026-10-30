@@ -1,27 +1,20 @@
 ---
 name: principle-minimize-reader-load
-description: "审或改一段难追的代码时读。数一数问题到答案之间有几层、读者脑子里要记多少状态；单调用方包装层并掉，可变作用域缩小。"
+description: "Apply when reviewing or shaping code that's hard to trace. Count layers between question and answer, and hidden state in the reader's head; collapse one-caller wrappers and shrink mutable scope."
 disable-model-invocation: true
 ---
 
-# Minimize reader load
+# Minimize Reader Load
 
-审或改一段难追的代码时读。
+Maintainability is the work a reader must do to understand code. Track two axes: **layers to trace** (indirections between the question and the answer) and **state to hold** (hidden or mutable context the reader must keep in their head). LOC, cyclomatic complexity, and "clean architecture" are proxies. Reader load is the thing that matters. The two axes are independent. A flat file with 50 globals can be as hard to reason about as a 6-layer adapter stack. Guard both. This is the human analog of [Guard the Context Window](../principle-guard-the-context-window/SKILL.md). Working memory is finite for readers too.
 
-## 判据
+- **Collapse layers** that cost more than they save: wrappers with one caller, adapters with no second implementation, speculative indirection that was never needed. Inline them.
+- **Make adjacent layers change the abstraction.** A layer that repeats the same methods and arguments adds reader load without compression. Collapse pass-through layers.
+- **Demand interface compression.** A broad interface that hides little complexity makes readers learn both the surface and the implementation. Prefer boundaries that hide meaningful decisions.
+- **Shrink state scope:** prefer pure functions (returns over mutations), locals over fields, fields over module state, and module state over globals. Derive instead of sync.
+- **Name the invariant at the boundary,** not in every consumer, so the reader learns it once.
+- Before adding a layer or a piece of state, ask: does it reduce reader load elsewhere by at least as much?
 
-可维护性是读者理解代码要做的功。两个轴：**要穿几层**（问题到答案之间的间接层）、**要记多少状态**（读者脑子里得同时抓住的隐藏或可变状态）。行数、圈复杂度、"整洁架构"都只是代理指标，读者成本才是那件事。两个轴互相独立：一个 50 个全局变量的平铺文件，和一个六层适配器栈一样难推。
+**The test:** can a new reader answer "where does X come from?" and "what can change X?" in under 30 seconds? If not, cut layers or cut state.
 
-- **并掉成本大于收益的层**：只有一个调用方的包装、没有第二实现的适配器、当年臆想出来但没人用的间接层。内联。
-- **相邻层必须换抽象**。一个只是重复同样方法和参数的层，只加读者成本，不加压缩。透传层并掉。
-- **接口要有压缩比**。一个很宽却藏不住复杂度的接口，逼读者同时学表面和实现。要的是藏住真正决策的边界。
-- **缩状态作用域**：纯函数（返回而不是改）> 局部变量 > 字段 > 模块状态 > 全局。派生，不要同步。
-- **不变式在边界命名一次**，别让每个调用方各记一遍。
-- 加一层或加一份状态之前问：它在别处减掉的读者成本，至少和这里加的一样多吗？
-
-**测试**：一个新读者能在 30 秒内答出"这个 X 从哪来"和"什么能改它"吗？答不出就砍层或砍状态。
-
-## 收工
-
-- 回复里写明这次并掉了哪层、缩了哪份状态，或者为什么保持现状。
-- 加了层或加了状态的，说明它在别处减掉了什么。
+**Reply:** name the layer you collapsed and the state you scoped down, or why the current shape stays. When you added a layer or a piece of state, say what reader cost it removes elsewhere.

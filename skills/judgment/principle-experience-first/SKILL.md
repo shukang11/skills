@@ -1,6 +1,6 @@
 ---
 name: principle-experience-first
-description: "产品、交互或功能范围的取舍出现时读。实现方便和用户体验冲突时选体验：少而精，原型先于承诺。"
+description: "Apply when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones."
 disable-model-invocation: true
 ---
 

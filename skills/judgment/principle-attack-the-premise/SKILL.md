@@ -1,24 +1,25 @@
 ---
 name: principle-attack-the-premise
-description: "同一句前提下的修法连续两次没过同一道门时读。先写清那句前提，再普查谁持有这份失衡，然后质疑前提，而不是写第三个假设它的修法。"
+description: "Apply when two or more fixes that share one premise have failed the same gate. Take a census of which actors hold the imbalance before the next fix, then question the premise instead of writing another fix that assumes it."
 disable-model-invocation: true
 ---
 
-# Attack the premise
+# Attack the Premise
 
-同一句前提下的修法连续两次没过同一道门时读。第三次别急着修。
+When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
 
-## 判据
+**Why:** Each failure under a shared premise is evidence about the premise.
 
-- **把那句前提写成一句话**。它是两次失败都假设了的那句。写不出来，说明还没找到共同的失败点。
-- **下一个修法之前先普查**。数清哪些对象持有这份失衡、各持有多少。普查只回答"谁"，不回答"多大"。普查写成能重跑的脚本。
-- **读倾斜**。每次都是同一小撮对象持有大部分失衡，说明有东西在给它们派这个角色。找那个派角色的东西，那才是根因。
-- **拆掉不对称，不去补偿它**。轮换角色、随机派角色、把角色挪走，让没有对象每次都拿到它。加一条回流路径、一个共享池、一次批量交接或周期性再平衡，都留着这个角色分配，只是每轮多干一份活。
-- **普查在各对象之间均匀**，说明前提不是原因。去别处找，普查结果留作证据。
+**Pattern:**
+- **Write the premise down.** The premise is the one sentence that every failed fix assumed.
+- **Take a census before the next fix.** Count the imbalance per actor. The census shows which actors hold the imbalance, not how large it is. Write the census as a rerunnable script per [Build the Lever](../principle-build-the-lever/SKILL.md).
+- **Read the skew.** If the same few actors hold most of the imbalance on every run, something assigns them that role. Find what assigns the role. That assignment is the next "why" per [Fix Root Causes](../principle-fix-root-causes/SKILL.md).
+- **Remove the asymmetry instead of compensating for it**, per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md). Rotate the role between actors, randomize the assignment, or move the role, so that no actor holds it on every run. A return path, a shared pool, a batched hand-off, or a periodic rebalance leaves the assignment in place and adds work on every run.
 
-这条和"重做设计"不同：那条是按新要求重画，这条是质疑当前设计假设的那句事实。
+**Stop:**
+- Do not start the next fix before the premise is written down and the census exists.
+- If the census is even across actors, the premise is not the cause. Look for the cause elsewhere and keep the census as evidence.
 
-## 收工
+This principle is distinct from [Redesign from First Principles](../principle-redesign-from-first-principles/SKILL.md), which rebuilds a design around a new requirement. It questions a fact the current design assumes.
 
-- 回复里写出那句前提、普查结果，以及换掉了哪一条假设。
-- 换了前提之后仍然失败，这次普查看的是新前提，不是重复上一次的普查。
+**Reply:** name the premise in one sentence, the census result, and which assumption you dropped. When you swapped the premise, say that the new census tests the new premise rather than repeating the old one.

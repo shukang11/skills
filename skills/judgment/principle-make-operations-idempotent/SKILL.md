@@ -1,24 +1,26 @@
 ---
 name: principle-make-operations-idempotent
-description: "写命令、脚本、循环或批量操作时读。重跑应收敛到同一个结果，中断再跑不该叠加副作用。"
+description: "Apply when designing commands, lifecycle steps, or processing loops that run amid crashes, restarts, and retries. Converge to the same end state regardless of partial prior runs."
 disable-model-invocation: true
 ---
 
-# Make operations idempotent
+# Make Operations Idempotent
 
-写命令、脚本、循环或批量操作时读。
+Design operations so they converge to the correct state regardless of how many times they run or where they start from. Every state-mutating operation should answer: "What happens if this runs twice? What happens if the previous run crashed halfway?"
 
-## 判据
+**Why:** Commands, lifecycle operations, and processing loops run where crashes, restarts, and retries are normal. If partial state changes the next run's outcome, every restart becomes a debugging session.
 
-- **重跑收敛**。同一条命令跑第二次，结果和第一次一样，不叠加、不重复插入、不重复追加。
-- 写文件：写全量内容，不追加；要先判断存在就跳过，跳过也要有可观察的记录。
-- 写外部系统：先查再写，或带上幂等键（request id、去重键）。没有幂等键的接口，自己造一个。
-- 循环里出错：**从断点续，不从头重来**。从头重来会把已完成的再做一遍，等于要求每一步本身幂等。
-- 迁移或批量改动：先算目标状态，再向目标状态收敛，不按"已经做了几步"推进。
-- 中断再跑是常态，不是异常。脚本的第一版就该按"会被 Ctrl-C"来写。
+**The pattern:**
+- Convergent startup: scan for existing state, clean stale artifacts, adopt live sessions
+- Content-based cleanup: compare by content equivalence, not creation order
+- Self-healing locks: use PID-based stale lock detection
+- Idempotent scheduling: failed work respawns cleanly, fresh input regenerated after each cycle
 
-## 收工
+**The test:**
+1. What happens if this runs twice in a row?
+2. What happens if the previous run crashed at every possible point?
+3. Does re-execution converge to the same end state?
 
-- 回复里写明这次的操作重跑一次会发生什么。
-- 有副作用的（发消息、扣款、对外调用），写明幂等键是什么，或者为什么不需要。
-- 做不到幂等的，说明中断后怎么恢复，以及为什么这次只能这样。
+If any answer is "it depends on what state was left behind," the operation needs a reconciliation step.
+
+**Reply:** say what a second run does. For an operation with side effects (sending a message, charging, calling out), name the idempotency key or why none is needed. When it cannot be idempotent, say how you resume after a crash and why this is the only shape.

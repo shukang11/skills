@@ -1,24 +1,21 @@
 ---
 name: principle-explain-the-number
-description: "准备相信、汇报或据此行动一个测出来的数字时读：提速、退化、吞吐、延迟、复现率。先点名限住它的资源，再排除它测的是别的东西。"
+description: "Apply before you trust, report, or act on a number you measured: a speedup, a regression, a throughput, a latency, or an eval result. Find what limits it, and rule out that it measured something other than the work you think."
 disable-model-invocation: true
 ---
 
-# Explain the number
+# Explain the Number
 
-准备相信、汇报或据此行动一个测出来的数字（提速、退化、吞吐、延迟、复现率）时读。
+- **Ask "why not double?"** Name the resource or code path that bounds the result, such as a core, a lock, the disk, the network, or the load generator itself. Get it from a profile or from system counters taken during a run, then map it to source. A guess from reading the code is not a limiter. If you cannot say why the number is not twice as good, you do not know what you measured.
+- **List what else the number could be measuring, and rule out each one with evidence.** The usual suspects are errors, skipped or cached work, code that never ran, an untuned side (one left on default settings), noise, and a piece too small to matter end to end.
+- **Keep the evidence with the number.** Put the run count, the spread, and the limiter in the notes or a linked artifact.
 
-## 判据
+For a performance number, run the full procedure with the [benchmark-checklist](../benchmark-checklist/SKILL.md) skill. For an eval result, ask the same of the trials: did every run do the task, does the gap hold across trials and models, and does the scenario matter.
 
-- **先答"为什么不是两倍"**。点名限住这个数字的资源或代码路径：一个核、一把锁、磁盘、网络、负载生成器本身。从运行时的 profile 或系统计数里拿，不从读代码猜。说不出限流点，就是不知道测了什么。
-- **逐条排除它其实在测别的东西**。常见嫌疑：报错、跳过的活、根本没跑（生成器没人迭代、promise 没人 await）、一侧没调优、噪声、小到端到端看不见。
-- **证据跟数字一起留**。跑了几次、区间、限流点。放笔记或附在链接里，不塞进 PR 正文。
-- **体量越界先怀疑数字**。省下的时间大于那一段本身的耗时，说明测到了别的东西，比如缓存、空操作或一个 bug。
+You skipped this when the evidence behind a number has no run count, no spread, or no named limiter, or when the time saved is larger than the time the changed piece took.
 
-要跑一次性能对比、或要报一个基准数字时，按 [references/benchmark-questions.md](references/benchmark-questions.md) 的七问走。
+Distinct from [Prove It Works](../principle-prove-it-works/SKILL.md), which checks that an output is real.
 
-## 收工
+For a head-to-head benchmark, or any number you are about to report, run the seven questions in [references/benchmark-questions.md](references/benchmark-questions.md).
 
-- 回复里每个数字带单位、次数、区间和一个点名过的限流点。
-- 说不出限流点就写"不确定"，不写"明显更快"。
-- 只跑了一次的，写明只跑了一次。
+**Reply:** every number carries a unit, a run count, a spread, and a named limiter. Write "inconclusive" when you cannot name the limiter, never "clearly faster". Say so when a side ran once.

@@ -1,25 +1,30 @@
 ---
 name: principle-encode-lessons-in-structure
-description: "发现自己在写第二遍同一句指令，或同一个纠正再次出现时读。把规则编码成 lint、元数据、运行时检查或脚本，别再多写一段文字。"
+description: "Apply when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text."
 disable-model-invocation: true
 ---
 
-# Encode lessons in structure
+# Encode Lessons in Structure
 
-发现自己在写第二遍同一句指令，或同一个纠正再次出现时读。
+Encode recurring fixes in mechanisms (tools, code, metadata, automation) instead of textual instructions. Every error, human correction, and unexpected outcome is a learning signal. Capture it, route it, and close the loop.
 
-## 判据
+Textual instructions are easy to miss. Structural mechanisms enforce the rule without cooperation.
 
-- 抓住自己写第二遍的时机，问：这句能不能变成 lint 规则、元数据标记、运行时检查或脚本？
-- 能，就编码，并把那句指令删掉。
-- 不能（需要判断），把指令写得更显眼，并补一个失败样例。
-- **挑最强的机制**。都可行时，挑这个场合允许的最强一档：写不出来的非法状态（编译不过）→ 失败在 CI 的 lint 或禁用 API → 规范 helper → 运行时检查。Agent 会照抄周围代码的写法，弱的那一档会成为下一个模板。
-- **修法是结构性的，就只用结构性的修法**。加一句指令是症状。
-- 路由：一次性的进笔记；重复出现的进技能或 lint；系统性的进判据。记下来不算闭环，要么现在应用，要么留下具体待办。
-- 三种反面：只承认不记录（"我记着"不会持久）；只记录不路由（该有的 lint 没实现）；只修实例不归纳模式。
+**Pattern:**
+When you catch yourself writing the same instruction a second time:
+1. Ask: can this be a lint rule, a metadata flag, a runtime check, or a script?
+2. If yes, encode it. Delete the instruction
+3. If no (requires judgment), make the instruction more prominent and add an example of the failure mode
 
-## 收工
+**Pick the strongest mechanism.** When more than one mechanism would work, choose the strongest the situation allows (an unrepresentable state that cannot compile, then a lint or banned API that fails CI, then a canonical helper, then a runtime check), because agents copy whatever the surrounding code already does and a weaker guard becomes the next template.
 
-- 回复里写明这次编码成了什么机制，或者为什么只能写成指令。
-- 写了指令而没机制的，说清它为什么必须靠判断。
-- 同一句指令第二次出现却没编码的，明说这次为什么放过。
+**Corollary:** If the fix is structural, only use the structural fix. The instruction is the symptom.
+
+When the human intervenes or tests fail, decide if it's a one-off or a pattern. Route it: one-off -> brain note, recurring fix -> skill or lint rule, systemic issue -> principle. Close the loop: don't just record; apply now or create a concrete todo.
+
+**Anti-patterns:**
+- Acknowledging without recording ("I'll keep that in mind" does not persist)
+- Recording without routing (a brain note about a lint rule that should exist is wasted unless the lint rule gets implemented)
+- Fixing without generalizing (fixing one instance while leaving the recurring pattern intact)
+
+**Reply:** name the mechanism the lesson got encoded into, or why it can only be an instruction. An instruction that needs judgment says so; one that could be a check does not get to stay text. When the same instruction showed up a second time and you left it alone, say why.

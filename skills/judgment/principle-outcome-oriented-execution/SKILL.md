@@ -1,24 +1,23 @@
 ---
 name: principle-outcome-oriented-execution
-description: "带明确阶段边界的计划内重写或迁移开始时读。收敛到目标结构，不为保中间态平滑而写一次性兼容代码。"
+description: "Apply during planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture; don't preserve smooth intermediate states with throwaway compatibility code."
 disable-model-invocation: true
 ---
 
-# Outcome-oriented execution
+# Outcome-Oriented Execution
 
-带明确阶段边界的计划内重写或迁移开始时读。
+Optimize for the intended, verifiable end state rather than preserving smooth intermediate states.
 
-## 判据
+**Why:** Keeping every intermediate step fully stable often creates temporary compatibility code that becomes long-lived debt. Converge on the target architecture and prove correctness at explicit verification boundaries.
 
-- 优先保**终态的完整性**，不优先保中间态的平滑。每个中间步都稳的代价，通常是一层用完就该删的兼容代码，而它会留下。
-- **声明哪里允许临时破损**。写清阶段边界、写清哪一段的破是计划内、范围内、可回滚的。没声明的破损和声明过的破损是两件事。
-- 不写只为过渡的兼容层：双写、双读、两套入口、"先留着以后再删"的分支。真要先留着，写进计划并写清删除条件。
-- 迁移过程中保留正在改动那部分的高信号检查，不降低已有检查的强度。
-- 计划完成时要有完整的静态检查和运行时验证，不是"主要路径通了"。
-- 这条只给计划内的重写和迁移用。外部行为不变的普通重构走 `refactor` 那套，别拿它当放宽检查的借口。
+**Core rule:**
+- Prioritize end-state integrity over transitional stability
+- Intermediate breakage is acceptable when it is planned, scoped, and reversible
 
-## 收工
+**Guardrails:**
+- Use this for planned rewrites and migrations with explicit phase boundaries
+- Declare where temporary breakage is acceptable
+- Keep high-signal checks for actively touched areas while migrating
+- Require full static and runtime verification at plan completion
 
-- 回复里写明目标结构、阶段边界、声明过的临时破损区间。
-- 留下的兼容层逐个说明删除条件，没条件的不算留，算债。
-- 计划完成时的静态和运行时验证结果都在回复里。
+**Reply:** name the target structure, the phase boundaries, and the temporary-breakage window you declared. Every compatibility layer you left behind carries a deletion condition; one without a condition is debt, not a layer. The static and runtime verification at plan completion is in the reply.

@@ -1,22 +1,19 @@
 ---
 name: principle-sequence-verifiable-units
-description: "工作要分成多步、一串相似编辑或多段提交时读。每一小步结束都有一条实际跑过的检查，通过了才做下一步。"
+description: "Apply to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack commits and PRs. Break work into small units that each end in a verifiable state, check each before the next, and order delivery so the sequence proves itself to a reviewer."
 disable-model-invocation: true
 ---
 
-# Sequence verifiable units
+# Sequence work into verifiable units
 
-工作要分成多步、一串相似编辑，或多段提交时读。
+Order work as a sequence of small units, each ending in a state you can check, and don't advance until the current one is green.
 
-## 判据
+**Why:** A break caught at the unit that caused it is cheap to localize. A break caught after a batch is buried, and you have already built further on a broken base. Sequencing those same units into a delivery a reviewer can replay turns "trust me" into "watch it go red, then green."
 
-- 每一小步结束都有一条实际跑过的检查，通过了才做下一步。检查写不出来，说明这一小步切错了。
-- 修 bug 时，失败信号先于修复进入历史：父提交上红，本提交上绿。
-- 做功能时，一次一个行为切片。几个切片一起改，红的时候分不清是谁的。
-- 一串相似编辑，先做完一个并验证，再批量做剩下的。批量做完全部再验证，失败时等于回到起点。
-- 多段提交按可独立回滚的单位切，不按文件切。
+**Execution.** In a sweep, migration, or any run of similar edits, verify each change before starting the next. Each unit is a before/after bracket: known-good state, one change, run the check, then proceed. Rebase onto clean trunk first so every check measures against the real baseline. When a lever does the edits, the per-unit check is nearly free. Run it anyway.
 
-## 收工
+**Delivery.** Stack commits and PRs in the order that proves the work. The canonical shape is the failing test first, then the fix on top. Other story orders are a subtraction before the reshape, a baseline capture before the treatment, the scaffold before the feature. Each commit lands on its own and the sequence reads as an argument.
 
-- 回复里按顺序列出每一段、它的检查命令，以及结果。
-- 有步骤跳过了检查的，写明为什么这一段不需要。
+The sequencing complement to the **prove-it-works** principle skill, which keeps each check real, and the **build-the-lever** principle skill, which makes the per-unit check cheap.
+
+**Reply:** list each unit in order with its check command and result. When a unit skipped its check, say why that unit did not need one.

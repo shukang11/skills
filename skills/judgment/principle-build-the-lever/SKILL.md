@@ -1,26 +1,25 @@
 ---
 name: principle-build-the-lever
-description: "非琐碎工作开始前读：编辑、迁移、分析、检查。先造能干这件事或能证明这件事的工具，别手工做完。"
+description: "Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun."
 disable-model-invocation: true
 ---
+# Build the Lever
 
-# Build the lever
+When the work isn't trivial, build the tool that does it instead of doing it by hand.
 
-工作不琐碎时，先造能干这件事的工具，别手工做完。
+A codemod, generator, or script does the work the same way every time and reruns for free. The tool is one artifact a reviewer can read and rerun to check the work. Hand-done changes can only be re-verified by redoing them. A deterministic script turns "trust me" into "run this".
 
-## 判据
+Default to building the lever. Skip it only when the task is trivial, a couple of obvious edits you can see at a glance.
 
-- 默认造杠杆：codemod、生成器、脚本，或者一个让所有子代理照着做的技能。工具每次做的事一模一样，重跑不要钱。
-- 工具是一件评审能读懂、能重跑的产物。手工改动只能靠重做一遍来复核。
-- **先手工做一个单位学配方，再工具化**。用重跑它在那个单位上的产物、和你手工版 diff 一遍来证明工具正确。工具要能安全重跑。
-- 确定性杠杆胜过 fan-out。工具能一次处理所有单位，就自己跑，别派一堆子代理手工套同一套动作。
-- 分发给子代理时，把配方、验证契约、禁改围栏写成一个技能，放在它们写不到的地方，免得它们悄悄改契约。
-- 用上这一条会产生一个文件。引用了它而 diff 里没有 codemod、脚本、生成器或子代理技能，就是没执行。
-- 门槛是"是否琐碎"，不是"是否重复"。一次性的活也值得造杠杆，只要杠杆是让这件事可被检查的那件东西。
-- 按 `principle-laziness-protocol` 造最小的那个脚本，不造框架。
+- Do the first unit by hand to learn the recipe, then build the tool. Prove it by rerunning it on that unit and diffing against your hand-done version. Make the lever safe to rerun.
+- Codemod or script for edits, generator for repetitive files, a dump-to-sqlite query for analysis, a rerunnable check for verification.
+- A deterministic lever beats fan-out. If the tool can process every unit in one pass, run it yourself. Don't fan out delegates to hand-apply what a script can do.
+- When you fan work out to subagents, write the lever as a skill they all read: the recipe, the verification contract, and the do-not-touch fences in one artifact. Keep it outside the delegates' write scope so they can't quietly edit the contract.
+- Applying this principle produces a file. If you cited it and there is no codemod, script, generator, or delegate skill in the diff, you didn't apply it.
+- Commit the lever when the work outlives the session.
 
-## 收工
+The bar is triviality, not repetition. A one-off still earns a lever when the lever is what makes the work checkable. Per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md), build the smallest script that does or proves the job, never a framework.
 
-- 回复里点名这次造的杠杆是什么、放在哪个路径、怎么重跑。
-- 只用了一次而没提交的，说明为什么留着或删掉。
-- 说了"这次太简单不用造"的，说明它为什么算琐碎。
+Distinct from [Encode Lessons in Structure](../principle-encode-lessons-in-structure/SKILL.md), which makes a recurring instruction a durable guardrail. This is throughput and reviewability on the work in front of you. For scripting the verification itself, see [Prove It Works](../principle-prove-it-works/SKILL.md).
+
+**Reply:** name the lever, its path, and how to rerun it. For a lever you used once and did not commit, say why it stays or goes. When you skipped the lever, say why the work counts as trivial.

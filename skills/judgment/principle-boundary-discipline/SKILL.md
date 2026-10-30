@@ -1,23 +1,36 @@
 ---
 name: principle-boundary-discipline
-description: "接线校验、错误处理或框架适配层时读。校验和类型收窄集中在系统边界，内部信任类型，业务逻辑写成纯函数，外壳保持薄。"
+description: "Apply when wiring validation, error handling, or framework adapters. Concentrate guards at system boundaries (CLI, config, network, external APIs); trust internal types and keep business logic in pure functions."
 disable-model-invocation: true
 ---
 
-# Boundary discipline
+# Boundary Discipline
 
-接线校验、错误处理或框架适配层时读。
+Place validation, type narrowing, and error handling at system boundaries. Trust internal code unconditionally. Business logic lives in pure functions. The shell is thin and mechanical.
 
-## 判据
+**Why:** Scattered validation is noisy, redundant, and gives a false sense of safety. Keep logic out of framework wiring so it can be tested without the framework.
 
-- **边界处**（CLI 参数、配置文件、外部 API、网络协议、数据库行、环境变量）：校验、解析成领域类型、返回错误、防御性处理。
-- **系统内部**：类型已经说明的事不再校验。不要在每个调用链深处补 nil 检查，边界校验过就不再查第二遍。
-- **跨边界只暴露领域概念**，不把 transport、storage、框架或 wire 类型从公共接口透出去。
-- **业务逻辑写成纯函数，外壳薄且机械**。解析可以是「原始字节 → 类型化状态」的纯变换，构造 prompt 可以是「结构化状态 → 字符串」的纯变换，打分可以是「状态 → 结论」的纯变换。
-- 两个自问：这份数据此刻正在跨系统边界吗？不是，那校验是冗余的。这段能写成纯函数让外壳调用吗？能，就抽出来。
+**The pattern:**
+- **At boundaries** (CLI args, config files, external APIs, network protocols): validate, return errors, handle defensively.
+- **Inside the system:** typed data, error propagation, no re-validation. Trust the types.
+- **Across the boundary.** Expose domain concepts, not the boundary's private representation. Keep general-purpose mechanism inside and special-purpose policy at the edge.
 
-## 收工
+**Applications:**
 
-- 回复里写明这次的边界在哪，哪些校验放在边界上。
-- 删掉了哪些内部重复校验，或者说明为什么留着。
-- 导出面里有没有透出框架或 transport 类型。
+Validation and error handling:
+- Validate config at parse time (the boundary), not inside business logic
+- Parse raw data into domain types at the boundary
+- Do not re-export transport, storage, framework, or wire types through the public surface
+- No redundant nil checks deep in call chains if the boundary already validated
+
+Code organization:
+- Business logic in pure functions with no framework dependencies
+- Parse functions: pure transforms from raw bytes to typed state
+- Prompt construction: structured state in, string out
+- Scoring and assessment: pure transforms from state to results
+
+**The tests:**
+- "Is this data crossing a system boundary right now?" If not, validation is redundant.
+- "Can this be a pure function that the shell just calls?" If yes, extract it.
+
+**Reply:** name where the boundary is and which validation moved onto it. List the internal re-checks you deleted, or say why one stays. Say whether the public surface still exposes a framework, storage, or wire type.

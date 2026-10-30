@@ -1,21 +1,25 @@
 ---
 name: principle-exhaust-the-design-space
-description: "面对没有先例的新交互或架构选择时读。做错一个东西的代价，大于先做三个选项；答案不明显就先摆开两三个对照物再定。"
+description: "Apply when facing a novel UI interaction or architectural decision with no precedent in the codebase. Build 2-3 competing prototypes and compare side by side before committing."
 disable-model-invocation: true
 ---
 
-# Exhaust the design space
+# Exhaust the Design Space
 
-面对没有先例的新交互或架构选择时读。做错一个东西的代价，大于先做三个选项。
+When a novel interaction or architectural decision has no established precedent, explore several concrete alternatives before implementation. Building the wrong thing costs more than exploring three options.
 
-## 判据
+**The rule.** When the right answer is not obvious, build 2-3 competing prototypes or sketches. Compare them side by side. Only then commit. Design it twice is this rule by another name. A second flavor of the first shape does not count.
 
-- 答案不明显时，先做 2 到 3 个对照原型或草图，摆在一起比，比完再定。同一个形状的第二种风味不算第二个。
-- 该摆开的场合：代码库里没有先例的新交互；有多条可行路线的架构选择；靠手感而不是逻辑决断的产品设计。
-- 不该摆开的场合：模式已经定下来的机械实现；目标明确的修 bug 和重构；约束已经把方案压到只剩一条。
-- 落实交给别人：手工对照用 `compare-shapes`；候选值得各跑一整次、或要另一个模型家族复核时用 `arena`。本条只判"现在该不该花这个成本"，不复述它们的步骤。
+**When it applies:**
+- Novel UI interactions (no prior art in the codebase)
+- Architectural choices with multiple viable approaches
+- Product design decisions where user experience depends on feel, not logic
 
-## 收工
+**When it doesn't:**
+- Mechanical implementation where the pattern is established
+- Bug fixes or refactors with a clear target state
+- Changes where constraints dictate a single viable approach
 
-- 回复里写明这次属于哪一种：有先例、需要摆开比、约束只剩一条。
-- 摆了 2 到 3 个的，写明比完凭什么选这个，以及否决的那几个否决在什么上。
+Route the doing: a cheap side-by-side comparison goes to the `compare-shapes` skill; a full attempt per candidate, or a second opinion from another model family, goes to the `arena` skill. This principle only decides whether the cost is worth paying.
+
+**Reply:** say which case this was — precedent exists, worth laying out, or constraints leave one option. When you laid out two or three, say what decided the pick and what disqualified the others.

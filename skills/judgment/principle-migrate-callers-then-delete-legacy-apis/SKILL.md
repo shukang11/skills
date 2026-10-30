@@ -1,24 +1,24 @@
 ---
 name: principle-migrate-callers-then-delete-legacy-apis
-description: "换内部接口、改名、改签名之前读。同一轮把调用方全迁完并删掉旧接口，不留兼容层和旧的默认值。"
+description: "Apply when introducing a new internal API while old callers still exist. Migrate callers and delete the old API in the same wave instead of preserving compatibility layers."
 disable-model-invocation: true
 ---
 
-# Migrate callers, then delete the legacy API
+# Migrate Callers Then Delete Legacy APIs
 
-换内部接口、改名、改签名之前读。
+When we decide a new API is the right design, migrate callers and remove the old API in the same refactor wave instead of preserving compatibility layers.
 
-## 判据
+**Rule:**
+- Do not keep legacy API paths only because internal callers still exist
+- Inventory callers, migrate them, and delete the old API immediately
+- Treat temporary adapters as exceptional and time-boxed, not default architecture
+- Update tests to assert the new contract, and delete tests that only protect pre-refactor implementation details
 
-- **先数清调用方**，再动手。数不清就是还没准备好改这个接口。
-- **同一轮迁完并删掉旧的**。留着旧签名"以后删"，它就是下一个模板：新代码照抄旧的，越迁越多。
-- 内部接口不留兼容层。兼容层只对外部消费者有意义，内部调用方一律跟着改。
-- 调用方由别人拥有、这一轮改不动时：先只加新接口，把旧接口标成待删并写清删除条件，不写"两种都支持"的默认值。
-- 迁完 grep 一遍旧名字，确认零命中。命中的每一处要么是外部文档，要么是漏迁。
-- 和 `principle-redesign-from-first-principles` 的区别：那条管设计对不对，这条管迁移干不干净。
+**When this applies:**
+- No external users depend on backward compatibility
+- The project can absorb coordinated breaking changes
+- The new API is part of a simplification or refactor initiative
 
-## 收工
+Keeping both old and new APIs creates dual-path complexity, slows cleanup, and makes the codebase feel append-only.
 
-- 回复里写明调用方有几处、迁了几处、旧接口是否已删。
-- 留了旧接口的，写明删除条件，并写进待办。
-- 旧名字 grep 的零命中结果放在回复里，不写"应该都改完了"。
+**Reply:** say how many callers exist, how many migrated, and whether the old API is gone. When you kept it, state the deletion condition and file it as a todo. Show the grep for the old name returning nothing, rather than saying "should all be migrated".

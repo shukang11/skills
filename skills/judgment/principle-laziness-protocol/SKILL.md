@@ -1,24 +1,23 @@
 ---
 name: principle-laziness-protocol
-description: "在定改动大小，或想加一层抽象、加一条贯穿调用链的信号时读。能删的先删，留下的改动是已说明问题的最小一块。"
+description: "Apply when refactoring, evaluating diff size, or tempted to add abstractions, layers, or signal threading. Bias toward deletion and the smallest change that solves the problem."
 disable-model-invocation: true
 ---
 
-# Laziness protocol
+# Laziness Protocol
 
-在定改动大小，或想加一层抽象、加一条贯穿调用链的信号时读。
+Aim for the most result with the least code and complexity.
 
-## 判据
+- **Prefer deletion.** When asked to refactor or improve, look for removals before additions.
+- **Maintain a flat call hierarchy.** Avoid deep call chains. A rich interface that hides substantial work is not a deep call chain. If answering a question requires tracing through more than 3 files or layers, flatten it.
+- **Consolidate decisions.** Do not repeat the same choice in several places. Put it behind one source of truth and pass the result as a simple flag.
+- **Minimize the diff.** Make the smallest change that solves the problem. Fewer lines beat "elegant" boilerplate.
+- **Question the threading.** If a task asks you to pass a new signal through types, schemas, pipelines, or similar layers, stop and look for a more direct path.
+- **Sweat the small leaks.** Remove tiny pass-throughs, representation leaks, and duplicated choices before they spread. Small leaks compound into permanent coordination costs.
+- **Stay inside the spec.** No validators, parsers, or guards for edge cases the spec never asked for.
+- **Leave no stubs.** A reference with no content of its own gets deleted, not replaced with a placeholder.
+- **Cut before you polish.** Reach the minimum first, then invest in quality. Polishing what you will delete is wasted work.
 
-- 能删的先删。死代码、重复的校验、没人读的配置，先删掉再看还剩多少要做。
-- 只留 spec 要的。spec 之外猜想的边缘情况、校验器、parser、guard 都不写。
-- 不留 stub。一份 reference 没有独有内容就删，不拿占位代替。
-- 砍到最小再打磨。先把范围收到最小，再投资质量；先追手感再砍东西是白做功。
-- 留下的改动是已说明问题的最小一块。说不出它对应哪个问题，就不写。
-- 新的包装层要藏起调用方说不出的知识。只是把调用转一手、或者把参数换个名，不建。
-- 贯穿调用链的新信号（多传一个 flag、多带一个 context）是最贵的一种改动：每个中间层都得知道它。它得换掉一个真实的分支或一次重复推导，否则不穿。
+**The test:** If a human developer would find the code exhausting to maintain, it is a bad solution.
 
-## 收工
-
-- 回复里写明删了什么，以及留下的改动对应哪条已说明的问题。
-- 加了层或穿了信号的，写明它删掉了哪个分支或哪次重复。
+**Reply:** name what you deleted and which stated problem the remaining change answers. When you added a layer or threaded a signal, name the branch or re-derivation it removed.

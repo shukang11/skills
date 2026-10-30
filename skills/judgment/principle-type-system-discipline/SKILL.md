@@ -1,26 +1,20 @@
 ---
 name: principle-type-system-discipline
-description: "设计类型、审函数签名，或写静态类型语言时读。让编译器拒掉不可能的状态、互不兼容的原语和没处理的分支。"
+description: "Apply when designing types, reviewing a function signature, or writing code in any statically-typed language. Make illegal states unrepresentable, brand semantic primitives, parse external data at boundaries, refuse to lie to the compiler, exhaust variants, derive from authoritative schemas."
 disable-model-invocation: true
 ---
 
-# Type system discipline
+# Type System Discipline
 
-设计类型、审函数签名，或写静态类型语言时读。
+Make the compiler reject impossible states, mismatched primitives, and unhandled variants. Prefer defining errors and special cases out of existence over proliferating handlers. For TypeScript syntax, see the `typescript-best-practices` skill.
 
-## 判据
+- **Make illegal states unrepresentable.** Model variants as sum types (discriminated unions, enums with payloads, sealed classes), not as a bag of optional fields where contradictory combinations compile. `{ completed: boolean; completedAt?: Date }` admits `completed: true` with no date. Derive the boolean from `completedAt`, or model `{ kind: 'open' } | { kind: 'done'; at: Date }`. If you can write a comment explaining when a combination of fields is valid, split it into a sum type.
+- **Types are constructions, not restrictions.** Build the type up from the values you want instead of carving them out of a looser type with checks. A non-empty list is a head plus a rest. A valid time range is a start plus a duration. Choose the shape that cannot build the illegal value and expose the interface callers need on top.
+- **Brand semantic primitives.** `UserId` and `OrderId` are strings underneath but should not be interchangeable. Give each its own type, such as a branded intersection in TypeScript or a newtype elsewhere. Validate once at creation, trust the type downstream. If two arguments share a primitive type but mean different things, brand them.
+- **External data is untyped until parsed.** RPC payloads, JSON, IPC messages, CLI args, config files, environment variables, database rows. Have a parse function at every boundary that turns unstructured input into the typed model. The **boundary-discipline** principle skill says where to put validation.
+- **Don't lie to the type system.** Casts, unsafe coercions, and assertion functions that bypass the compiler are latent runtime crashes. If the compiler can't prove a fact, prove it (validate, narrow, refine the model) or accept that the cast is a hazard. Trace each `any`, `as`, or `assertNotNull` to the boundary and validate there.
+- **Exhaustive matching is the compiler's job.** A match on a sum type must fail compilation when a new variant is added without handling, so the compiler tells the next agent where to add a case. Use your language's idiom: a `never`-typed binding in TypeScript, an unannotated `match` in Rust, `-Wincomplete-patterns` in Haskell, sealed-class match exhaustiveness in Kotlin.
+- **Derive types from authoritative schemas.** When a protocol buffer, OpenAPI spec, GraphQL schema, database migration, design-token file, or another file owns a shape, derive from it instead of hand-rolling a parallel type. See the **encode-lessons-in-structure** principle skill.
+- **Strengthen a type only where partiality appears.** A runtime assertion, null check, or "this should never happen" throw marks the place a type is too weak. Push that check up into the type. Then stop. The type system's job is to track the cases each use site must handle, not to describe the data as precisely as possible. Prefer total functions. `sum` of an empty list is 0, so it takes the plain list. `head` of an empty list has no answer, so it demands the non-empty one. If nothing would otherwise panic, keep the plain type.
 
-- **让非法状态写不出来**。变体用 sum type（可辨识联合、带载荷的枚举、sealed class），不用一堆可选字段。`{ completed: boolean; completedAt?: Date }` 允许「已完成但没有时间」。用一句注释才能解释清某个字段组合何时合法，就该拆成 sum type。
-- **类型是构造出来的，不是从宽类型里抠出来的**。从想要的值往上建：非空列表 = 一个头加一个尾，合法时间段 = 起点加时长。挑那种构造不出非法值的形状，再在它上面开调用方需要的接口。
-- **语义原语打品牌**。`UserId` 和 `OrderId` 底下都是字符串，但不该互换。各给一个类型，创建时校验一次，之后信任类型。
-- **外部数据解析之前是无类型的**：RPC 载荷、JSON、IPC 消息、CLI 参数、配置、环境变量、数据库行。每个边界有一个 parse 函数把它变成类型化模型。边界放哪由 `principle-boundary-discipline` 定。
-- **不骗类型系统**。`as`、不安全强转、断言函数都是迟早的运行时崩。编译器证不出的事实，要么去证（校验、收窄、改模型），要么承认这是个隐患。每个 `any`、`as` 都追溯回边界，在那里校验。
-- **穷尽匹配交给编译器**。sum type 上新增变体而没处理时，要编译不过，下一个 Agent 才知道该在哪加分支。用语言自己的写法：TS 的 `never` 绑定、Rust 的裸 `match`、Haskell 的 `-Wincomplete-patterns`、Kotlin 的 sealed class 穷尽。
-- **从权威 schema 派生类型**。proto、OpenAPI、GraphQL schema、数据库迁移、token 文件等拥有一份形状时，从它派生，不手搓一份平行的类型。
-- **只在出现 partiality 的地方加强类型**，然后停。一个「这不该发生」的运行时断言、空检查、抛出，标记的是类型太弱的位置：把检查推进类型里。类型系统的职责是跟踪每个使用点必须处理的分支，不是把数据描述得尽可能精确。
-
-## 收工
-
-- 回复里写明这次靠哪个类型表达拒掉了什么状态。
-- 留了 `as`、`any` 或断言的，写明它追溯回哪个边界。
-- 新增了分支却没做穷尽匹配的，写成待办。
+**Reply:** name the type expression that now rejects a state, or say the shape stays as it is. Every `as`, `any`, or assertion you kept says which boundary it traces back to. A new variant without exhaustive matching becomes a todo.

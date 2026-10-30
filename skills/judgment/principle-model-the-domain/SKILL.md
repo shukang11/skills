@@ -1,38 +1,29 @@
 ---
 name: principle-model-the-domain
-description: "写有状态的逻辑时读，或代码分支很多、同一个形状假设在多个文件里重复时读。用数据结构装领域，让非法状态写不出来，别散在一堆条件里。"
+description: "Apply when writing stateful logic, or when code branches a lot or repeats a shape assumption across files."
 disable-model-invocation: true
 ---
 
-# Model the domain
+# Model the Domain
 
-写有状态的逻辑时读；或者代码分支很多、同一个形状假设在多个文件里重复时读。
+Encode the real domain in a data structure instead of scattering it across conditionals. A structure that matches the domain makes invalid states unrepresentable and deletes branches. Choosing it at write time is cheap. Recovering it later reads as a refactor and gets deferred.
 
-## 判据
+Reach for:
 
-把真实领域装进一个数据结构，别散在一堆条件里。对得上领域的数据结构让非法状态写不出来，顺手删掉分支。写的时候选它很便宜，事后补回来就是一次重构，会被推迟。
+- A state machine instead of scattered booleans, phases, or lifecycle checks.
+- A typed model instead of loose parameters or repeated shape assumptions.
+- A map, registry, lookup table, or discriminated union instead of branching spread across files.
+- A reducer or command/event model instead of ad hoc state mutations.
+- A module organized around one body of domain knowledge instead of a sequence such as load, validate, transform, and save. Execution order is not ownership.
+- A small module boundary that gathers repeated behavior, ownership, or invariants.
+- A queue, cache, index, graph, tree, or normalized collection where the access pattern calls for it.
+- Any other structure that fits. When none fits, work out what the code must never allow and how the data gets read, then find the structure that encodes exactly that.
 
-优先去找：
+Do not force an abstraction. Prefer boring code if the current shape is already clear, local, and unlikely to grow. Be skeptical of an abstraction that adds indirection without removing branches, duplicated rules, invalid states, or lifecycle risk.
 
-- 状态机，替掉散落的布尔、阶段和生命周期检查。
-- 带类型的模型，替掉松参数和重复的形状假设。
-- map、registry、查表、判别联合，替掉铺在多个文件里的分支。
-- reducer 或命令／事件模型，替掉就地改状态。
-- 按一份领域知识组织的模块，替掉 load / validate / transform / save 这种按执行顺序切的模块。执行顺序不是所有权。
-- 装住重复行为、所有权和不变式的小模块边界。
-- 每一步落一个连贯的抽象，或把已有抽象加深；不把新能力铺成各调用方各自的特例协调。
-- scaffold 先行：CI、lint、测试地基、共享类型这种「每一步都受益」的东西先做。
-- 访问模式要求时的队列、缓存、索引、图、树或归一化集合。
+The sign that you skipped this is a new feature that grows an existing if/else chain by one more branch, or a second boolean that must stay in sync with the first. Temporal decomposition is another sign. Phase-named modules repeat the same domain rules across steps.
 
-不硬造抽象。现有形状已经清楚、局部、且不会再长，就留平地。会加间接层却不删分支、不删重复规则、不让非法状态写不出来的抽象，先怀疑它。
+- Land each increment as one coherent abstraction, or deepen one that exists. Do not spread a new capability across callers as special-case coordination.
+- Build the scaffold first: CI, lint, test infrastructure, shared types. Anything every later phase benefits from goes before the phases.
 
-## 红信号
-
-- 新功能给已有的 if/else 链又加一个分支。
-- 第二个必得跟第一个同步的布尔。
-- 按阶段命名的模块，把同一套领域规则在每一步重复一遍。
-
-## 收工
-
-- 回复里点名这次选的库结构，或写明为什么保持现状。
-- 加了结构却没删掉分支或重复规则的，说清它换来了什么，否则退回平地。
+**Reply:** name the library structure you chose, or say why the current shape stays. When you added structure without deleting branches or repeated rules, say what it bought; otherwise go back to flat code.
