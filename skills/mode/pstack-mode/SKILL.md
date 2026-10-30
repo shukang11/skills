@@ -28,7 +28,7 @@ You may skip levels and open a leaf a step names directly.
 1. **Entry**. This file. A human wakes it explicitly; it never self-triggers from a description.
 2. **Playbook**. The order of steps for one task, not a slash command.
 3. **Leaves that hand work to the next step**. `wayfinder`, `clarify-decisions`, `domain-modeling`, `compare-shapes`, `arena`, `to-spec`, `codebase-design`, `architect`, `figure-it-out`.
-4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `typescript-best-practices`.
+4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `typescript-best-practices`.
 5. **Judgment**. `../../judgment/<name>/SKILL.md`, standalone skills you can call with `/`. A criterion used across several leaves lives there; a criterion that belongs to one leaf lives in that leaf's body (`diagnosing-bugs`' criteria, `code-review`'s Standards axis).
 
 Root cause and red signals live in `diagnosing-bugs`. Domain structure in `domain-modeling`. Module boundaries in `codebase-design`. Faithful simulation in `prototype`. Diff review in `code-review`. Leftover residue in `code-simplify`. Removing AI tells in `unslop`. Session handoff in `handoff`. Those nine do not get a separate judgment skill.
@@ -58,6 +58,8 @@ When a leaf suggests the next skill, the current playbook's remaining steps win.
 
 Situation first, skill second. These are triggers, not steps: they fire whenever the situation occurs, inside any playbook. In the reply, name the trigger you fired and the choice it changed.
 
+- The first message on a task, or a request that arrived long, noisy, or second-hand: restate the goal, the problem, and the smallest change you expect to meet it, then work on without waiting for confirmation. `in-your-own-words` when the restatement is the whole deliverable rather than the opening move.
+- A prompt that may be aimed wrong, or a task worth more than it asks for: `sharpen` rewrites it deeper, not bigger. It runs on the prompt before a playbook starts, never inside one.
 - Any code whose data shape is not settled: name the shape and its organizing structure first, per `principle-model-the-domain`.
 - Code that changes what crosses a function boundary, or a design nobody has settled: `architect`, or `codebase-design` when only the module boundary is in question.
 - Work that fans out: `swarm` for coverage slices and races, `arena` for a bake-off whose winner you then graft.

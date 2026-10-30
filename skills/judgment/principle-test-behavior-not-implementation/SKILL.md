@@ -1,12 +1,14 @@
 ---
 name: principle-test-behavior-not-implementation
-description: "Apply when you write, change, or keep a test. Call the code as its users do and assert the exact result they see. Rewrite or delete a test that would pass if every imported function returned undefined."
+description: "Apply when you write, change, or keep a test. Call the code as its users do and assert the exact result they see. Rewrite or delete a test that would pass if every imported function returned undefined, and one that breaks when only the internals change."
 disable-model-invocation: true
 ---
 
 # Test Behavior, Not Implementation
 
 A test calls the code as its users do and asserts the exact result they see. Rewrite or delete any test that would still pass if every imported function returned `undefined` or a wrong value.
+
+Both sides count, and this one is the easier to miss: the test fails when the behavior breaks, and it keeps passing when only the internals change. An exact assertion that pins a private helper, a call count, or an intermediate shape breaks on a rename or a refactor that changed nothing a user can see. That test is coupled to the implementation even though it asserts the right value.
 
 These shapes fail that check:
 

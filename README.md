@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景（52 个技能，一个入口）
+## 技能全景（54 个技能，一个入口）
 
 干活从 `/pstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
@@ -36,8 +36,9 @@
   └─ 做到本职就停   how-it-works  why-this-way  teach  prototype  diagnosing-bugs
                     code-review  interrogate  blast-radius  code-simplify  correct
                     handoff  writing-for-agents  agent-ready-repository  unslop
-                    swarm  show-me-your-work  reflect  typescript-best-practices
-                    create-verification-skill  maintain-verification-skill
+                    sharpen  in-your-own-words  swarm  show-me-your-work  reflect
+                    typescript-best-practices  create-verification-skill
+                    maintain-verification-skill
 ```
 
 判据 22 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`、`principle-experience-first`。
@@ -86,7 +87,7 @@
 .\manage-skills.ps1 -Install clarify-decisions,unslop
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `52`，且 `test -L ~/.agents/skills/shukang`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `54`，且 `test -L ~/.agents/skills/shukang`
 - **卸载整库**：`./scripts/install.sh --uninstall --user`
 - **卸载单个链接**：`./scripts/install.sh --uninstall --user unslop`（整库链接里的技能不会因此被拆出）
 
@@ -128,5 +129,5 @@ npx --yes github:shukang11/skills --project .
 ## 日常调用姿势
 
 1. **从入口进**（一套任务走完）：`/pstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
-2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
+2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/sharpen`、`/in-your-own-words`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
 3. **直接点判据**（只校准一件事）：`/principle-*` 共 22 条，见上面清单。同样不走 playbook。

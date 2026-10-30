@@ -14,10 +14,10 @@
 | 快照日 | 2026-10-30 |
 | Matt Pocock | [`mattpocock/skills`](https://github.com/mattpocock/skills) @ [`5beb35b`](https://github.com/mattpocock/skills/commit/5beb35b040e3de97e54fa9e386d7e42d15c295c2)，2026-10-19，38 个 |
 | poteto | [`poteto/plugins`](https://github.com/poteto/plugins) @ [`74dd229`](https://github.com/poteto/plugins/commit/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12)，2026-06-06，69 个（不含 pstack） |
-| pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)，2026-10-10，51 个（v0.15.16） |
-| 已吸收 | 57 |
+| pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)，2026-10-29，58 个（v0.15.36） |
+| 已吸收 | 59 |
 | 不需要 | 7 |
-| 未标记 | 60 |
+| 未标记 | 65 |
 
 处置只有三格：`已吸收`、`不需要`、`未标记`。标了`不需要`的都在表后附了理由。
 
@@ -34,7 +34,7 @@ git -C poteto-plugins ls-files '**/SKILL.md'
 git -C cursor-plugins ls-files 'pstack/**/SKILL.md'
 ```
 
-pstack 在 2026-09 从 `poteto/plugins` 搬到了 `cursor/plugins`。`poteto/plugins` 的 main 停在 0.9.0（2026-06-07），不要再拿它当 pstack 的上游。想看 0.15.16 之后的变动，把上表的提交号换成新版本那个 commit。
+pstack 在 2026-09 从 `poteto/plugins` 搬到了 `cursor/plugins`。`poteto/plugins` 的 main 停在 0.9.0（2026-06-07），不要再拿它当 pstack 的上游。想看 0.15.36 之后的变动，把上表的提交号换成新版本那个 commit。
 
 对上之后，把本表开头的提交号和日期改成新的。新增行放在原分组末尾。
 
@@ -124,9 +124,9 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 
 ## poteto
 
-### pstack（51）
+### pstack（58）
 
-锚在 `cursor/plugins` @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)＝ v0.15.16（2026-10-10）。v0.9.0 的 34 条都在，新增 17 条，没有删除。
+表里原有 51 行钉在 `cursor/plugins` @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)＝ v0.15.16（2026-10-10），末尾 7 行新增钉在 [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)＝ v0.15.36（2026-10-29）。v0.9.0 的 34 条都在，没有删除。
 
 | 技能 | 路径 | 做什么 | 本地 | 处置 |
 | --- | --- | --- | --- | --- |
@@ -181,6 +181,13 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [typescript-best-practices](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/typescript-best-practices/SKILL.md) | `pstack/skills/typescript-best-practices` | 读或改 TypeScript 时的写法约定 | `typescript-best-practices` | 已吸收 |
 | [unslop](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/unslop/SKILL.md) | `pstack/skills/unslop` | 去掉文字里的生成腔 | `unslop` | 已吸收 |
 | [why](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/why/SKILL.md) | `pstack/skills/why` | 追溯为什么长这样，证据来自提交、笔记和文档 | `why-this-way` | 已吸收 |
+| [create-formal-verification-skill](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/create-formal-verification-skill/SKILL.md) | `pstack/skills/create-formal-verification-skill` | 在测试摸不到的地方挑一条「坏了要命」的承诺，选工具做形式化验证，留下一份项目本地技能 | — | 未标记 |
+| [in-your-own-words](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/in-your-own-words/SKILL.md) | `pstack/skills/in-your-own-words` | 开工前复述它理解的目标和问题，只复述不盘问 | `in-your-own-words` | 已吸收 |
+| [ketchup](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/ketchup/SKILL.md) | `pstack/skills/ketchup` | 用大白话加小图汇报「上一条消息之后变了什么」，并把等你拍板的事列全 | — | 未标记 |
+| [ketchup-video](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/ketchup-video/SKILL.md) | `pstack/skills/ketchup-video` | 同上，改成短字幕幻灯片视频，待决项以文字放下面 | — | 未标记 |
+| [maintain-formal-verification-skill](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/maintain-formal-verification-skill/SKILL.md) | `pstack/skills/maintain-formal-verification-skill` | 代码变了把模型对齐回去，重跑，判定每次失败是漂移还是 bug | — | 未标记 |
+| [sharpen](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/sharpen/SKILL.md) | `pstack/skills/sharpen` | 把提示词改深不改大：专家会多做哪一步、从什么原始材料起手、用什么方法、外部怎么验 | `sharpen` | 已吸收 |
+| [statechart](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/statechart/SKILL.md) | `pstack/skills/statechart` | 把 TLA+ 模型检查结果画成 Mermaid 状态图，标出破规则的状态和最短到达路径 | — | 未标记 |
 
 跳过的 7 条，理由是本地没有它们赖以成立的那层东西：
 
@@ -191,6 +198,14 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 - `recall`：绑死 `~/.cursor/projects/*/agent-transcripts` 与七类 MCP。本地 `handoff` 管往后交，往前捞是另一件事。
 - `setup-pstack`：按角色写一份模型规则文件，本地没有那一层。
 - `tdd`：已删掉，纪律落在 `bug-fix` playbook 和 `diagnosing-bugs` 里。
+
+0.15.16 到 0.15.36 之间，路径没变但正文变了的几处，表上看不出来，记在这里：
+
+- **`interrogate` 重写**：结论只留跑得出的发现（每条带命令和输出），四桶改成 Intent／Findings／Dropped，删掉 4 个 `references/`。本地留下的仍是旧结构，重写待下一轮。
+- **`arena` 的 cross-judge 收紧**：不许与父模型同族，同族席位跳过，全族都够不着就跳过评审并说明。本地已同步。
+- **`swarm` 精简**：只删了自己那套模型规则行和收尾表格，本地本来就没有，无需动作。
+- **四条原则改成短推理**（attack-the-premise、fix-root-causes、test-behavior-not-implementation、type-system-discipline）：本地版本更细、带可执行步骤，不整体替换。补进本地的是 `principle-fix-root-causes` 的「guard 只在它处理的状态合法时才算修」，和 `principle-test-behavior-not-implementation` 的「只改内部实现时应当继续通过」。
+- **`statechart` 不收**：本体是 407 个文件、3.8MB 的 TypeScript 编译器，带 TLC 抓取器和两万行测试，还要 Java、mise 和 Pele 渲染器。本仓库没有能承载它的基础设施。要收只收它的两句话：报告自带 Mermaid 状态图，破规则的状态标出来并给最短路径。
 
 ### cursor-team-kit（18）
 
