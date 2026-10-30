@@ -1,108 +1,108 @@
 ---
 name: wayfinder
-description: "一次会话装不下、路线还看不清的工作，画成决策票地图，一次解开一张。地图和票写在 handoff/wayfinder/。"
+description: "Plan work whose destination is clear but whose route is not: chart a map of decision tickets under handoff/wayfinder/ and resolve one ticket per session until the way is clear. Plans; never writes the implementation."
 disable-model-invocation: true
-argument-hint: "终点是什么；已有地图则给出 handoff/wayfinder/<slug>/map.md"
+argument-hint: "the destination; or the existing handoff/wayfinder/<slug>/map.md"
 ---
 
 # Wayfinder
 
-把说得出终点、还说不出路线的工作，拆成一次会话能解开的决策票。地图是索引。决定写在票上。本技能规划，不写实现。
+For work whose destination can be named but whose route cannot. Split it into decision tickets one session can resolve. The map is an index; the decisions live on the tickets. This skill plans and does not write implementation.
 
-## 落点
+## Where it lives
 
-一次努力一个目录，slug 用终点的短横线名：
+One effort, one directory; the slug is the destination in kebab case:
 
-- 地图：`handoff/wayfinder/<slug>/map.md`
-- 票：`handoff/wayfinder/<slug>/issues/NN-<slug>.md`，从 `01` 编号，一票一文件
+- Map: `handoff/wayfinder/<slug>/map.md`
+- Tickets: `handoff/wayfinder/<slug>/issues/NN-<slug>.md`, numbered from `01`, one file per ticket
 
-只建这个目录。不改 `handoff/active.md`，不建 `handoff/ctx/`，不写 `.scratch/`。
+Build only this directory. Do not touch `handoff/active.md`, do not create `handoff/ctx/`, do not write `.scratch/`.
 
-`handoff/` 是临时层。清掉它，地图和票一起消失。要在清空之后还在的结论，写进 `.agents/notes/`，票的 Answer 改成指向那份笔记的路径和一行要点。术语进 `ALIGNMENT.md`。契约进 `docs/` 里对应 topic。地图和票不抄这些正文。
+`handoff/` is a temporary layer: clear it and the map and tickets go with it. Anything that has to outlive that goes to `.agents/notes/`, and the ticket's Answer becomes a pointer to that note plus a one-line gist. Terminology goes to `ALIGNMENT.md`; contracts go to the `docs/` topic that owns them. The map and tickets never restate that prose.
 
-## 判据
+## Criteria
 
-- 终点先写进地图，再写任何票。终点是整张地图的尽头，不是这一次会话的尽头。
-- 票的正文是一个现在就能精确说出的问题。说不出的进地图的「还没说清」，不提前开票。
-- 一张票只做一种：`grilling`、`prototype`、`research`、`task`。
-- 前沿是 `Status: open`、且 `Blocked by` 列出的每一张票都已 `resolved` 的票。编号最小的先做。
-- 认领先于任何工作：先把该票写成 `Status: claimed` 并保存，再开始问、查或模拟。
-- 一次会话只认领一张票。画图那次只建文件，不解答。
-- `grilling` 和 `prototype` 的答案由人拍板。Agent 可以给推荐，不替人写下 Answer。
-- `task` 只为解开某张决策票清障，例如凭证、账号、把数据摆到能看见的地方。
-- 地图的 Notes 不能把这次会话改成写实现。
-- 回复里用票的标题。文件之间用相对路径。
+- Write the destination into the map before writing any ticket. The destination is the end of the whole map, not the end of this session.
+- A ticket's body is a question that can be asked precisely right now. What cannot be asked yet stays in the map's "Not yet specified"; do not open a ticket for it.
+- One ticket does one thing: `grilling`, `prototype`, `research`, or `task`.
+- The frontier is every ticket with `Status: open` whose `Blocked by` tickets are all `resolved`. Take the lowest number first.
+- Claim before any work: write `Status: claimed` and save, then start asking, looking, or simulating.
+- One ticket per session. The charting session only creates files; it answers nothing.
+- `grilling` and `prototype` answers are the human's call. The agent may recommend; it never writes the Answer for them.
+- A `task` ticket exists only to unblock a decision: credentials, an account, moving data somewhere you can see it.
+- The map's Notes never turn this session into implementation.
+- Refer to tickets by title in the reply. Use relative paths between files.
 
-## 四种票
+## The four ticket types
 
-| Type | 何时 | 怎么解开 |
-| --- | --- | --- |
-| `grilling` | 谈得清的决定。默认这一种 | 读 `clarify-decisions` 和 `domain-modeling`。人确认后才写 Answer |
-| `prototype` | 要看见逻辑或交互才定得下来 | 读 `prototype`。Answer 指向 `prototypes/index.html` 和人选定的行为 |
-| `research` | 决定卡在仓库外的事实上 | Agent 查完，Answer 写结论和出处路径或链接 |
-| `task` | 没有决定要做，但有一件事挡住决定 | 做完那件清障的事，Answer 写做成了什么 |
+| Type | When | How it resolves |
+|---|---|---|
+| `grilling` | The decision is one a conversation can settle. The default | Read `clarify-decisions` and `domain-modeling`. Write the Answer only after the human confirms |
+| `prototype` | The decision needs the logic or interaction seen before it can be made | Read `prototype`. The Answer points at `prototypes/index.html` and the behaviour the human picked |
+| `research` | The decision is stuck on a fact outside the repo | The agent looks it up; the Answer carries the finding and the path or link it came from |
+| `task` | Nothing to decide, but one thing blocks the decision | Do the unblocking work; the Answer says what was done |
 
-`Blocked by:` 写票号，逗号分隔，如 `01, 03`。没有阻挡就留空。
+`Blocked by:` takes ticket numbers, comma separated, such as `01, 03`. Empty when nothing blocks it.
 
-## 地图骨架
+## Map skeleton
 
 ```markdown
-# <终点的短名>
+# <short name for the destination>
 
 ## Destination
-<整张地图结束时，手里有什么>
+<what is in hand when the whole map is done>
 
 ## Notes
-<只写这次努力的约束。不写「可以开始实现」>
+<only constraints for this effort. Never "we can start implementing">
 
 ## Decisions so far
-- <一行要点> — issues/NN-<slug>.md
+- <one-line gist> — issues/NN-<slug>.md
 
 ## Not yet specified
-- <能感到会遇到、但现在问不精确的事>
+- <things you can feel coming but cannot ask precisely yet>
 
 ## Out of scope
-- <终点之外的事>
+- <what lies beyond the destination>
 ```
 
-## 票骨架
+## Ticket skeleton
 
 ```markdown
-# <问句>
+# <the question>
 Type: grilling
 Status: open
 Blocked by:
 
 ## Question
-<一个问句>
+<one question>
 
 ## Answer
 ```
 
-## 步骤
+## Steps
 
-没有 `map.md` 时：
+No `map.md` yet:
 
-1. 问终点。人说清之前不建票。
-2. 整条路线就是一个现在问得清、一次会话谈得完的问题时，停下，改走 `clarify-decisions`。
-3. 否则写下地图和现在问得清的票。fog 留在「还没说清」。超出终点的写进 Out of scope，不开成 open 票。
-4. 回复列出前沿票的标题和路径。本会话不写 Answer。
+1. Ask for the destination. No tickets before the human names it.
+2. When the whole route is one question that can be asked now and settled in one session, stop and go to `clarify-decisions` instead.
+3. Otherwise write the map and the tickets that can be asked now. Keep the fog in "Not yet specified". Anything beyond the destination goes to Out of scope, not to an open ticket.
+4. Reply with the frontier tickets' titles and paths. This session writes no Answer.
 
-已有地图时：
+Map exists:
 
-1. 只读 `map.md` 和各票的头三行。要解开哪张，再读那一张的全文。
-2. 没有前沿票：地图清空。回复给出 `map.md` 路径，下一步是 `to-spec`。本会话不写实现。
-3. 认领编号最小的前沿票。
-4. 按 Type 解开。人拍板的票，人确认后把答案写入 `## Answer`，`Status` 改为 `resolved`。
-5. 在 Decisions so far 加一行。fog 里已经问得精确的，毕业成新票，并从「还没说清」删掉那一行。
-6. 回复写这张票的标题、答案落在哪个文件，以及下一张前沿票的标题。然后停。
+1. Read only `map.md` and the first three lines of each ticket. Full body only for the ticket you are taking.
+2. No frontier ticket: the map is clear. Reply with the `map.md` path; the next step is `to-spec`. This session writes no implementation.
+3. Claim the lowest-numbered frontier ticket.
+4. Resolve it by its Type. For a human-owned ticket, write the answer into `## Answer` and set `Status: resolved` only after the human confirms.
+5. Add one line to Decisions so far. Fog that has become precise enough graduates into a new ticket and loses its line under "Not yet specified".
+6. Reply with this ticket's title, the file its answer landed in, and the next frontier ticket's title. Then stop.
 
-## 收工检查
+## Done when
 
-- 画图会话：`map.md` 的 Destination 有人给的终点；每张票有 Type、`Status: open`、`## Question`；没有 `## Answer` 正文。
-- 做票会话：恰好一张票从 `open` 经 `claimed` 到 `resolved`；地图多了一行带相对路径的要点。
-- 回复里的票都用标题，并带上 `handoff/wayfinder/<slug>/` 路径。
+- Charting session: `map.md` carries a destination the human gave; every ticket has a Type, `Status: open`, and a `## Question`; no ticket has an Answer body.
+- Working session: exactly one ticket went `open` → `claimed` → `resolved`, and the map gained one line with a relative path.
+- Every ticket in the reply is named by title and carries its `handoff/wayfinder/<slug>/` path.
 
-## 产出
+## Output
 
-`handoff/wayfinder/<slug>/map.md`，以及 `issues/NN-<slug>.md`。
+`handoff/wayfinder/<slug>/map.md` plus `issues/NN-<slug>.md`.

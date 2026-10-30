@@ -1,29 +1,43 @@
 ---
 name: prototype
-description: "做一套保真的产品逻辑或交互模拟。用 HTML 双击打开，不启本地服务。左导航右内容，内容区用相对路径跳本地文件。"
+description: "Build a high-fidelity, disposable simulation that a person can click through to settle a product-logic or interaction question. Lives in prototypes/, never ships. Use before committing to a shape you cannot judge on paper."
 disable-model-invocation: true
-argument-hint: "要模拟的产品逻辑或交互是什么"
+argument-hint: "the piece of logic or interaction to make visible"
 ---
 
 # Prototype
 
-一套保真模拟，让人点得动产品逻辑或交互。模拟留在 `prototypes/`，不打进生产构建。验证过的决定写进 `docs/` 里对应 topic 的契约，再由正式代码实现。
+A prototype is throwaway code that answers one question. The question decides the shape; getting it wrong wastes the whole prototype.
 
-## 判据
+## Pick a branch
 
-- 一个产品一套模拟。另一种结构方案交给 `compare-shapes`，不在这里做多套外观切换。
-- 入口是 `prototypes/index.html`。左侧导航，右侧内容。内容区的链接用相对路径指向本地 HTML，跳转后导航还在。
-- 双击 `index.html` 就能用。不启本地服务。
-- 共用样式放 `prototypes/css/`，共用脚本放 `prototypes/js/`，共用逻辑放 `prototypes/shared/`。脚本用普通 `<script src>`，不用 `type="module"`。
-- 导航只列这套模拟的页面，不列 `prototypes/compare-shapes-*`。
-- 不写生产数据库，不把 `prototypes/` 打进生产构建。
+Identify the question from the prompt, the surrounding code, or by asking if the user is around.
 
-## 收工检查
+- **"Does this logic or state model feel right?"** → [LOGIC.md](LOGIC.md). One self-contained HTML file a non-developer can drive: free-play buttons plus guided walkthroughs through the cases that are hard to reason about on paper.
+- **"What should this look like?"** → [UI.md](UI.md). Several radically different variations on one route, switchable by URL parameter and a floating bottom bar.
 
-- 双击 `prototypes/index.html`，左导航能打开各页，内容区的本地链接能跳转，导航仍在。
-- 回复里有入口路径，以及这次模拟要让人看清的那一段逻辑或交互。
-- 已经确认要留下的契约，写进 `docs/` 对应 topic，不写进模拟文件里当第二份规格。
+If the question is genuinely ambiguous and nobody is reachable, default to whichever branch matches the surrounding code (backend module → logic; page or component → UI) and state the assumption at the top of the prototype.
 
-## 产出
+## House rules
 
-`prototypes/index.html`、各内容页，以及用到的 `css/`、`js/`、`shared/`。
+One simulation per product question. A second structural option is a `compare-shapes` job, not a second look inside this prototype.
+
+- The entry is `prototypes/index.html`: navigation on the left, content on the right. Links inside the content area are relative paths to local HTML, so navigation survives the jump.
+- Double-clicking `index.html` works. No local server.
+- Shared styles in `prototypes/css/`, shared scripts in `prototypes/js/`, shared logic in `prototypes/shared/`. Plain `<script src>`, never `type="module"`.
+- Navigation lists this simulation's pages only, never `prototypes/compare-shapes-*`.
+- No production database, and `prototypes/` never enters the production build.
+- Throwaway from day one and named like it: sit it next to what it prototypes so the context is obvious, and make a casual reader see at a glance that it is not production. Obey the project's existing routing convention; do not invent a new top-level structure.
+- No tests, no error handling beyond what keeps it runnable, no abstractions. The point is learning fast.
+- Surface the state. After every action, render the whole relevant state so the user can see what changed.
+
+## Done when
+
+- Double-click `prototypes/index.html`: the left nav opens each page, in-content links jump, and the nav is still there.
+- The reply carries the entry path and the one piece of logic or interaction this simulation exists to make visible.
+- Any decision that survives moves to the `docs/` topic that owns the contract, implemented by real code later. It does not become a second spec inside the prototype.
+- The prototype itself is captured as a primary source: a throwaway branch, outside main, with a pointer to it from the implementation note.
+
+## Output
+
+`prototypes/index.html`, the content pages, and whatever `css/`, `js/`, `shared/` they need.

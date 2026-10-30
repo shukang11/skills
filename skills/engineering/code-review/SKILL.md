@@ -1,87 +1,111 @@
 ---
 name: code-review
-description: "针对自指定锚点（commit、branch、tag 或 HEAD~N）以来的代码变更进行【双轴独立审查】：Standards 轴（代码规范与 Martin Fowler 坏味道体检）与 Spec 轴（是否忠实满足原始需求规格）。"
-argument-hint: "指定 review 的基准点（例如 main, HEAD~1, 或具体 commit SHA）及对应的 Spec 路径"
+description: "Review the diff between HEAD and a fixed point along two axes: Standards (does the code follow this repo's documented standards and avoid classic smells?) and Spec (does it faithfully implement what the spec asked for?). Reports the axes separately; never reranks them against each other."
 disable-model-invocation: true
+argument-hint: "which diff, and the fixed point"
 ---
 
 # Code Review
 
-针对 `HEAD` 与用户指定锚点之间的 Git Diff，开展双轴独立审查：
+Two independent axes over the diff between `HEAD` and the fixed point the user supplies:
 
-- **Standards 轴**：代码是否符合项目规范？是否存在经典的软件坏味道？
-- **Spec 轴**：代码是否忠实实现了原始 Spec 规格中要求的行为与验收准则？
+- **Standards**: does the code follow this project's documented standards, and is it free of classic smells?
+- **Spec**: does it faithfully implement the behaviour and acceptance criteria the spec asked for?
 
-两轴彼此独立审查，结果分别呈现，严禁互相掩盖或打平。
+Review the axes independently and report them in separate sections. Never let one axis mask or outrank the other.
 
-## 审查流程
+## Process
 
-### 1. 锁定 Diff 基准点
-- 获取并校验用户指定的基准点（如 `main`、`git diff <base>...HEAD`）。
-- 确认 Diff 非空。
+### 1. Pin the fixed point
 
-### 2. 定位 Spec 来源
-按以下优先级寻找原始 Spec 规格：
-1. 本地 `.agents/notes/proposed/` 或 `.agents/notes/` 下的相关 Spec 文件；
-2. 本地 `docs/` 下的对应需求/规格说明；
-3. 用户在参数中直接指定的 Spec 路径；
-4. 若无 Spec，则注明“无 Spec 规格”，仅执行 Standards 轴审查。
+- Take the fixed point the user gave (`main`, a branch, a tag, `HEAD~5`, a SHA). If none was given, ask.
+- Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Note the commit list with `git log <fixed-point>..HEAD --oneline`.
+- Confirm the ref resolves and the diff is non-empty before going further. A bad ref or an empty diff fails here, not halfway through the review.
 
-### 3. 定位 Standards 来源
-按以下顺序叠加，不互相替代：
-1. 项目有 `.agents/skills/spec-anchor/references/evolution-principles.md` 的，逐条对照七条演进原则；违反的发现类别写「原则 N」。
-2. 项目根 `AGENTS.md` 的实现原则与禁区，以及编码规范文档（如 `CODING_STANDARDS.md`、`CONTRIBUTING.md`）。
-3. 上面都没有覆盖到的，套用 **Martin Fowler 重构经典坏味道基线**：
-- **Mysterious Name（晦涩命名）**：命名无法直观表达其意图。
-- **Duplicated Code（重复代码）**：同一逻辑形态在多处重复出现。
-- **Feature Envy（依恋情结）**：某个函数/方法过度访问另一个对象的数据，而非自身。
-- **Data Clumps（数据泥团）**：几个参数总是一起成群结队传递。
-- **Primitive Obsession（基本类型偏执）**：用原始 string/number 替代本应独立的领域概念。
-- **Shotgun Surgery（散弹式修改）**：一个逻辑特性的变动导致大量无关文件产生散落的微小修改。
-- **Divergent Change（发散式修改）**：一个模块经常因为多个完全不相干的原因被修改。
-- **Speculative Generality（夸夸其谈/过度抽象）**：为了当前根本不存在的需求添加泛化抽象与胶水钩子。
-- **Middle Man（中间人/浅模块）**：某个类或函数除了向下透传没有任何实质功能。
+### 2. Find the spec
 
-### 4. 行为证据（区间里有生产代码改动时才跑）
+In this order:
 
-只看 diff 分不清「测试钉住了这次变化」和「测试跟着一起改绿」。脚本在临时 worktree 里检出锚点，只把测试侧文件 overlay 上去，前后各跑一次，用红绿说话。
+1. A spec under `.agents/notes/proposed/` or `.agents/notes/` that matches this change.
+2. A spec or requirements doc under `docs/`.
+3. A path the user passed in the argument.
+4. Nothing found: say "no spec available" and run the Standards axis alone.
+
+### 3. Find the standards sources
+
+Stack these; later entries do not replace earlier ones.
+
+1. If the project has `.agents/skills/spec-anchor/references/evolution-principles.md`, check the diff against each of the seven evolution principles. Name the violated one as "principle N" in the finding.
+2. The project root `AGENTS.md` implementation rules and forbidden zones, plus any coding-standards docs (`CODING_STANDARDS.md`, `CONTRIBUTING.md`).
+3. Whatever those leave uncovered falls back to the Fowler smell baseline below.
+
+Two rules bind the baseline:
+
+- **The repo overrides.** A documented project standard always wins. Where it endorses something the baseline would flag, drop the smell.
+- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation. Skip anything tooling already enforces.
+
+Match each smell against the diff: what it is → how to fix it.
+
+- **Mysterious Name**: a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design is murky.
+- **Duplicated Code**: the same logic shape appears in more than one hunk or file. → extract the shared shape, call it from both.
+- **Feature Envy**: a method that reaches into another object's data more than its own. → move the method onto the data it envies.
+- **Data Clumps**: the same few fields or params keep travelling together, a type wanting to be born. → bundle them into one type and pass that.
+- **Primitive Obsession**: a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
+- **Repeated Switches**: the same switch or if-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
+- **Shotgun Surgery**: one logical change forces scattered edits across many files. → gather what changes together into one module.
+- **Divergent Change**: one file or module gets edited for several unrelated reasons. → split so each module changes for one reason.
+- **Speculative Generality**: abstraction, parameters, or hooks added for needs the spec doesn't have. → delete it; inline back until a real need shows.
+- **Message Chains**: long `a.b().c().d()` navigation the caller shouldn't depend on. → hide the walk behind one method on the first object.
+- **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
+- **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
+
+### 4. Behaviour evidence (only when the range contains production code changes)
+
+The diff alone cannot tell "a test pins this change" from "the test went green along with it". The script checks out the fixed point in a temporary worktree, overlays only the test-side files, and runs the suite twice, so red and green do the talking.
 
 ```bash
 node .agents/skills/code-review/scripts/fix-proof.mjs \
-  --range <锚点>..HEAD \
-  --cmd '<按文件跑测试的命令，含 {files}>' \
-  --setup '<装依赖的命令>'
+  --range <fixed-point>..HEAD \
+  --cmd '<test command per file, containing {files}>' \
+  --setup '<install command>'
 ```
 
-- `{files}` 换成空格分隔、已加引号的测试文件。命令里没有 `{files}`：不跑。
-- 区间 diff 里有且只有一个锁文件时加 `--lockfile <路径>`，该文件 blob 变了才重装依赖。
-- 默认认 JS/TS、Go、Python、Rust、Java、Kotlin 的测试文件。本项目不是这些时，用 `--tests '<正则>'` 整段替换。
-- 输出含「无法计算」：脚本算不出来，交给人，停。不要写成「没有测试改动」。
-- `--per-commit` 的交界判定名（`父提交红 本提交绿` 等）与区间判定名不同，两者不互换。
+- `{files}` is replaced with the space-separated, quoted test files. No `{files}` in the command: it does not run.
+- Add `--lockfile <path>` when the range diff touches exactly one lockfile; dependencies are reinstalled only when that blob changed.
+- It recognises JS/TS, Go, Python, Rust, Java, and Kotlin test files by default. For anything else, replace the whole rule with `--tests '<regex>'`.
+- Output containing "无法计算" (cannot compute) means the script gave up: hand it to the human and stop. Never write that up as "no test changes".
+- The per-commit verdict names differ from the range verdict names. Do not interchange them.
 
-判定 → 报告：
+Verdict → what goes in the report:
 
-| 判定 | 写进报告 |
+| Verdict | Report |
 |---|---|
-| `锚点红 HEAD 绿` | 有测试钉住这次变化，不单开发现 |
-| `新增测试在锚点就绿`、`改动的测试在锚点就绿` | `[Missing]` 改动没有回归证据 |
-| `无测试文件改动` | `[Missing]`，且只在区间确有生产代码改动时报。它只说明测试文件没变，不说明已有测试盖不住 |
-| `已有断言被删改` | `[Drift]` 判据被改了。附 `git diff <锚点> HEAD -- <文件>` 里以 `-` 开头的行，交人裁决 |
-| `加载失败` | `[Missing]`，备注写「复现未证实」 |
-| `HEAD 不绿`、`超时`、`环境失败` | `[Missing]`，附备注行 |
+| `anchor red, HEAD green` | a test pins this change; no separate finding |
+| `new test already green at anchor`, `changed test already green at anchor` | `[Missing]`: the change has no regression evidence |
+| `no test file changes` | `[Missing]`, and only when the range really does change production code. It says the test files did not change, not that existing tests cover the change |
+| `existing assertions deleted or edited` | `[Drift]`: the criterion itself was changed. Quote the `-` lines from `git diff <anchor> HEAD -- <file>` and hand it to the human |
+| `load failure` | `[Missing]`, note says "reproduction not proven" |
+| `HEAD not green`, `timeout`, `environment failure` | `[Missing]`, with the note line |
 
-备注行可能是栈里的任意一行（`name: 'AssertionError'` 这类）。判据是「判定」，不是备注。
+The note line can be any line from the stack, such as `name: 'AssertionError'`. The criterion is the verdict, not the note.
 
-### 5. 产出双轴独立报告
-
-最终报告必须分别在两个独立小节下呈现：
+### 5. Report both axes, separately
 
 ```markdown
-## Standards Review (规范与架构质量)
-- [Hard / Heuristic] 文件名:行号 - 具体违规或坏味道描述，附改进建议。
+## Standards Review (conventions and architecture quality)
+- [Hard / Heuristic] file:line - the violation or smell, with the fix you suggest.
 
-## Spec Review (需求忠实度)
-- [Missing / Drift / Scope-Creep] 对照 Spec 条目，指明遗漏、偏差或范围蔓延。
+## Spec Review (fidelity to the requirement)
+- [Missing / Drift / Scope-Creep] against the spec line: what is missing, drifted, or beyond scope.
 ```
 
-最后附一句话总结两轴各自的最严重问题，严禁跨轴打平评分。
+Close with one line per axis naming that axis's worst issue. Never produce a single cross-axis ranking.
+
+## Why two axes
+
+A change can pass one and fail the other:
+
+- Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
+- Code that does exactly what the spec asked but breaks the project's conventions → **Spec pass, Standards fail.**
+
+Reporting them separately is what stops one axis from masking the other.
