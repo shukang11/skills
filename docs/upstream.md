@@ -206,7 +206,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 - **`swarm` 精简**：只删了自己那套模型规则行和收尾表格，本地本来就没有，无需动作。
 - **四条原则改成短推理**（attack-the-premise、fix-root-causes、test-behavior-not-implementation、type-system-discipline）：本地版本更细、带可执行步骤，不整体替换。补进本地的是 `principle-fix-root-causes` 的「guard 只在它处理的状态合法时才算修」，和 `principle-test-behavior-not-implementation` 的「只改内部实现时应当继续通过」。
 - **两条 formal 技能的本地化**：输出路径从 `.cursor/skills/verify-<app>/` 改成 `.agents/verify/<app>-formal/`，与本地 `create-verification-skill` 的落点并排；删掉「TLA+ 是默认」的硬指定，改成先盘点仓库和机器上已有的工具；加了 `Provisioning` 一段，工具一律不静默安装、装之前问一次、拒绝就走「生成输入跑真代码」的回退。状态词不另起一套：`maintain-formal-verification-skill` 的 `in sync / updated / bug / blocked` 对本地三态 `clean / changed / blocked` 写了一一映射，只有 `bug` 是它独有的。上游那条 `statechart` 交叉引用已删。
-- **`statechart` 不收**：本体是 407 个文件、3.8MB 的 TypeScript 编译器，带 TLC 抓取器和两万行测试，还要 Java、mise 和 Pele 渲染器。本仓库没有能承载它的基础设施。要收只收它的两句话：报告自带 Mermaid 状态图，破规则的状态标出来并给最短路径。
+- **`statechart` 先观望**：本体是 407 个文件、3.8MB 的 TypeScript 编译器，8 个 pass、11 个 frontend、4 个 backend，带 TLC 抓取器和两千多行测试，还要 Java、mise 和 Pele 渲染器。那份重量买的是通用性（陌生仓库、陌生规格、陌生 TLC 版本），不是这个想法本身。翻转条件只有两个：仓库里出现第一个 `.tla` 文件，或者读检查结果的人不会读 TLA+。两者都不成立时，形式化验证的判断层在 `create-formal-verification-skill` 里已经够用。要收也只收两句话：报告自带 Mermaid 状态图，破规则的状态标出来并给最短路径、用读者的词。
 
 ### cursor-team-kit（18）
 
