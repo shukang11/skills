@@ -1,63 +1,63 @@
-# 案例：工作助理型仓库
+# Case: a work-assistant repository
 
-## 初始症状
+## First symptoms
 
-仓库已有根入口、目录 README、工作流和检查脚本，但零上下文 Agent 仍然：
+The repository already had a root entry, directory READMEs, workflows, and check scripts, yet a zero-context agent still:
 
-- 不清楚哪份周记录代表当前同步对象。
-- 为普通同步读取模板、完整 DSL、历史记录和总表。
-- 把正常同步与里程碑巡检串在一起。
-- 在多个版本和热修之间反复询问默认范围。
-- 知道“要验证”，却找不到完整命令和通过标准。
-- 可能进入已经删除目录对应的旧流程。
+- Could not tell which weekly record was the current sync target.
+- Read the template, the whole DSL, the history, and the summary table for an ordinary sync.
+- Chained a normal sync together with a milestone inspection.
+- Kept asking about the default scope across several versions and hotfixes.
+- Knew that "verification" existed but could not find the full command and the pass criteria.
+- Could enter an old process belonging to a directory that had already been deleted.
 
-## 根因
+## Root causes
 
-- 当前状态使用自然语言，没有显式工作指针。
-- 入职顺序和工作流状态在多处重复。
-- 工作流缺少默认范围与总表升级条件。
-- 模板只覆盖局部章节，需要参考历史文件。
-- 废弃流程保留完整可执行正文。
-- 检查工具存在，但没有面向维护者的操作入口。
+- Current state was written in prose, with no explicit working pointer.
+- The onboarding order and workflow state were repeated in several places.
+- The workflow had no default scope and no condition for promoting to the summary table.
+- The template covered only some sections, so a historical file had to be consulted.
+- The deprecated process kept its full executable body.
+- A check tool existed, but no operator entry aimed at a maintainer.
 
-## 分轮整改
+## Remediation in rounds
 
-### 第一轮：安全与权威
+### Round one: safety and authority
 
-- 根入口成为唯一入职顺序来源。
-- 工作流有效性只认索引。
-- 禁止目录在根规则、索引和执行入口附近重复护栏。
-- 动态状态改为显式“当前同步对象”指针，并定义移动时机。
+- The root entry became the single source for onboarding order.
+- Workflow validity is read only from the index.
+- Forbidden directories gained guard rails near the root rules, the index, and the executing entry.
+- Dynamic state became an explicit "current sync target" pointer with a stated rule for when it moves.
 
-### 第二轮：工作流闭环
+### Round two: closing the workflow
 
-- 明确输入、输出、状态、默认范围和确认点。
-- 同一周涉及主版本和热修时默认全部列入建议。
-- 只有实际写入包号、日期或人天时才读取总表。
-- 缺口提醒不扩大为补数任务。
+- Inputs, outputs, states, default scope, and confirmation points were stated.
+- A week touching both the main version and a hotfix defaults to listing both.
+- The summary table is read only when a package number, date, or person-day is actually written.
+- A gap reminder no longer expands into a data-filling task.
 
-### 第三轮：模板与废弃内容
+### Round three: templates and deprecated material
 
-- 新版本模板补成可独立复制的完整骨架。
-- 未知字段统一使用“待补”。
-- 废弃流程缩成墓碑页，删除旧步骤。
-- 验证命令、通过标准和误报处理集中到工具入口。
+- The new-version template became a complete skeleton that can be copied on its own.
+- Unknown fields share one value: "to be supplied".
+- The deprecated process shrank to a tombstone page with the old steps deleted.
+- The verification command, pass criteria, and false-positive handling moved into one tool entry.
 
-## 验收发现
+## What acceptance found
 
-普通 Agent 可以完成定位、建议、确认和验证。较轻量 Agent 出现乱序和扩读，但：
+An ordinary agent completed locating, recommending, confirming, and verifying. The lighter agent reordered and over-read, but:
 
-- 没有编造数字。
-- 没有执行废弃流程。
-- 没有在无差异时强行修改。
-- 正确停在人类确认点。
+- It invented no numbers.
+- It executed no deprecated process.
+- It forced no change when nothing differed.
+- It stopped correctly at the human confirmation point.
 
-这说明验收重点不应是“是否完美阅读”，而应是“不完美阅读是否仍安全”。
+So the acceptance question is not "did it read perfectly" but "was imperfect reading still safe".
 
-## 可迁移结论
+## Transferable conclusions
 
-1. 文档数量不是核心指标，任务闭环才是。
-2. 安全护栏需要靠近危险动作，不能只写在总入口。
-3. 动态事实只保留一个权威来源。
-4. 如果说明越来越复杂，应检查目录和模块边界。
-5. 强 Agent 测可完成性，较轻量 Agent 测仓库自身的鲁棒性。
+1. File count is not the metric; a closed task loop is.
+2. Guard rails belong near the dangerous action, not only in the root entry.
+3. Dynamic facts keep exactly one authoritative source.
+4. When the explanations keep growing, check the directory and module boundaries.
+5. A strong agent tests completability; a lighter agent tests the repository's own robustness.

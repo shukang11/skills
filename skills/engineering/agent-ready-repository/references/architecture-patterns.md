@@ -1,98 +1,98 @@
-# Agent-ready 架构模式
+# Agent-ready architecture patterns
 
-## 推荐模式
+## Recommended patterns
 
-### 意图路由
+### Intent routing
 
-根入口回答“想做 X 去哪里”，不承载所有细节。局部入口再指向工作流和事实文件。
+The root entry answers "where do I go to do X". It carries no detail. Local entries point on to workflows and fact files.
 
-### 单一事实源
+### Single source of truth
 
-动态状态、配置契约和业务事实各自只有一个家。其他文档只链接或生成，不手工镜像。
+Dynamic state, configuration contracts, and business facts each have one home. Other documents link to it or generate from it, never hand-mirror it.
 
-### 控制面与事实面分离
+### Control plane separate from fact plane
 
-- 控制面：入口、规则、工作流、模板、验证。
-- 事实面：代码、配置、业务记录、数据。
+- Control plane: entries, rules, workflows, templates, verification.
+- Fact plane: code, configuration, business records, data.
 
-规则不要伪装成业务事实，汇总页也不要成为第二份事实库。
+Rules never masquerade as business facts, and a summary page never becomes a second fact store.
 
-### 薄总图
+### Thin overview map
 
-总图只说明组成、主链路和扩展点。操作细则靠近负责它的模块。
+The overview states composition, the main path, and the extension points. Operating detail sits next to the module that owns it.
 
-### 局部护栏
+### Local guard rails
 
-删除、发布、迁移、密钥、生产环境等高风险约束，除全局规则外，还应出现在实际执行入口附近。
+High-risk constraints (deletion, release, migration, secrets, production) appear near the entry where the action actually happens, in addition to the global rules.
 
-### 显式动态指针
+### Explicit dynamic pointers
 
-“当前版本”“活动迁移”“待同步对象”等状态使用显式指针，并定义移动时机。不要让 Agent 根据日期或文件名猜。
+State such as "current version", "active migration", "objects pending sync" uses an explicit pointer with a stated rule for when it moves. Never let the agent guess from dates or file names.
 
-### 完整模板
+### Complete templates
 
-模板应能在没有历史样本时独立生成合法对象。未知事实有统一空态，不通过复制旧文件补猜。
+A template can generate a valid object with no historical sample. Unknown facts take one agreed empty state; never reconstruct them by copying an old file.
 
-### 墓碑页
+### Tombstone pages
 
-废弃流程只保留：
+A deprecated process keeps exactly four things:
 
-1. 废弃状态。
-2. 原因。
-3. 当前替代入口。
-4. 恢复前提。
+1. The deprecated status.
+2. The reason.
+3. The current replacement entry.
+4. What would have to be true to restore it.
 
-删除旧输入、频率、步骤和验收，避免被照着执行。
+Delete the old inputs, cadence, steps, and acceptance so nobody follows them.
 
-### 机械门禁
+### Mechanical gates
 
-可确定的问题交给脚本或 CI，例如：
+Deterministic problems belong to a script or CI, for example:
 
-- 坏链接和缺失文件。
-- 目录地图未登记。
-- 结构模板缺失。
-- 生成文档与源文件不同步。
-- 禁止目录或废弃词重新出现。
+- Broken links and missing files.
+- A directory map entry missing.
+- A structural template missing.
+- Generated documentation out of sync with its source.
+- Forbidden directories or deprecated words reappearing.
 
-工具必须说明覆盖范围，不能把局部检查称为全量一致性。
+A tool must state its coverage. Never call a local check a whole-repository consistency check.
 
-## 需要调整目录而不是补文档的信号
+## Signals that the directories need changing rather than the docs
 
-- 一个目录包含不同负责人、生命周期或权限边界的内容。
-- 完成单一任务总要跨多个无关目录。
-- 同一文件同时承担入口、动态状态、操作步骤和历史记录。
-- 新内容没有稳定归属，只能靠命名习惯猜放置位置。
-- 解释“为什么放这里”的文字比目录本身还复杂。
-- 多个模块相互引用形成阅读环。
+- One directory holds content with different owners, lifecycles, or permission boundaries.
+- Finishing a single task always crosses several unrelated directories.
+- One file carries the entry, dynamic state, operating steps, and history at once.
+- New content has no stable home, so its placement is guessed from naming habits.
+- The prose explaining "why this lives here" is more complex than the directory itself.
+- Several modules reference each other into a reading cycle.
 
-此时先提出模块拆分、所有权或依赖方向方案，再决定文档入口。
+In these cases propose a module split, an ownership change, or a dependency direction before deciding the documentation entry.
 
-## 常见反模式
+## Common anti-patterns
 
-### README 万能页
+### README as the everything page
 
-所有内容都塞进根 README，导致任何任务都要读取大量无关信息。
+Everything piles into the root README, so every task must read a large amount of irrelevant material.
 
-### 多份当前状态
+### Multiple current states
 
-当前版本、路线图或有效流程在多个文件手工更新。时间久后必然漂移。
+The current version, roadmap, or live process is hand-updated in several files. It drifts, given time.
 
-### 用搜索弥补入口缺失
+### Search papering over a missing entry
 
-Agent 能通过全库搜索找到答案，不代表仓库可维护。搜索应是异常路径，不是默认导航。
+An agent can find the answer by searching the whole repository; that does not make the repository maintainable. Search is the exception path, never the default navigation.
 
-### 黄金样本代替模板
+### Golden sample instead of template
 
-要求“参考最近一个类似文件”，会把历史偶然结构复制到未来。
+"Copy the most recent similar file" propagates whatever structure history happened to have.
 
-### 废弃但保留完整正文
+### Deprecated but fully intact
 
-顶部虽写“不要执行”，正文仍有命令和步骤；较弱 Agent 仍可能照做。
+The top says "do not run" while the body still holds commands and steps; a weaker agent may still follow it.
 
-### 只测强 Agent
+### Testing only the strong agent
 
-强模型能靠推理修复文档缺陷。必须加入较轻量 Agent，验证仓库自身是否提供足够约束。
+A strong model repairs documentation defects by reasoning. Include a lighter agent to test whether the repository itself supplies enough constraint.
 
-### 为审计强推框架
+### Forcing a framework to pass the audit
 
-不要为了使用本 Skill 自动引入 spec-anchor、特定目录或新工具。先证明现有结构无法满足目标。
+Never introduce spec-anchor, a directory layout, or a new tool just to use this skill. First prove the existing structure cannot meet the goal.

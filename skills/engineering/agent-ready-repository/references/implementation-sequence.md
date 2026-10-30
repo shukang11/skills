@@ -1,41 +1,41 @@
-# 实施与复验
+# Implementation and re-verification
 
-> 本技能自身止于建议、不执行整改。若用户接受建议后另行进入实施阶段，按此顺序与复验清单执行。
+> This skill itself stops at recommendations and executes no remediation. When the user accepts the recommendations and moves to implementation separately, follow this order and this checklist.
 
-## 第六步：小步实施
+## Step six: implement in small rounds
 
-按以下顺序拆轮次：
+Split the work into rounds in this order:
 
-1. 消除 P0 冲突与危险路径。
-2. 收敛权威来源和动态指针。
-3. 补齐任务入口、工作流默认行为与人类确认边界。
-4. 完善模板、目录地图和验证说明。
-5. 删除重复说明，隔离废弃内容。
-6. 最后再处理不影响工作的表达问题。
+1. Remove P0 conflicts and dangerous paths.
+2. Converge the authoritative sources and the dynamic pointers.
+3. Fill in task entries, workflow defaults, and human confirmation boundaries.
+4. Complete the templates, the directory map, and the verification notes.
+5. Delete duplicated explanations and quarantine deprecated content.
+6. Last, handle expression problems that do not affect work.
 
-每轮只解决一类问题；修改后立即运行项目已有验证。不要顺手扩大范围。
+Each round solves one class of problem. Run the project's existing verification right after each change. Never widen the scope on the way.
 
-## 第七步：复验
+## Step seven: re-verify
 
-实施后重新运行与基线相同的真实任务，并增加交叉审计：
+After implementation, re-run the same real tasks as the baseline and add a cross-audit:
 
-- 普通 Agent 能否独立完成结果。
-- 较轻量 Agent 即使乱序或多读，是否仍不会危险操作。
-- 审计 Agent 能否发现权威来源冲突和验证能力夸大。
-- Agent 是否能区分“事实缺失”和“需要人类决策”。
-- Agent 是否能正确地选择不修改。
+- Can an ordinary agent produce the result on its own?
+- Does a lighter agent still avoid dangerous actions when it reorders or over-reads?
+- Can the auditing agent find authoritative-source conflicts and overstated verification?
+- Can the agent tell a missing fact apart from a decision only a human can make?
+- Can the agent correctly choose to change nothing?
 
-测试提示词与指标见 [acceptance-tests.md](acceptance-tests.md)。
+The prompts and metrics are in [acceptance-tests.md](acceptance-tests.md).
 
-## 完成标准
+## Done when
 
-只有同时满足以下条件才可结束：
+All of these hold at once:
 
-- Agent 能从任务意图定位到正确事实来源，不依赖先全库搜索。
-- 每类动态事实有唯一权威来源。
-- 不可推断字段、默认行为和人类确认边界明确。
-- 废弃内容不会被照着执行。
-- 新建对象不需要偷看历史文件拼装。
-- 修改后验证命令、通过标准和失败处理均可定位。
-- 普通 Agent 能完成真实任务。
-- 较轻量 Agent 即使不完美，也不会产生危险修改。
+- The agent reaches the right fact source from the task intent without searching the whole repository first.
+- Each class of dynamic fact has exactly one authoritative source.
+- Fields that cannot be inferred, default behaviour, and human confirmation boundaries are stated.
+- Deprecated content cannot be followed.
+- A new object can be created without peeking at historical files to assemble it.
+- After a change, the verification command, the pass criteria, and the failure handling are all locatable.
+- An ordinary agent completes the real task.
+- A lighter agent, even imperfect, produces no dangerous change.

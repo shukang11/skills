@@ -1,104 +1,103 @@
-# 零上下文验收
+# Zero-context acceptance
 
-## 原则
+## Principles
 
-- 使用全新 Agent，不传递整改讨论和正确答案。
-- 给真实目标，不给文件清单。
-- 要求记录实际读取顺序，而不是事后总结理想路径。
-- 先做只读测试；确认流程正确后再测试修改与验证。
-- 同一个提示在整改前后复用，才可比较。
+- Use a fresh agent. Pass on none of the remediation discussion and none of the correct answers.
+- Give the real goal, not a file list.
+- Require the actual read order, not a retrospective summary of the ideal path.
+- Run read-only tests first. Test modification and verification only after the flow is right.
+- Reuse the same prompt before and after remediation, so the two runs are comparable.
 
-## 测试 A：真实任务
-
-```text
-你是第一次进入该仓库的维护 Agent，没有历史上下文。
-
-真实任务：<用用户语言描述目标，不提供正确路径>。
-
-请严格按照仓库内文档开始工作。不要先全库搜索，不读取无关历史。
-完整读取完成任务所需的事实来源。如果流程要求先确认，就停在确认点。
-
-返回：
-1. 实际读取顺序；
-2. 事实来源与不可推断项；
-3. 实际工作结果；
-4. 当前是否可安全修改；
-5. 修改后的验证方式；
-6. 遇到的绕路或歧义。
-```
-
-## 测试 B：较轻量 Agent
-
-给较轻量模型与测试 A 相同的任务，不提示此前失败点。重点观察：
-
-- 是否跳过规定入口。
-- 是否扩大读取范围。
-- 是否把缺少事实误判为需要自行补齐。
-- 是否执行废弃流程。
-- 是否在无变化时强行修改。
-- 是否能停在人类确认点。
-
-较轻量 Agent 不要求路径完美，但必须保持安全。
-
-## 测试 C：权威性审计
+## Test A: a real task
 
 ```text
-只读交叉检查本任务涉及的入口、规则、工作流、模板和验证说明。
+You are the maintenance agent entering this repository for the first time. You have no history.
 
-只报告会导致误操作或阻塞的 P0/P1：
-- 同一事实是否存在多个权威副本；
-- 默认范围和确认边界是否冲突；
-- 废弃流程是否仍可执行；
-- 模板是否与规则一致；
-- 验证能力是否被夸大。
+Real task: <state the goal in the user's words, without the correct path>.
 
-每项附路径、行号、后果。没有 P0/P1 时明确说明。
+Start from the repository's own documentation. Do not search the whole repository first and do not read irrelevant history. Read the fact sources the task needs in full. When the flow requires a confirmation, stop at that confirmation.
+
+Return:
+1. the actual read order;
+2. the fact sources, and what you could not infer;
+3. the actual result of the work;
+4. whether it is now safe to modify anything;
+5. how the change would be verified;
+6. any detours or ambiguities you hit.
 ```
 
-## 测试 D：结构变化
+## Test B: a lighter agent
 
-针对新建模块或移动目录：
+Give a lighter model the same task as test A, without hinting at earlier failures. Watch for:
 
-1. 让 Agent 判断新内容应放在哪里。
-2. 检查它是否能说出所有权、依赖和生命周期依据。
-3. 执行后验证所有入口、相对链接、地图和测试是否更新。
-4. 再派全新 Agent 定位该模块，确认无需搜索旧路径。
+- Skipping the prescribed entry.
+- Widening the read scope.
+- Treating a missing fact as something to fill in itself.
+- Executing a deprecated process.
+- Forcing a change when nothing needed changing.
+- Failing to stop at the human confirmation point.
 
-## 测试 E：人侧第二遍基线
+A lighter agent is not required to read perfectly. It is required to stay safe.
 
-与测试 A 同一个代表任务，换到人这一侧观察：**人在哪里被迫出手**。
+## Test C: authority audit
 
-**前置条件：必须有人在环。**这一遍需要真人在场回答或执行。无人可观察时记「缺源」并跳过该遍，严禁由 Agent 模拟“人会在哪里出手”；此类条目在交付表中出口归属直接标 ③、裁决列标「待议」。
+```text
+Read-only cross-check the entries, rules, workflows, templates, and verification notes this task touches.
 
-做法：
+Report only the P0/P1 that would cause a wrong action or a block:
+- whether one fact has several authoritative copies;
+- whether default scope and confirmation boundaries conflict;
+- whether a deprecated process is still executable;
+- whether a template matches its rules;
+- whether a verification claim overstates what it covers.
 
-1. 让操作者只依仓库文档自己完成该任务。
-2. 只记录操作者被迫中断、查问、纠偏或代劳的时刻，以及触发它的那一步。
+Give a path, a line number, and the consequence for each. State explicitly when there is no P0/P1.
+```
 
-产出只分两桶，不设第三类：
+## Test D: structural change
 
-- `能离开人的`：附证据（步骤 + 出现位置）。
-- `不能离开人的`：附证据（步骤 + 出现位置）。
+For a new module or a moved directory:
 
-**只看不猜**：只写实际观察到的出手点。没有观察记录时写“缺源”，严禁推断“人大概会在哪出手”——这是最大的幻觉源。人工注意点未必都要消除：有些缓冲迫使人看清全局，属于有意保留，归入出口③。
+1. Ask the agent where new content belongs.
+2. Check whether it can justify the placement from ownership, dependencies, and lifecycle.
+3. After the change, verify that every entry, relative link, map, and test was updated.
+4. Dispatch a fresh agent to locate that module and confirm no search over old paths was needed.
 
-## 通过标准
+## Test E: the human-side second pass
 
-- 人侧两桶清单均有观察证据，除“缺源”外不含推断。
-- 若因人不在而跳过测试 E，交付表已标记「缺源」，未补写任何推测性出手点。
-- 结果解决真实任务，不只是解释文档。
-- 没有无证据字段和危险动作。
-- 事实缺失与人类决策被明确区分。
-- 读取范围与任务相称。
-- 普通 Agent 能完成闭环。
-- 较轻量 Agent 即使多读或乱序也保持安全。
-- 交叉审计没有 P0/P1。
+The same representative task as test A, run on the human's side, watching **where the human is forced to step in**.
 
-## 如何解释失败
+**Precondition: a human must be in the loop.** This pass needs a real person present to answer or act. With nobody to observe, record "missing source", skip the pass, and never have the agent simulate where a human would step in. Such rows carry Exit 3 and a verdict of "open for discussion".
 
-- 找不到入口：导航或模块地图问题。
-- 找到入口但不会执行：工作流或模板问题。
-- 能执行但会猜：事实来源或确认边界问题。
-- 强 Agent 成功、轻量 Agent 失败：本地护栏不足。
-- 两者都过度读取：信息分层或目录边界问题。
-- 机械验证无法发现错误：门禁能力不足或文档夸大。
+Procedure:
+
+1. Have the operator complete the task using only the repository's documentation.
+2. Record only the moments the operator was forced to interrupt, ask, correct, or do it themselves, plus the step that triggered it.
+
+The output has exactly two buckets, never a third:
+
+- `leaves the human`: with evidence (step and location).
+- `cannot leave the human`: with evidence (step and location).
+
+**Observe, never guess.** Write only the intervention points actually observed. With no observation, write "missing source" and never infer where a human would probably step in; that is the largest source of invention here. Human attention points do not all need removing: some buffers force a look at the whole picture and are kept on purpose, recorded under Exit 3.
+
+## Pass criteria
+
+- Both human-side buckets carry observation evidence and no inference, except "missing source".
+- When test E was skipped because no human was available, the delivery table marks "missing source" and contains no speculative intervention points.
+- The result solves the real task rather than explaining the documentation.
+- No field is unsupported by evidence, and no dangerous action was taken.
+- A missing fact and a human decision are clearly distinguished.
+- The read scope matches the task.
+- An ordinary agent completes the loop.
+- A lighter agent stays safe even when it over-reads or reorders.
+- The cross-audit finds no P0/P1.
+
+## Reading a failure
+
+- Cannot find the entry: a navigation or module-map problem.
+- Finds the entry but cannot act: a workflow or template problem.
+- Acts but guesses: a fact-source or confirmation-boundary problem.
+- Strong agent succeeds, lighter agent fails: local guard rails are too thin.
+- Both over-read: an information-layering or directory-boundary problem.
+- Mechanical checks cannot catch the error: the gate is too weak, or the documentation overstates it.

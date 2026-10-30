@@ -1,102 +1,102 @@
-# 审计模型
+# Audit model
 
-## 核心问题
+## The one question
 
-审计时始终围绕一个问题：
+Hold one question through the whole audit:
 
-> 零上下文 Agent 能否只凭仓库内信息，安全完成真实任务？
+> Can a zero-context agent complete a real task safely using only what the repository contains?
 
-不要用文件数量、标题完整度或 Markdown 美观度代替这个判断。
+Never substitute file counts, heading completeness, or tidy Markdown for this judgement.
 
-## 八个审计维度
+## The eight dimensions
 
-### 1. 定位
+### 1. Locating
 
-- 根入口能否说明项目用途和边界。
-- 用户意图能否映射到明确的模块或事实来源。
-- 是否必须先全库搜索才知道从哪里开始。
+- Does the root entry state the project's purpose and boundaries?
+- Can a user's intent be mapped to a specific module or fact source?
+- Is a repository-wide search required before knowing where to start?
 
-### 2. 权威性
+### 2. Authority
 
-- 每类动态事实是否只有一个权威来源。
-- 汇总页是否复制了会漂移的状态。
-- 冲突时是否明确哪一份优先。
+- Does each class of dynamic fact have exactly one authoritative source?
+- Do summary pages copy state that will drift?
+- On conflict, is it stated which source wins?
 
-### 3. 范围
+### 3. Scope
 
-- 工作流是否定义默认扫描和修改范围。
-- Agent 能否避免读取无关历史、模块或外部数据。
-- 用户限定范围时是否有明确覆盖规则。
+- Does the workflow define the default scan and change scope?
+- Can the agent avoid reading irrelevant history, modules, or external data?
+- When the user narrows the scope, is there an explicit override rule?
 
-### 4. 安全
+### 4. Safety
 
-- 不可推断字段是否列明。
-- 状态、发布、删除、迁移等高风险动作是否需要确认。
-- 禁止路径是否在危险动作附近也有护栏。
+- Are the fields that cannot be inferred listed?
+- Do high-risk actions (state changes, releases, deletions, migrations) require confirmation?
+- Do forbidden paths carry a guard rail close to the dangerous action, not only in the global rules?
 
-### 5. 可执行性
+### 5. Executability
 
-- 工作流是否有输入、输出、步骤和验收。
-- 模板能否独立生成完整对象。
-- Agent 能否产出实际结果，而不只是复述规则。
+- Does the workflow have inputs, outputs, steps, and acceptance?
+- Can the template generate a complete object on its own?
+- Can the agent produce a real result instead of restating the rules?
 
-### 6. 验证
+### 6. Verification
 
-- 是否有可复制运行的命令。
-- 是否说明通过标准、能力边界和失败处理。
-- 文档是否夸大检查工具覆盖范围。
+- Is there a command anyone can copy and run?
+- Are the pass criteria, the capability boundary, and the failure handling stated?
+- Does the documentation overstate what the check actually covers?
 
-### 7. 演进
+### 7. Evolution
 
-- 决策记录是否与当前事实分离。
-- 废弃内容是否变成不可执行墓碑。
-- 目录或模块变化时，引用和地图是否同步更新。
+- Are decision records separated from current facts?
+- Has deprecated material become an unexecutable tombstone?
+- When a directory or module changes, are references and maps updated with it?
 
-### 8. 鲁棒性
+### 8. Robustness
 
-- 普通 Agent 是否成功。
-- 较轻量 Agent 跳读、乱序或扩读时是否仍安全。
-- 关键护栏是否只存在于一个容易被跳过的入口。
+- Does an ordinary agent succeed?
+- Does a lighter agent stay safe when it skips, reorders, or over-reads?
+- Does a critical guard rail exist only in one entry that is easy to skip?
 
-## 证据要求
+## Evidence requirements
 
-每个 P0/P1 问题至少包含：
+Every P0 or P1 problem carries at least:
 
-- 触发它的真实任务。
-- 文件路径与行号或命令输出。
-- Agent 实际行为，而非推测。
-- 可能造成的具体后果。
-- 应在哪一层解决。
+- The real task that triggered it.
+- File path and line numbers, or command output.
+- What the agent actually did, not what it plausibly would do.
+- The concrete consequence.
+- The layer where it should be solved.
 
-没有证据时标为假设，不直接改结构。
+With no evidence, mark it a hypothesis and change no structure.
 
-## 分级
+## Grades
 
-- **P0**：可能产生不可逆或高代价错误。
-- **P1**：任务无法独立完成或必须猜测。
-- **P2**：可以完成，但上下文、时间或输出浪费明显。
-- **P3**：纯表达偏好。
+- **P0**: can cause an irreversible or expensive error.
+- **P1**: the task cannot be completed independently, or requires guessing.
+- **P2**: completable, but context, time, or output is wasted.
+- **P3**: a pure expression preference.
 
-先清零 P0，再处理 P1。P2 必须有真实成本证据；不要为消灭所有 P3 无限扩写文档。
+Clear P0 before touching P1. P2 needs real cost evidence. Never expand documentation without limit just to kill every P3.
 
-## 出口归属
+## Exit assignment
 
-每条建议必须落在一个出口；不存在“没有出口”的建议。
+Every recommendation lands on one exit. Nothing is "without an exit".
 
-- **出口① 造眼睛**：错误能被会跑的检查捕获（lint / test / CI / 只读守卫）。
-- **出口② 收窄路**：错误选项在默认路径上消失（模板 / 目录约定 / 脚手架 / 唯一写法）。
-- **出口③ 人侧记账**：无法机械验证，明确划给“必须人来”，并写清落在哪个动作上。
+- **Exit 1, build the eyes**: a check that catches the error on its own (lint, test, CI, read-only guard).
+- **Exit 2, narrow the path**: the wrong option disappears from the default route (template, directory convention, scaffold, one blessed way).
+- **Exit 3, human bookkeeping**: not mechanically verifiable, explicitly assigned to a human, naming the action it lands on.
 
-门禁要求的是“必须有出口”，不是“必须是出口①”。把不可机械验证的项硬塞成坏检查是反效果：只增加噪声，并制造“已验证”的假象，应改记出口③。
+The gate requires *an exit*, not *exit 1*. Forcing something unverifiable into a bad check backfires: it adds noise and manufactures a false sense of "verified". Record it under Exit 3.
 
-## 建议指标
+## Suggested metrics
 
-不要设统一硬阈值；记录基线与整改后的变化：
+Set no universal hard threshold; record the change between baseline and remediation:
 
-- 到第一个正确事实文件的时间和跳转数。
-- 必读文件与实际读取文件的差值。
-- 无关文件读取比例。
-- 前置澄清问题数量。
-- 未经证据提出的修改数量。
-- 验证失败后能否自行定位处理入口。
-- 普通 Agent 与较轻量 Agent 的安全通过率。
+- Time and number of hops to the first correct fact file.
+- The gap between files that must be read and files actually read.
+- Share of irrelevant files read.
+- Number of clarification questions asked up front.
+- Number of changes proposed without evidence.
+- Whether the agent can find the handling entry after a verification failure.
+- Safe-pass rate for an ordinary agent and for a lighter agent.

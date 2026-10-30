@@ -15,69 +15,69 @@ disable-model-invocation: true
 
 # Agent-ready repository
 
-把仓库建设成零上下文 Agent 可安全工作的环境。目标不是“文档齐全”，而是让真实任务形成短而可靠的闭环：
+Build the repository into a place where a zero-context agent can work safely. The goal is not "complete documentation" but a short, reliable loop for a real task:
 
-`任务意图 → 唯一入口 → 最小事实集 → 正确动作 → 确认边界 → 验证 → 交付`
+`task intent → one entry → minimum fact set → correct action → confirmed boundary → verification → delivery`
 
-## 使用边界
+## Scope
 
-- 只有用户明确调用本 Skill 或明确要求开展同类仓库整改时使用。
-- 默认只读审计。**本技能止于建议**：不执行整改、不代排优先级、不生成“下一步 3 件事”。
-- 用户接受建议后另行进入实施阶段时，整改顺序与复验清单见 [implementation-sequence.md](references/implementation-sequence.md)。
-- 移动、删除目录，替换权威来源或改变模块所有权前，必须单独说明影响并取得确认。
-- 不强制项目采用 `README.md`、`AGENTS.md`、`docs/topics/` 或 spec-anchor；先识别现有约定。
-- 项目根有 `site.config.yaml`（已接入 spec-anchor）时，读 [spec-anchor-projects.md](references/spec-anchor-projects.md)：它说明 `init` 已铺的哪些东西不必再建议、要检查哪些是否真的接上，以及问题类别如何对齐「原则 N」。未接入时不要为完成审计在项目里执行 `spec-anchor init`。
-- **不做价值判断**：“这个项目还该不该继续”“精力配比对不对”归用户 vault 的 `01-项目库/00-项目台账.base`（`is_at_risk` / `days_idle`）与 `99-项目方法论/`，不进本技能。
+- Use this skill only when the user calls it or explicitly asks for this kind of repository remediation.
+- Read-only audit by default. **This skill stops at recommendations**: it executes no remediation, sequences no priorities, and produces no "next three things".
+- When the user accepts the recommendations and moves to implementation, the round order and the re-verification checklist are in [implementation-sequence.md](references/implementation-sequence.md).
+- Before moving or deleting a directory, replacing an authoritative source, or changing module ownership, state the impact separately and get confirmation.
+- Do not force the project onto `README.md`, `AGENTS.md`, `docs/topics/`, or spec-anchor. Identify the existing convention first.
+- When the project root has `site.config.yaml` (spec-anchor is wired in), read [spec-anchor-projects.md](references/spec-anchor-projects.md): it says what `init` already laid down so you stop recommending it, what to check is actually connected, and how problem categories map to "principle N". When it is not wired in, do not run `spec-anchor init` just to finish an audit.
+- **No value judgements**: "should this project continue", "is the effort split right" belong to the user's vault (`01-项目库/00-项目台账.base` with `is_at_risk` / `days_idle`, and `99-项目方法论/`), never to this skill.
 
-## 第一步：定义真实任务与仓库认知地图
+## Step 1: Define real tasks and the repository's cognitive map
 
-选 2–5 个能代表项目日常工作的任务，覆盖：定位并修改已有功能 / 新建模块、版本、页面或业务对象 / 更新动态事实 / 跑测试、构建、发布 / 处理废弃、异常或跨模块场景。没有代表任务时先向用户确认最常见的工作，不要只检查文档是否存在。
+Pick 2 to 5 tasks that represent the project's daily work, covering: locating and changing an existing feature / creating a module, version, page, or business object / updating a dynamic fact / running tests, builds, and releases / handling deprecation, failure, or a cross-module case. With no representative task, ask the user what the most common work is. Never settle for checking whether documents exist.
 
-从根入口只读识别下列角色（文件名可以不同）：总入口、全局规则、模块地图、动态索引、事实来源、工作流、模板、验证入口、废弃内容。记录 Agent 从任务描述到第一个正确事实文件的实际路径；不要先全库搜索来掩盖入口问题。
+From the root entry, read-only, identify these roles (file names may differ): overall entry, global rules, module map, dynamic index, fact sources, workflows, templates, verification entry, deprecated material. Record the actual path an agent takes from the task description to the first correct fact file. Do not start with a repository-wide search; that hides an entry-point problem instead of finding it.
 
-## 第二步：跑两遍零上下文基线
+## Step 2: Run the zero-context baseline twice
 
-**第一遍 · Agent 侧**：派发不携带历史对话的 Agent 完成代表任务。提示词只描述真实目标，不泄露正确路径与预期答案；要求返回实际读取顺序、事实来源、不可推断项、结果与阻塞点；至少安排一次较轻量 Agent，观察跳读、扩读、弱推理时是否仍然安全。基线阶段不修文件。
+**Pass one, the agent side**: dispatch an agent with no conversation history to complete a representative task. The prompt states the real goal only; it leaks neither the correct path nor the expected answer. Require back the actual read order, the fact sources, what it could not infer, the result, and the blockers. Include at least one lighter agent to see whether skipping, over-reading, and weak inference stay safe. Change no files during the baseline.
 
-**第二遍 · 人侧**：同一任务换到人这一侧，观察 **人在哪里被迫出手**。产出只分两桶：`能离开人的` / `不能离开人的`。
+**Pass two, the human side**: run the same task on the human's side and watch **where the human is forced to step in**. The output has exactly two buckets: `leaves the human` and `cannot leave the human`.
 
-- **必须有人在环**：这一遍需要真人在场回答或执行。人不在时，记「缺源」并跳过该遍，**严禁由 Agent 模拟“人会在哪里出手”**。
-- **只看不猜**：只记录实际观察到的出手点（步骤 + 位置）。缺证据时写“缺源”，**严禁推断人在哪出手**——这是最大的幻觉源。
-- **不追求消除所有人工注意点**：有些缓冲迫使人看清全局，属于有意保留，应记到出口③。
-- 因「缺源」跳过的条目：出口归属直接标 ③，裁决列标「待议」。
+- **A human must be in the loop.** This pass needs a real person present to answer or act. With nobody available, record "missing source", skip the pass, and **never have the agent simulate where a human would step in**.
+- **Observe, never guess.** Record only the intervention points actually observed, with the step and the location. Without evidence write "missing source". **Never infer where the human steps in**; that is the largest source of invention here.
+- **Do not aim to remove every human attention point.** Some buffers force a look at the whole picture and are kept on purpose. Record those under Exit 3.
+- An item skipped for "missing source" gets Exit 3 and a verdict column reading "open for discussion".
 
-两遍基线的提示词与指标见 [acceptance-tests.md](references/acceptance-tests.md)。
+The prompts and metrics for both passes are in [acceptance-tests.md](references/acceptance-tests.md).
 
-## 第三步：诊断根因并逐条挂出口
+## Step 3: Diagnose root causes, then attach one exit to each item
 
-按 **P0–P3** 影响分级、按**根因层级**（文档缺失 / 多权威副本 / 目录与模块边界 / 工作流默认与确认 / 模板完整性 / 机械验证）定位问题，判据见 [audit-model.md](references/audit-model.md) 与 [architecture-patterns.md](references/architecture-patterns.md)。每条建议都必须挂到下列一个出口。
+Grade impact **P0 to P3** and locate the problem by **root-cause layer** (missing document / multiple authoritative copies / directory and module boundaries / workflow defaults and confirmations / template completeness / mechanical verification). The criteria are in [audit-model.md](references/audit-model.md) and [architecture-patterns.md](references/architecture-patterns.md). Every recommendation carries exactly one of the exits below.
 
-## 三出口门禁
+## The three-exit gate
 
-每条建议**必须有一个出口**；门禁要求的是“有出口”，**不是“必须是出口①”**。
+Every recommendation **must carry one exit**. The gate requires *an exit*, **not exit 1**.
 
-- **出口① 造眼睛**：会跑的检查——lint / test / CI / 只读守卫。
-- **出口② 收窄路**：会自己出现的默认——模板 / 目录约定 / 脚手架 / 唯一写法。
-- **出口③ 人侧记账**：明确划给“必须人来”的动作。
+- **Exit 1, build the eyes**: a check that runs on its own. Lint, test, CI, read-only guard.
+- **Exit 2, narrow the path**: the default that appears without being asked for. Template, directory convention, scaffold, one blessed way to write it.
+- **Exit 3, human bookkeeping**: an action explicitly assigned to a person.
 
-不可机械验证的项硬塞成坏检查是反效果：只会增加噪声并制造“已验证”的假象，应改记出口③。
+Forcing something that cannot be verified mechanically into a bad check backfires: it adds noise and manufactures a false sense of "verified". Record those under Exit 3 instead.
 
-## 交付格式
+## Delivery format
 
-按**可裁决表**交付，每条建议一行：
+Deliver the **decidable table**, one row per recommendation:
 
-| 问题 | 影响面 P0–P3 | 出口归属 | 建议动作 | 接受代价 | 裁决 |
-|------|------|------|------|------|------|
+| Problem | Impact P0–P3 | Exit | Suggested action | Accepted cost | Verdict |
+|---|---|---|---|---|---|
 
-- **裁决列留空**：技能不预填、不给倾向。
-- **接受代价**必须可判定，写清接受这条建议要付出的具体东西：新增或修改哪个脚本、目录约定或流程，每次改动多几步，谁需要记住什么。写不出来说明这条建议还不具体，退回重写，不要让它退化成形容词栏。
-- 表前附本次目标任务与基线证据（含人侧两桶）；表后只列仍会影响工作的残留事项，不写“下一步 3 件事”。
+- **Leave the verdict column empty**: the skill neither prefills it nor leans it.
+- **Accepted cost must be decidable.** State exactly what accepting the recommendation costs: which script, convention, or process gets added or changed, how many extra steps each change takes, and who has to remember what. If you cannot write it, the recommendation is not concrete yet; rewrite it rather than letting the column degenerate into adjectives.
+- Before the table, state this run's target task and the baseline evidence, including the human side's two buckets. After the table, list only the residue that still affects work. No "next three things".
 
-**完成判据**（三者同时满足才算交付）：
+**Completion criteria** (all four, or it is not delivered):
 
-- 表中每条建议都有出口归属（①/②/③），无空缺。
-- 每条出口③都写明落在哪个人的关口动作上（例如定意图、合并审查、发版），并说明为什么归不进①或②。两样都写不出的，退回重想。
-- 人侧两桶要么附观察证据，要么明确标「缺源」，不含任何推断。
-- 仍会影响工作的残留事项已在表后列出。
+- Every row carries an exit (1, 2, or 3), with none blank.
+- Every Exit 3 row names the human gate it lands on (deciding intent, merge review, cutting a release, for example) and says why it fits neither Exit 1 nor Exit 2. If neither can be written, think again.
+- The human side's two buckets either carry observation evidence or are explicitly marked "missing source". No inference anywhere in them.
+- The residue that still affects work is listed after the table.
 
-案例见 [example-work-assistant.md](references/example-work-assistant.md)。
+A worked case is in [example-work-assistant.md](references/example-work-assistant.md).
