@@ -239,6 +239,13 @@ function draw() {
     ctx.globalAlpha = (selected && !hot) || (query && !n.id.toLowerCase().includes(query)) ? .15 : 1;
     ctx.beginPath(); ctx.arc(n.x, n.y, radius(n), 0, Math.PI * 2);
     ctx.fillStyle = COLOR[n.kind]; ctx.fill();
+    if (n.manual) {
+      ctx.strokeStyle = 'rgba(148,163,184,0.85)';
+      ctx.lineWidth = 1 / cam.k;
+      ctx.setLineDash([2 / cam.k, 2 / cam.k]);
+      ctx.beginPath(); ctx.arc(n.x, n.y, radius(n) + 3.5 / cam.k, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]);
+    }
     if (selected === n) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8 / cam.k; ctx.stroke(); }
   }
   ctx.restore();
@@ -339,7 +346,9 @@ function renderDetail() {
       ' skills set <code>disable-model-invocation: true</code>, so nothing is auto-discovered. ' +
       'Left to right: the entry picks a playbook, the playbook names the skills, the skills read judgment. ' +
       'Click any node to isolate its wires.</div>' +
-      '<div class="grp"><div class="t">Most pointed-at</div>' + hubs + '</div>';
+      '<div class="grp"><div class="t">Most pointed-at</div>' + hubs + '</div>' +
+      '<div class="grp"><div class="t">Manual only · nothing routes here (' + DATA.meta.manual.length + ')</div>' +
+      DATA.meta.manual.map(n => '<div class="row" data-go="' + n + '">' + n + '</div>').join('') + '</div>';
     bindRows(); return;
   }
   const ins = edges.filter(e => e.t === selected && edgeVisible(e));
@@ -363,7 +372,8 @@ document.getElementById('legend').innerHTML =
   Object.keys(COLOR).map(k => '<div class="lg"><span class="dot" style="background:' + COLOR[k] +
     '"></span>' + KIND[k] + '</div>').join('') +
   '<div class="lg" style="margin-top:5px"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#7f97c4" stroke-width="1.6"/></svg>playbook step or hand-off</div>' +
-  '<div class="lg"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#4d5f80" stroke-width="1.4"/></svg>entry registry edge (toggle)</div>';
+  '<div class="lg"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#4d5f80" stroke-width="1.4"/></svg>entry registry edge (toggle)</div>' +
+  '<div class="lg"><svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill="#334" stroke="#94a3b8" stroke-dasharray="2 2"/></svg>manual only: nothing routes to it</div>';
 document.getElementById('meta').innerHTML =
   '<b>' + DATA.meta.total + '</b> skills, all <b>' + DATA.meta.dmi + '</b> closed to discovery<br>' +
   '<b>' + DATA.meta.playbooks + '</b> playbooks · <b>' + DATA.meta.edges + '</b> edges · <b>' +
@@ -376,6 +386,18 @@ window.addEventListener('resize', () => { resize(); fit(); });
 </body>
 </html>
 """
+
+# manual = 只有入口注册表提到它，没有任何 playbook 或技能真的指向它
+entry_ids = {n['id'] for n in nodes if n['kind'] == 'entry'}
+def is_registry(e):
+    return e['k'] == 'routes' and e['s'] in entry_ids and by_kind(e['t']) != 'playbook'
+def by_kind(i):
+    for n in nodes:
+        if n['id'] == i: return n['kind']
+    return 'reference'
+routed = {e['t'] for e in edges if not is_registry(e) and e['k'] != 'reads'}
+for n in nodes:
+    n['manual'] = n['kind'] != 'reference' and n['id'] not in routed
 
 # ---------- layered architecture layout ----------
 import math, collections as _c
@@ -442,6 +464,7 @@ for n in nodes:
     n['x'] = LAYER_X.get(n['kind'], 900)
 
 data['nodes'] = nodes
+data['meta']['manual'] = sorted(n['id'] for n in nodes if n.get('manual'))
 payload = json.dumps(data, ensure_ascii=False)
 pathlib.Path('skill-map.html').write_text(TEMPLATE.replace('__DATA__', payload), encoding='utf-8')
 print('wrote skill-map.html', pathlib.Path('skill-map.html').stat().st_size, 'bytes')
