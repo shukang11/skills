@@ -1,50 +1,52 @@
 ---
 name: arena
-description: "同一任务并行跑几个完整候选，用异族模型交叉评分，选一个做底，再把落选里最强的部分并进来。成本高，用于一次尝试会把错误形状锁死时。"
+description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
 disable-model-invocation: true
-argument-hint: "要产出的东西，一句话"
 ---
 
 # Arena
 
-和 `compare-shapes` 的分工：`compare-shapes` 是低成本的手工形状对照，不并行、不跑完整尝试。候选值得各跑一整次、或需要另一个模型家族复核时，用本条。
+The division of labour with `compare-shapes`: that skill is a cheap, hand-built side-by-side of shapes; it does not spawn candidates or run full attempts. Reach for an arena when a candidate deserves a whole attempt, or when the pick needs a second opinion from another model family.
 
-开一个待办，每个阶段一条：框定、并行、交叉评分、选底、并入、验证。
+Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
 
-## 阶段 A：框定
+## Phase A: Frame
 
-所有候选拿到同一句提示，那句提示就是契约。
+Every candidate gets the same prompt, so the prompt is the contract.
 
-1. 写明每个候选要产出的产物。
-2. 写出 3 到 6 条能打分成功的标准。标准只给评审用，候选看不到。
-3. 定候选数 N 和每个候选用的模型。判断力敏感时用不同模型；生成量大的活用同一个模型跑 N 次。
-4. 每个候选单独一个输出位置：能开 worktree 就开，否则 `<slug>/candidate-<n>/`。按 `principle-separate-before-serializing-shared-state`。
+1. State the artifact each candidate is producing.
+2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
+3. Pick the runners: one per model family you have access to, at least two, never two seats on the same model. When the work is generation-bound rather than judgment-sensitive, the same model N times is fine.
+4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
-## 阶段 B：并行
+## Phase B: Fan out
 
-一条消息里同时开 N 个子代理。每个拿到：任务、共同背景的路径、自己的输出位置，以及"产出产物 + 一小段理由，写明考虑过哪些替代、否决了什么"。
+Spawn all N subagents in one message with `run_in_background: true`, each with the task, the path to the shared grounding, its own output path, and instructions to produce the artifact and a short rationale naming the alternatives it considered and what it rejected.
 
-候选没有产出，按 N-1 继续，记下缺席。
+If a candidate produces no output, proceed with N-1 and note the dropout.
 
-## 阶段 C：交叉评分
+## Phase C: Cross-judge
 
-所有候选写完之后，另开一个只读评审子代理，尽量用不同模型家族。它看到标准和按标签排列的候选，逐条打分并推荐一个底。
+After all Phase B candidates complete, spawn one read-only judge on a model family different from the parent's. It sees the rubric and the candidates by label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Do not spawn it while candidates are still writing.
 
-## 阶段 D：选底
+## Phase D: Pick a base
 
-自己把每个候选从头读到尾，再逐条打分，不按整体感觉。与交叉评审比对：一致就确认；不一致说明有一方带偏或标准写得含糊，两份理由都读完再定。
+Read every candidate end to end before picking. Score each against the rubric criterion by criterion, not on holistic feel, and compare with the cross-judge. Agreement on the base confirms the pick. Disagreement means one of you is biased or the rubric was ambiguous. Read both rationales before deciding.
 
-取一个后来者最容易扩展、又不会破坏不变式的底。两条并列时取公共接口更小的那个。
+Pick the base a future maintainer can extend most easily without breaking invariants. When two feel tied, prefer the cleaner boundary or smaller API, per the Laziness Protocol.
 
-## 阶段 E：并入
+## Phase E: Graft
 
-把落选候选各走一遍，通常每个只有一两处值得搬。手工改写进底的同一个模型，不机械粘贴。候选收敛成同一个形状时记下收敛，不再并入。候选发散到无法打分时，阶段 A 没框定清楚，重框再跑，不把分歧平均掉。
+Walk each losing candidate once more for what is worth porting into the base, usually one or two things per candidate, not most of it. Fold each graft in by hand, per the **redesign-from-first-principles** principle skill, so the result stays coherent under one mental model. Don't paste mechanically.
 
-## 阶段 F：验证
+If the candidates converge on one shape, that is strong agreement. Note it and ship the consensus shape. No graft is needed. If they wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
 
-按 `principle-prove-it-works` 验证合成后的产物。验证发现问题而 arena 没发现：要么阶段 A 错了，重跑；要么某个候选已经指出而你漏了并入，回到阶段 E。不糊过去。
+## Phase F: Verify
 
-## 收工
+Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
 
-- 产出一个合成产物，旁边一份 `synthesis.md`：底是哪个、为什么、交叉评审的结论、每处并入来自哪个候选、否决了什么、收敛或缺席、验证结果。
-- 候选之间差异没读出来就选了底的，回去读，不算收工。
+## Outputs
+
+One synthesized artifact, with a short synthesis note alongside naming the base and why, the cross-judge's verdict, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result.
+
+**Reply:** the synthesized artifact, and a `synthesis.md` beside it naming the base and why, the cross-judge's verdict, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result. Picking a base without having read how the candidates differ is not done: go back and read them.

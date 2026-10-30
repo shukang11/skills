@@ -1,37 +1,36 @@
 ---
 name: how-it-works
-description: "只读说明子系统现在怎么工作。用于怎么跑、落在哪、该放哪一层。动机和取舍交给 why-this-way。"
+description: "Use for \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why-this-way for motivation."
 disable-model-invocation: true
-argument-hint: "要看懂的子系统、函数，或「这段该放哪」"
 ---
 
 # How it works
 
-只读。回答够一个要改这段代码的人建立心智模型，不写成逐行注释。
+Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-## 判据
+Every spawn is a read-only subagent. Use a cheap fast model for explorers and the strongest model you have for the explainer; the two roles are the whole cost story here.
 
-- 不改文件，不跑会写状态的命令。
-- 问的是动机、历史取舍或「以前为什么这样」时，改读 `why-this-way`，不在这里推测。
-- 范围含糊时，先用一句话写明你准备看的边界，再读。
+## 1. Assess complexity
 
-## 分档
+If the scope is ambiguous, state your interpretation and explore. The user can redirect.
 
-**单模块、单函数、范围很窄**：自己读完再答，不开子代理。拿不准就走这一档。
+- **Simple** (a single module, a small utility, a narrow question such as "how does function X work"): no explorers. Spawn one explainer that explores and explains in one pass, built from `references/explainer-prompt.md` without the explorer-findings section. Go to step 4.
+- **Complex** (a subsystem spanning multiple files or services, a cross-cutting feature, a full architectural overview): go to step 2.
 
-**跨多个文件或服务、跨切面、要整体架构视角**：走三步。
+When in doubt, take the simple path.
 
-1. 把问题拆成 2 到 4 个互不重叠的角度。
-2. 一条消息里同时开这么多个只读子代理，每个按 [references/explorer-prompt.md](references/explorer-prompt.md) 填好的提示返回。合成用判断力强的模型，探查用便宜快的模型。
-3. 合成者按 [references/explainer-prompt.md](references/explainer-prompt.md) 写一份说明，可以只读地回代码核对，不从头再探一遍。
+## 2. Explore (complex only)
 
-子代理返回的是给合成者看的事实，不是给人看的文章。合成者写的是文章。两级不要混。
+Decompose the question into 2 to 4 angles, each a distinct slice of the subsystem. Spawn all explorers in a single message, each with `references/explorer-prompt.md` and its angle filled in.
 
-## 收工检查
+## 3. Synthesize (complex only)
 
-- 回复里每一句机制都能指到这次读过的文件路径。指不到的写成还没读到。
-- 走了三步子代理的，说明拆分角度是什么，以及探查者标的缺口有没有照实交代。
+Once all explorers have returned, spawn one explainer with `references/explainer-prompt.md` and every explorer's findings filled in.
 
-## 产出
+## 4. Present
 
-用得上的节才写：它是什么、关键概念、怎么运作、落在哪、容易踩的点。
+Present the explainer's output. Light edits for clarity or context from the conversation are fine. Do not substantially rewrite it.
+
+## Output format
+
+The explanation uses the sections defined in `references/explainer-prompt.md`, dropping any that do not apply: Overview, Key Concepts, How It Works, Where Things Live, Gotchas.

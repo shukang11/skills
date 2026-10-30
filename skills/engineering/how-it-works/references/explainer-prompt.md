@@ -1,55 +1,55 @@
-# 合成者提示模板
+# Explainer Prompt Template
 
-合成子代理的提示从这份模板填出来。
+Build the explainer subagent's prompt from this template. Fill in the placeholders.
 
 ---
 
-你要给一位资深工程师写一份架构说明。多个探查代理已经并行追过同一个子系统的不同切面。把它们发现的事合成一份连贯、结构清楚的说明。
+You are writing an architectural explanation for a senior engineer. Multiple explorer agents have traced different slices of the codebase in parallel and gathered findings. Synthesize their findings into one coherent, well-structured explanation.
 
-## 原问题
+## Original Question
 
 > {QUESTION}
 
-## 探查者的发现
+## Explorer Findings
 
 {EXPLORER_FINDINGS_ALL}
 
-## 要求
+## Instructions
 
-探查者各看一个角度。它们的发现会重叠，偶尔互相矛盾。以代码为准调和：合并重叠的描述，矛盾的地方自己读代码判断，把几个切面拼成一张图。
+The explorers each investigated a different angle of the same subsystem. Their findings will overlap in places and may occasionally contradict. Reconcile them. Merge overlapping descriptions, resolve contradictions by checking the code yourself, and combine the separate slices into a unified picture.
 
-写出来的东西要让一个不熟这块的资深工程师读完就有一份稳稳的心智模型，能直接在这个子系统里开工。
+Write an explanation a senior engineer unfamiliar with this area could read and walk away with a solid mental model, understanding the architecture well enough to start working in it confidently.
 
-你可以只读地看代码，用来核对细节、补上缺口。探查者已经把活干了，不用从头再探一遍。
+You have read-only access to the codebase to check anything, clarify a detail, or fill a gap. Use Read, Grep, and Glob as needed. The explorers did the work, so you shouldn't need to re-explore from scratch.
 
-## 输出结构
+## Output Format
 
-按下面写，按问题实际情况取舍。不是每一节都用得上。
+Use this structure, adapted to what makes sense for the question. Not every section is needed for every question.
 
-### 它是什么
-一到两段。这东西是什么、做什么、为什么存在。只读这一段就该能决定要不要继续读。
+### Overview
+1-2 paragraphs. What is this thing, what does it do, why does it exist. Someone should be able to read just this and decide whether to keep reading.
 
-### 关键概念
-后面读懂所需的重要类型、服务、抽象。简短定义，不求穷尽。
+### Key Concepts
+The important types, services, or abstractions needed to follow the rest. Brief definitions, not exhaustive.
 
-### 怎么运作
-主体，最长的一节。顺着流程走：什么触发它、逐步发生什么、数据去哪、决策点在哪。
+### How It Works
+The core of the explanation, and the longest section. Walk through the flow: what triggers it, what happens step by step, where data goes, what the decision points are.
 
-用散文，不写伪代码。给出具体文件和函数名，让人知道去哪看，但别贴大段代码，除非某一段是理解要点的必需。
+Use prose, not pseudocode. Reference specific files and functions so the reader knows where to look, but don't dump large code blocks unless a snippet is essential to a point.
 
-流程涉及多个组件互相对话，或数据分阶段变换时，画一张图。结构化流程（时序图、流程图、组件图）用 mermaid，简单关系用 ASCII 就够。有判断力地用：图要澄清，不是装饰。散文能讲清就不画。
+When the flow involves multiple components talking to each other, or data transforming through stages, include a diagram. Use mermaid (```mermaid) for structured flows (sequence diagrams, flowcharts, component graphs) or ASCII art for simpler relationships where mermaid would be overkill. Use your judgment. A diagram should clarify, not decorate. If prose covers the flow, skip the diagram.
 
-### 落在哪
-一份简短的文件/目录地图，只列要在这块开工需要知道的。
+### Where Things Live
+A brief file/directory map. Just the ones someone would need to start working here.
 
-### 容易踩的点
-不显然之处、意外的行为、历史原因、坑。没内容就省掉这一节。
+### Gotchas
+Non-obvious things, surprising behavior, historical context, pitfalls. Skip this section if there's nothing worth calling out.
 
-## 写法
+## Communication Style
 
-- 用具体语言，不要「抽象之上的抽象」。
-- 写「`UserService` 调 `AuthClient.refresh()`」，不写「服务委派给客户端」。
-- 复杂的地方解释为什么复杂，不要只描述复杂。
-- 简单的地方别硬凑篇幅。
-- 有贴切的类比就用，没有就别造。
-- 探查者标了缺口或未解问题的，照实交代，不藏。
+- Use concrete language, not abstractions-about-abstractions
+- Say "the `UserService` calls `AuthClient.refresh()`" not "the service delegates to the client"
+- When something is complex, explain why it's complex. Don't just describe the complexity
+- When something is simple, don't pad it out
+- If there's a helpful analogy, use it. If there isn't, don't force one
+- If the explorers flagged open questions or gaps, acknowledge them rather than hiding them

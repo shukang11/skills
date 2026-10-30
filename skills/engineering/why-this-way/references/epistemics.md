@@ -1,45 +1,71 @@
-# 置信度
+# Epistemics
 
-历史证据是残缺、带偏向、偶尔互相矛盾的。代码显示它做什么，不显示它为什么存在。为什么在提交、PR、工单、文档和对话里，这些都不全。假装不是这样，产出的就是听起来笃定的猜测。
+How to reason about confidence when evidence is historical, fragmentary, and sometimes contradictory, and how to tell the user without flattening it into false certainty. Code shows what it does, not *why it exists*. The why lives in commits, PRs, tickets, docs, and conversations, all incomplete, biased, and sometimes missing. Pretending otherwise produces confident-sounding guesses that mislead the user.
 
-## 五档
+## Confidence Tiers
 
-回复里每条结论只能落在一档里。档位决定它写在哪一节、用什么口气。
+Every claim in the output must sit in one tier. The tier sets its section and its phrasing.
 
-### 1. 直陈（Direct）
+### 1. Direct
 
-有人明确写下的文字直接回答了问题，而不是「代码这样写，所以作者大概想这样」。例如 PR 描述写着「修掉超过 1000 条记录无法翻页的 bug」，工单写着「因为 Acme 的安全审查要求」，代码注释写着「上游 API 拒绝更大的值，所以卡在 100」。
+An explicit, textual citation answers the question: something an author actually *wrote* that says why, not "the code does X so the author must have wanted X." For example, a PR description "this fixes the bug where users with >1000 items couldn't paginate", a ticket "we're adding this because customer Acme requested it in their security review", a code comment "// clamp to 100 because the upstream API rejects larger values", a design doc "we chose option A over option B because we need persistence across restarts", or a chat message from the author "switching to this approach since the old one was flaky in tests".
 
-口气：笃定、现在时、带引用。「这个存在是因为 X。」
+Phrasing: confident, present tense, cited. "This exists because X."
 
-### 2. 多方印证（Supported）
+### 2. Supported
 
-多条间接证据指向同一个结论，没有哪一条明说。例如 PR 标题写「提升性能」、工单打了 perf 标签、同期提交都在动同一条热路径。
+Multiple pieces of indirect evidence converge on one conclusion. No single source states it explicitly, but the pattern across sources makes it likely. For example, the PR title says "improve performance", the ticket is labeled "perf", and the surrounding commits all touch the same hot path. Or several tests added with the change all exercise very large inputs. Or the author's other PRs from the same week all name the same incident.
 
-口气：笃定但明确说是推出来的，逐条引用。「证据强烈指向 X：……」
+Phrasing: confident but clearly derived, citing each item. "The evidence points strongly to X: [the specific pieces]."
 
-### 3. 推断（Inferred）
+### 3. Inferred
 
-一种合理的读法，但记录里没有东西直接支持。这是你的解释，不是记录里的事实。
+A reasonable reading of the context that nothing explicitly supports. It is *your interpretation*, not a fact from the record. For example, the PR doesn't say why, but the error was happening in production (per the incident channel timing) and the fix was rushed (merged the same day), so it was likely a hotfix. Or the function name suggests retry logic, and its retry count of 3 matches the team's 3-retry convention elsewhere in the codebase.
 
-口气：带保留，写清链条。「有 A 和 B，C 看起来很可能，因为 D。」
+Phrasing: hedged, with the chain explicit. "Given A and B, C seems likely because D."
 
-### 4. 猜想（Speculative）
+### 4. Speculative
 
-证据很薄，别的解释同样成立。值得写出来，因为用户可能知道哪个对，但要标明这是猜的。
+A plausible hypothesis on thin evidence, where other explanations fit equally well. Worth presenting, since the user may know which is right, but mark it as a guess. For example, "This might be a workaround for a browser bug that's since been fixed, but we found no contemporary evidence of that", or "It's possible this threshold was chosen to match an SLA commitment, but no SLA doc references it."
 
-口气：「一种可能是 X，但没有直接证据。」
+Phrasing: "One possibility is X, but we have no direct evidence." Usually lives in Competing Hypotheses, alongside other possibilities.
 
-### 5. 找不到（Unknown）
+### 5. Unknown
 
-找过了，找不到。这是有效且重要的结论，写下来。
+You looked and couldn't find out. A valid, important outcome. Document it.
 
-口气：「搜了 X、Y、Z，没找到为什么。」具体写清搜了什么，比「没能查明」有用得多。
+Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about *what* you searched. "We couldn't find out" is less useful than "We searched the ticket tracker with keywords A and B, scanned the 6 PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold. None surfaced a rationale."
 
-## 用词
+## Phrasing Guide
 
-**笃定词**只在第 1、2 档用，且紧邻引用：「因为」「原因是」「当初设计是为了」「修复了」「解决了」「团队决定」。这些词都在声称事实或作者意图。
+**Confidence words** imply Direct or Supported evidence and need a citation immediately adjacent. Never use them for inferences: "because", "the reason is", "was designed to" (claims author intent), "fixes" / "addresses" / "solves" (claims the change achieved its goal), "the team decided" (claims a group decision happened).
 
-**保留词**标记推断，不标记记录：「看起来」「似乎是」「可能」「与……一致」「一种读法是」「大概」。「看起来」和「因为」不能出现在同一句里。
+**Hedges** signal interpretation, not report. Use them liberally in What We Can Reasonably Infer: "appears to", "seems to", "likely", "suggests", "is consistent with", "one reading is", "plausibly", "may have been", "the evidence points toward".
 
-**不要用**：「显然」「很明显」「当然」——真显然就不用问了。「只是」——「只是为了性能」这种说法通常在掩盖不确定。
+**Words to avoid:**
+
+- "obviously". If it were obvious, the user wouldn't be asking
+- "clearly". Almost always precedes a claim that isn't clear
+- "of course". Same
+- "just" (as in "it's just X for performance"). Dismissive and usually hides uncertainty
+- "I think" / "I believe". You're synthesizing evidence, not giving a personal opinion. Use "the evidence suggests" instead.
+
+## Avoid Rationalization
+
+Code that "makes sense" today may have been written for reasons that no longer apply, or that were wrong at the time. Don't retrofit a clean rationale onto messy history. Don't assume the author did the "right" thing and work backward to justify it. Don't assume a consistent pattern was intentional when it might be copy-paste. Don't turn an absence of evidence into evidence of absence ("no one mentioned security concerns, so it must not have been a concern").
+
+## The Sycophancy Trap
+
+Users often embed a hypothesis: "Why do we do it this way, I assume it's for performance?" Don't simply confirm it. The guess is a prompt for investigation, not a conclusion to validate. Treat it as one candidate among others and check the evidence independently. If the evidence supports it, say so with citations. If not, say so, and present what the evidence *does* support.
+
+## When Evidence Contradicts
+
+Surface both sources in the output, with citations. Don't pick the one that fits a tidier narrative. For example, the ticket says "we need this for customer X's compliance requirement" and the PR says "cleaning up tech debt in this area". Both may be true (the ticket motivated the work, the PR gave the author's framing), or one may be wrong. Let the user make the call.
+
+## When Evidence Is Missing
+
+An honest "we don't know" is one of the most valuable outputs. The user learns the answer isn't in the obvious places, that they'll need to ask a human (the original author, the product owner, the team lead), or that they can decide the question isn't worth pursuing further. Failing to mark a gap, and instead filling it with a confident guess, actively harms the user, because they'll act on the guess. Name each gap concretely: the question, the sources searched, what you searched for in each, and what you found (nothing, or only tangential material).
+
+## Before Finalizing
+
+Before the synthesizer delivers the output, it checks every claim in "What We Found" and "What We Can Reasonably Infer". Each claim has a citation or moves to Inferred or Hypotheses. Its phrasing matches its tier. It doesn't treat code as evidence for its own intent (if it does, remove or reclassify it). The output has a "What We Don't Know" section. If no gaps are mentioned, that's suspicious. Either the evidence was unusually complete or something is being swept under the rug.
