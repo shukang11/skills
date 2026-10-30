@@ -1,28 +1,28 @@
-# 基准与性能数字的七问
+# The seven questions for any benchmark
 
-产生一个性能数字时读：PR 的前后对比、回归结论、选型对比、hillclimb 的 harness。
+Read when you produce a performance number: a PR's before and after, a regression claim, a choice between options, a hillclimb harness.
 
-`principle-explain-the-number` 的三句判据是总纲；这里是它的执行清单。
+`principle-explain-the-number` gives the three-line rule; this is its execution sheet.
 
-## 跑之前
+## Before you run anything
 
-- 把要下的结论先写成一句能发出去的话，例如「6 万行数据集上 p50 导出快 30%」。七问都是为了检验这一句。
-- 读测量脚本，写清它计时什么、计什么数、忽略什么。
-- 查机器忙不忙：`uptime` 和核数。忙就找出谁在跑；停不掉就交替测两侧，让噪声对两边一样，并在报告里写明。
+- Write the conclusion you expect to ship as one sentence, for example "p50 export is 30% faster on the 60k-row dataset". All seven questions test that sentence.
+- Read the measurement script. Note what it times, what it counts, what it ignores.
+- Check how busy the machine is: `uptime` and the core count. If something else is running, find out what. If you cannot stop it, interleave the two sides so both see the same noise, and say so in the report.
 
-## 七问
+## The questions
 
-1. **为什么不是两倍？** 点名限住它的东西。用一次不写进报告的运行做 profile（profiler 会拖慢工作）：`top` / `pidstat` 的每进程 CPU、`node --cpu-prof`、`py-spy`、`perf`、I/O 等待、`strace -c` 的系统调用数，再把热点对回源码。也看负载生成器：它先饱和，你测的就是它。改了东西数字没动，说明限流点解释了原因，先找它再下结论。
-2. **它被调优了吗？** 两侧都按生产的方式跑：release 构建、生产开关、批处理与事务参数、连接池、缓存冷热一致、版本与数据一致。一侧跑默认值，你比的是配置不是实现。调不动就别在这轮选赢家。
-3. **越界了吗？** 算一遍：字节/秒 对磁盘和网络带宽，次/秒 × 单次成本 对核数，省下的时间 对 那一段本身的耗时。砍掉占整轮 10% 的一段，整轮最多快约 11%。超过上限的数字测到了别的东西：缓存、空操作或 bug。
-4. **报错了吗？** 数失败和非成功响应，检查输出对不对而不只是有没有。拒绝通常快，超时和重试慢。脚本没数错误就加上。
-5. **能重复吗？** 每侧至少 5 次，交替跑（A、B、A、B）。报中位数和区间。差距小于跑动波动就是没差别。结论很接近时用秩和检验或 harness 自带的统计。
-6. **影响端到端吗？** 任何微观结果旁边给出用户真正等待的那条路径，用接近真实的数据量和并发。占 1% 的辅助函数再快，请求最多快 1%。
-7. **活真的跑了吗？** 确认计时的区间里活发生了：请求到了服务端、行写进去了、字节读出来了、结果被用上了。惰性代码（没人迭代的生成器、没人 await 的 promise、JIT 能丢掉的返回值）和超时，都会给出一份「没发生的工作」的数字。
+1. **Why not double?** Name what limits it. Profile in a run you do not report, because profilers slow the work down: `top` or `pidstat` for per-process CPU, `node --cpu-prof`, `py-spy`, `perf`, I/O wait, `strace -c` for syscall counts, then map the hot spot back to source. Watch the load generator too: if it saturates first, you measured the load generator. If a change did not move the number, the limiter explains why, so find it before concluding anything.
+2. **Was it tuned?** Run both sides the way production runs them: release builds, production flags, batch and transaction settings, connection pools, caches as warm or cold as production sees them, the same versions and data. One side on defaults means you compared configurations, not implementations. If you cannot tune it, pick no winner from that run.
+3. **Did it break a limit?** Do the arithmetic: bytes per second against disk and network bandwidth, operations per second times cost per operation against your cores, the time saved against the time that piece itself took. Removing a piece that takes 10% of the run can make the run at most about 11% faster. A number past the limit measured something else: a cache, a no-op, or a bug.
+4. **Did it error?** Count failures and non-success responses, and check that outputs are correct, not merely present. Rejections are often fast; timeouts and retries are slow. If the script does not count errors, add the count.
+5. **Does it reproduce?** Run each side at least 5 times, alternating A, B, A, B, so warmup, lazy initialization, caches, and drift favour neither side. Report the median and the range. A gap smaller than the run-to-run variation is no measurable difference. When the call is close, use a rank-sum test or the harness's own statistics.
+6. **Does it matter end to end?** Next to any micro result, measure the path a user actually waits on, with realistic data sizes and concurrency. A helper that takes 1% of a request can make the request at most 1% faster.
+7. **Did the work even happen?** Confirm the work ran inside the timed region: the request reached the server, the rows were written, the bytes were read, the result was used. Lazy code (generators nobody iterates, promises nobody awaits, results the JIT discards) and timeouts both produce numbers for work that never happened.
 
-## 报告
+## Report
 
-- 结论先行：更快、更慢、没有可测差别、无法判断。
-- 数字带单位、次数、区间和限流点，例如「p50 41ms → 33ms，每侧 7 次的中位数，改后区间 32-35ms，受单核 JSON 解析限制」。
-- 声称有差别却点不出限流点、有一侧没调优、或第 4、7 问没查，结论就是无法判断，并写明缺什么。
-- PR 正文只放一个主数字，其余证据放链接或笔记。
+- Lead with the verdict: faster, slower, no measurable difference, or inconclusive.
+- Give the number with its unit, run count, range, and limiter, for example "p50 41 ms to 33 ms, median of 7 runs per side, range 32 to 35 ms after, bound by JSON parsing on one core".
+- Call it inconclusive when you claim a difference but cannot name the limiter, when one side ran untuned, or when you could not check questions 4 and 7. Name the gap.
+- One primary number in the PR body. Put the runs, range, and limiter evidence in a linked artifact or notes file.

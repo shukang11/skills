@@ -1,31 +1,31 @@
 ---
 name: compare-shapes
-description: "同一任务至少两个形状，按事先写好的标准选一个底，再把落选方案里值得留的部分并进来。用于形状还没定、一次尝试会把错误形状锁死时。"
+description: "Lay at least two shapes for the same task side by side, pick one base against criteria written down first, then graft in what the losers were worth. Use when the shape is not settled and one attempt would lock in the wrong one."
 disable-model-invocation: true
-argument-hint: "要比较的产物是什么，例如模块契约或状态模型"
+argument-hint: "the artifact being compared, such as a module contract or a state model"
 ---
 
 # Compare shapes
 
-避免第一次写出来的形状被当成最终形状。比较结束就停，不直接把候选写成生产实现。
+Stop the first shape you write from becoming the final shape. Stop when the comparison is done; do not carry the candidates into production.
 
-不并行、不跑完整尝试，手工就能比。候选值得各跑一整次、或要另一个模型家族复核时，改用 `arena`。
+Hand-built, no parallelism, no full attempts. When a candidate deserves a whole attempt, or the pick needs a second opinion from another model family, use `arena` instead.
 
-## 判据
+## Criteria
 
-- 开写之前先写明产物是什么，并列出 3 到 6 条能核对的标准。标准写成可观察的差异，不写成「更好」。
-- 候选少于两个就停。形状已经唯一时，把工作交回 `codebase-design` 或 `prototype`。
-- 每个候选单独目录：`prototypes/compare-shapes-<slug>/candidate-<n>/`。后写的候选不改先写的目录。
-- 自己按目录一个一个写完，再开始比较。要同时开子代理各跑一整次时，那不是本条，用 `arena`。
-- 按条打分，不按整体感觉。两条并列时，取公共接口更小的那个做底。
-- 并入是把值得留的点改写进底的同一个模型。不把两份草稿粘在一起。候选已经收敛成同一个形状时，记下收敛，不再并入。
-- 候选互相矛盾到无法打分时，标准没写清。改写标准再跑一轮，不把矛盾平均掉。
+- Write down the artifact and 3 to 6 checkable criteria before you start. Criteria describe an observable difference, never "better".
+- Fewer than two candidates: stop. When the shape is already unique, hand the work back to `codebase-design` or `prototype`.
+- One directory per candidate: `prototypes/compare-shapes-<slug>/candidate-<n>/`. A candidate written later never edits an earlier candidate's directory.
+- Write the candidates one at a time, then compare. Spawning one subagent per candidate to run full attempts is not this skill; that is `arena`.
+- Score criterion by criterion, never on overall feel. Two candidates tied: take the smaller public surface as the base.
+- Grafting means rewriting what is worth keeping into the base's one model. Never paste two drafts together. When the candidates converged on one shape, record the convergence and graft nothing.
+- Candidates that contradict each other so badly you cannot score them mean the criteria were unclear. Rewrite the criteria and run another round; never average the contradiction away.
 
-## 收工检查
+## Done when
 
-- `prototypes/compare-shapes-<slug>/decision.md` 写着底是哪一个、每条标准的分数、并入了什么、否决了什么。
-- 不改 `.agents/notes/`。取舍交给后面的 `to-spec` 写进 Implementation Decisions。
+- `prototypes/compare-shapes-<slug>/decision.md` names the base, the score per criterion, what was grafted in, and what was rejected.
+- `.agents/notes/` is untouched. The trade-offs go to `to-spec`, which writes them into Implementation Decisions.
 
-## 产出
+## Output
 
-选定的那一版产物，加上 `decision.md`。
+The chosen artifact, plus `decision.md`.

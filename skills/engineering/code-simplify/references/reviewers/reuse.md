@@ -25,7 +25,7 @@ conventions beat generic helpers.
 - **Residue + new protocol.** If `gear` is `residue`, do not propose
   extracting newly written validation, prompt, or placeholder steps
   into a generator or helper. Identical repetition of those steps may
-  be emitted only as `kind: identical-dup` (parent will mark 可选以后).
+  be emitted only as `kind: identical-dup` (the parent marks it optional later).
 
 ## What to look for
 

@@ -81,18 +81,18 @@ User-facing report is a **verdict**, not an editor log. Do not lead with
 Applied / Not applied. Those lists are internal.
 
 ```
-Verdict: 不挡合入 | 挡合入（仅当用户把本次当合入门禁，且仍有必须跟提交的残渣）
+Verdict: does not block a merge | blocks a merge (only when the user treated this run as a merge gate, and a must-follow residue remains)
 Gear / scope:
-建议跟这次改:
-  - [lens] one line, or 「无」
-可选以后:
-  - [lens] one line, or 「无」
-不要做 / 已丢弃: N 条（默认不列。用户追问再给附录）
+Follow this change:
+  - [lens] one line, or "none"
+Optional later:
+  - [lens] one line, or "none"
+Not doing / discarded: N rows (not listed by default; give the appendix when asked)
 Checks:
 ```
 
 This skill almost never blocks a merge. Evaluate / apply=false runs
-should usually be: 不挡合入；建议跟这次改 = 无；真残渣进可选以后.
+should usually read: does not block a merge; follow this change = none; real residue goes to optional later.
 
 Keep the report short. Prefer the user's language if they wrote in
 Chinese; keep code identifiers unchanged.

@@ -1,9 +1,12 @@
 #!/usr/bin/env node
-// 区间行为证据。默认把区间内新增或改动过的可运行测试，在锚点和区间末端各跑一次。
-// 盖到锚点上的只有测试侧文件。把生产代码一起检出的话，锚点上跑的就是新代码，红绿会失真。
-// 锚点不在区间末端的历史上、或区间写不出提交时，输出「无法计算」并退出非零，不报成没有测试改动。
-// 没传 --workdir 时，进程退出前移除自己建的临时 worktree，出错退出也移除。
-// 按提交复核另列改了生产代码、没改测试侧文件的提交，判定「无测试改动」，不跑测试。
+// Behaviour evidence for a range. By default, run the tests added or changed inside the range
+// twice: at the anchor and at the range end. Only test-side files are overlaid onto the anchor.
+// Checking out production code too would run the new code at the anchor and distort red/green.
+// When the anchor is not on the end point's history, or the range cannot be resolved to commits,
+// print "cannot compute:" and exit non-zero. Never report that as "no test changes".
+// Without --workdir the process removes the temporary worktree it created before exiting, error or not.
+// The per-commit check lists commits that changed production code but no test-side file, marks them
+// "no test changes", and runs no tests for them.
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -11,7 +14,7 @@ import { basename, dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
-// 文件名是 conftest.py / __init__.py / setup.py 时，目录规则也会命中，但它们不是一条测试。
+// Directory rules also match conftest.py / __init__.py / setup.py, which are not tests.
 const NOT_RUN = /(?:^|\/)(?:conftest|__init__|setup)\.py$/;
 
 export const DEFAULT_TEST_RE = [
@@ -65,19 +68,22 @@ function compile(source) {
   return new RegExp(source);
 }
 
-const USAGE = `用法：node fix-proof.mjs --range <起点>..<末端> --cmd '<测试命令，含 {files}>' [选项]
+const USAGE = `usage: node fix-proof.mjs --range <start>..<end> --cmd '<test command with {files}>' [options]
 
-  --range <A..B>        区间，必填。A 必须是 B 的祖先
-  --per-commit          按提交复核。列出改了可运行测试的提交，以及改了生产代码但没改测试侧文件的提交
-  --cmd <命令>          测试命令，{files} 会换成空格分隔、已加引号的测试文件
-  --tests <正则>        可运行测试，默认覆盖常见语言（见技能「开场」）
-  --bring <正则>        额外盖到锚点上的测试侧文件，默认是测试目录、夹具、conftest.py
-  --setup <cmd>         在临时 worktree 里装依赖
-  --lockfile <路径>     该文件相对起点和末端的 blob 变了才重跑 --setup；不给则只装一次
-  --workdir <目录>      指定后退出时保留该 worktree。不传则建在临时目录，退出时移除（含出错退出）
-  --timeout <秒>        单次测试超时，默认 300
+  --range <A..B>        the range; required. A must be an ancestor of B
+  --per-commit          check per commit: list commits that changed runnable tests, and commits that
+                        changed production code without touching a test-side file
+  --cmd <command>       test command; {files} is replaced with space-separated, quoted test files
+  --tests <regex>       runnable tests; defaults cover the common languages (see the skill's opening)
+  --bring <regex>       extra test-side files overlaid onto the anchor; defaults to test directories,
+                        fixtures, and conftest.py
+  --setup <cmd>         install dependencies inside the temporary worktree
+  --lockfile <path>     rerun --setup only when this file's blob differs between start and end
+  --workdir <dir>       keep the worktree on exit. Without it the worktree is built in a temp dir and
+                        removed on exit, including an error exit
+  --timeout <seconds>   timeout for one test run, default 300
 
-默认可运行测试正则：
+Default runnable-test patterns:
 ${DEFAULT_TEST_RE}`;
 
 function invokedDirectly() {
@@ -115,7 +121,7 @@ function main() {
     console.log(USAGE);
     process.exit(2);
   }
-  if (!opt.cmd.includes('{files}')) fatal('--cmd 里没有 {files}。');
+  if (!opt.cmd.includes('{files}')) fatal('--cmd has no {files}.');
 
   let testRe;
   let bringRe;
@@ -123,7 +129,7 @@ function main() {
     testRe = compile(opt.tests);
     bringRe = compile(opt.bring);
   } catch {
-    fatal('--tests 或 --bring 不是合法正则。');
+    fatal('--tests or --bring is not a valid regex.');
   }
   const runnable = (filePath) => {
     testRe.lastIndex = 0;
@@ -135,24 +141,24 @@ function main() {
   };
 
   const range = parseRange(opt.range);
-  if (!range) fatal('区间要写成 <起点>..<末端>，中间是两个点。');
+  if (!range) fatal('the range is written <start>..<end>, with two dots.');
 
   let repo;
   try {
     repo = git(['rev-parse', '--show-toplevel'], process.cwd()).trim();
   } catch {
-    fatal('当前目录不是 git 仓库。');
+    fatal('the current directory is not a git repository.');
   }
   const from = resolveRev(range.from, repo);
   const to = resolveRev(range.to, repo);
-  if (!from) fatal(`解析不了区间起点 ${range.from}。`);
-  if (!to) fatal(`解析不了区间末端 ${range.to}。`);
+  if (!from) fatal(`cannot resolve the range start ${range.from}.`);
+  if (!to) fatal(`cannot resolve the range end ${range.to}.`);
   if (spawnSync('git', ['merge-base', '--is-ancestor', from, to], { cwd: repo }).status !== 0) {
-    fatal(`锚点 ${from} 不在 ${to} 的历史上。`);
+    fatal(`the anchor ${from} is not on ${to}'s history.`);
   }
 
   const timeoutMs = Number(opt.timeout) * 1000;
-  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) fatal('--timeout 需要正数。');
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) fatal('--timeout needs a positive number.');
 
   const ownedWorkdir = opt.workdir === undefined;
   const workdir = resolve(opt.workdir ?? join(tmpdir(), 'review-code-proof', basename(repo)));
@@ -177,23 +183,23 @@ function printRange({ repo, from, to, runnable, testSide, runner }) {
   const files = collect(git(['diff', '--find-renames', '--name-status', from, to], repo), runnable, testSide);
   const edits = assertionEdits(git(['diff', '--find-renames', '--numstat', from, to], repo), runnable);
   if (files.toRun.length === 0 && edits.length === 0) {
-    console.log(`## 行为证据 ${from}..${to}\n\n无测试文件改动`);
+    console.log(`## Behaviour evidence ${from}..${to}\n\nno test file changes`);
     return;
   }
-  const lines = [`## 行为证据 ${from}..${to}`, ''];
+  const lines = [`## Behaviour evidence ${from}..${to}`, ''];
   if (files.toRun.length === 0) {
-    lines.push('判定：已有断言被删改', '测试文件：无', `已有断言被删改：${edits.join('，')}`, '备注：无');
+    lines.push('verdict: existing assertions deleted or edited', 'test files: none', `existing assertions edited: ${edits.join(', ')}`, 'note: none');
     console.log(lines.join('\n'));
     return;
   }
   const added = new Set(files.rows.filter((row) => row.status === 'A' || row.status === 'C').map((row) => row.path));
-  const greenAt = files.toRun.some((filePath) => added.has(filePath)) ? '新增测试在锚点就绿' : '改动的测试在锚点就绿';
+  const greenAt = files.toRun.some((filePath) => added.has(filePath)) ? 'new test already green at anchor' : 'changed test already green at anchor';
   const outcome = runner.pair(from, to, files.toRun, files.overlay, { greenAt });
   lines.push(
-    `判定：${outcome.verdict}`,
-    `测试文件：${labelRuns(files.rows, files.toRun)}`,
-    `已有断言被删改：${edits.length ? edits.join('，') : '无'}`,
-    `备注：${outcome.note || '无'}`,
+    `verdict: ${outcome.verdict}`,
+    `test files: ${labelRuns(files.rows, files.toRun)}`,
+    `existing assertions edited: ${edits.length ? edits.join(', ') : 'none'}`,
+    `note: ${outcome.note || 'none'}`,
   );
   console.log(lines.join('\n'));
 }
@@ -207,44 +213,44 @@ function printPerCommit({ repo, from, to, runnable, testSide, runner }) {
   const testCount = items.filter((item) => item.run).length;
   const bareCount = items.filter((item) => !item.run && item.prod && !item.side).length;
   const lines = [
-    `## 按提交复核 ${from}..${to}`,
+    `## Per-commit check ${from}..${to}`,
     '',
-    `改动了测试文件的提交：${testCount} 个。`,
-    `无测试改动的提交：${bareCount} 个。`,
+    `commits that changed a test file: ${testCount}.`,
+    `commits with no test changes: ${bareCount}.`,
     '',
   ];
-  if (testCount === 0 && bareCount === 0) lines.push('没有改动测试文件的提交。');
+  if (testCount === 0 && bareCount === 0) lines.push('No commit changed a test file.');
   for (const item of items) {
     if (!item.run && !(item.prod && !item.side)) continue;
     if (!item.run) {
-      lines.push(formatCommit(item.sha, { verdict: '无测试改动', prod: true, tests: '无', edits: '无', note: '无' }));
+      lines.push(formatCommit(item.sha, { verdict: 'no test changes', prod: true, tests: 'none', edits: 'none', note: 'none' }));
       continue;
     }
     const parent = resolveRev(`${item.sha}^`, repo);
     if (!parent) {
-      lines.push(formatCommit(item.sha, { verdict: '跳过（根提交）', prod: item.prod }));
+      lines.push(formatCommit(item.sha, { verdict: 'skipped (root commit)', prod: item.prod }));
       continue;
     }
     const { rows } = item;
     const toRun = unique(rows.filter((row) => row.status !== 'D' && runnable(row.path)).map((row) => row.path));
     const overlay = unique(rows.filter((row) => row.status !== 'D' && testSide(row.path)).map((row) => row.path));
     const edits = assertionEdits(git(['diff', '--find-renames', '--numstat', parent, item.sha], repo), runnable);
-    const editText = edits.join('，') || '无';
+    const editText = edits.join(', ') || 'none';
     if (toRun.length === 0) {
       lines.push(formatCommit(item.sha, {
-        verdict: edits.length ? '已有断言被删改' : '无测试可运行',
+        verdict: edits.length ? 'existing assertions deleted or edited' : 'no runnable test',
         prod: item.prod,
         edits: editText,
       }));
       continue;
     }
     const added = new Set(rows.filter((row) => row.status === 'A' || row.status === 'C').map((row) => row.path));
-    const greenAt = toRun.some((filePath) => added.has(filePath)) ? '新增测试在父提交就绿' : '改动的测试在父提交就绿';
-    const outcome = runner.pair(parent, item.sha, toRun, overlay, { greenAt, redGreen: '父提交红 本提交绿', headRed: '本提交不绿' });
+    const greenAt = toRun.some((filePath) => added.has(filePath)) ? 'new test already green at parent' : 'changed test already green at parent';
+    const outcome = runner.pair(parent, item.sha, toRun, overlay, { greenAt, redGreen: 'parent red, commit green', headRed: 'commit not green' });
     lines.push(formatCommit(item.sha, {
       verdict: outcome.verdict,
       prod: item.prod,
-      tests: toRun.join('，'),
+      tests: toRun.join(', '),
       edits: editText,
       note: outcome.note,
     }));
@@ -253,11 +259,11 @@ function printPerCommit({ repo, from, to, runnable, testSide, runner }) {
 }
 
 function formatCommit(sha, { verdict, prod, tests, edits, note }) {
-  const parts = [`- ${sha} 判定：${verdict}`, `生产代码：${prod ? '有' : '无'}`];
-  if (tests !== undefined) parts.push(`测试文件：${tests}`);
-  if (edits !== undefined) parts.push(`已有断言被删改：${edits}`);
-  if (note !== undefined) parts.push(`备注：${note || '无'}`);
-  return parts.join('。');
+  const parts = [`- ${sha} verdict: ${verdict}`, `production code: ${prod ? 'yes' : 'no'}`];
+  if (tests !== undefined) parts.push(`test files: ${tests}`);
+  if (edits !== undefined) parts.push(`existing assertions edited: ${edits}`);
+  if (note !== undefined) parts.push(`note: ${note || 'none'}`);
+  return parts.join('. ');
 }
 
 function classifyCommit(rows, runnable, testSide) {
@@ -276,7 +282,8 @@ function classifyCommit(rows, runnable, testSide) {
   return { prod, side, run };
 }
 
-// .agents/ 放的是 Agent 协作文件（技能、账本、决策记录），多由上游种子带来，不是本项目的产品代码。
+// .agents/ holds agent collaboration files (skills, ledgers, decision records), usually seeded from
+// upstream. They are not this project's production code.
 function isProductionPath(filePath, testSide) {
   return !filePath.startsWith('.agents/') && !DOC_EXT.test(filePath) && !testSide(filePath);
 }
@@ -297,7 +304,7 @@ function createRunner({ repo, workdir, opt, timeoutMs }) {
     const r = spawnSync('sh', ['-c', opt.setup], { cwd: workdir, encoding: 'utf8', maxBuffer: 64 << 20 });
     if (r.status !== 0) {
       installedKey = null;
-      return tail(`${r.stdout ?? ''}\n${r.stderr ?? ''}`) || `退出码 ${r.status}`;
+      return tail(`${r.stdout ?? ''}\n${r.stderr ?? ''}`) || `exit code ${r.status}`;
     }
     installedKey = key;
     return null;
@@ -307,11 +314,11 @@ function createRunner({ repo, workdir, opt, timeoutMs }) {
     checkout(workdir, left);
     if (overlay.length) git(['checkout', right, '--', ...overlay], workdir);
     const leftSetup = setupFor(left);
-    if (leftSetup) return { verdict: '环境失败', note: `起点上 --setup 失败：${leftSetup}` };
+    if (leftSetup) return { verdict: 'environment failure', note: `--setup failed at the start point: ${leftSetup}` };
     const before = runTests(workdir, opt.cmd, toRun, timeoutMs);
     checkout(workdir, right);
     const rightSetup = setupFor(right);
-    if (rightSetup) return { verdict: '环境失败', note: `末端上 --setup 失败：${rightSetup}` };
+    if (rightSetup) return { verdict: 'environment failure', note: `--setup failed at the end point: ${rightSetup}` };
     const after = runTests(workdir, opt.cmd, toRun, timeoutMs);
     return judge(before, after, names);
   }
@@ -319,19 +326,19 @@ function createRunner({ repo, workdir, opt, timeoutMs }) {
 }
 
 function judge(before, after, names = {}) {
-  const greenAt = names.greenAt ?? '新增测试在锚点就绿';
-  const redGreen = names.redGreen ?? '锚点红 HEAD 绿';
-  const headRed = names.headRed ?? 'HEAD 不绿';
-  if (before.timedOut || after.timedOut) return { verdict: '超时', note: '单次测试超过 --timeout' };
+  const greenAt = names.greenAt ?? 'new test already green at anchor';
+  const redGreen = names.redGreen ?? 'anchor red, HEAD green';
+  const headRed = names.headRed ?? 'HEAD not green';
+  if (before.timedOut || after.timedOut) return { verdict: 'timeout', note: 'a single test run exceeded --timeout' };
   if (!after.ok) return { verdict: headRed, note: firstFailure(after.out) };
-  if (before.ok) return { verdict: greenAt, note: '测试在起点上也是绿的' };
-  if (LOAD_FAILURE.test(before.out)) return { verdict: '加载失败', note: firstFailure(before.out) };
+  if (before.ok) return { verdict: greenAt, note: 'the test was already green at the start point' };
+  if (LOAD_FAILURE.test(before.out)) return { verdict: 'load failure', note: firstFailure(before.out) };
   return { verdict: redGreen, note: firstFailure(before.out) };
 }
 
 function labelRuns(rows, toRun) {
   const added = new Set(rows.filter((row) => row.status === 'A' || row.status === 'C').map((row) => row.path));
-  return toRun.map((filePath) => `${filePath}（${added.has(filePath) ? '新增' : '改动'}）`).join('，');
+  return toRun.map((filePath) => `${filePath} (${added.has(filePath) ? 'new' : 'changed'})`).join(', ');
 }
 
 function collect(nameStatus, runnable, testSide) {
@@ -416,7 +423,7 @@ function removeOwnedWorktree(repo, workdir) {
     if (existsSync(workdir)) rmSync(workdir, { recursive: true, force: true });
     spawnSync('git', ['worktree', 'prune', '--expire', 'now'], { cwd: repo });
   } catch {
-    // 清理失败不改原来的退出结果。
+    // A failed cleanup does not change the original exit result.
   }
 }
 
@@ -450,7 +457,7 @@ function git(args, cwd) {
   if (r.error) throw r.error;
   if (r.status !== 0) {
     const detail = `${r.stderr ?? ''}${r.stdout ?? ''}`.trim();
-    throw new Error(detail || `git ${args[0]} 退出 ${r.status}`);
+    throw new Error(detail || `git ${args[0]} exited ${r.status}`);
   }
   return r.stdout ?? '';
 }
@@ -464,7 +471,7 @@ function tryGit(args, cwd) {
 }
 
 function fatal(message) {
-  const line = `无法计算：${message}`;
+  const line = `cannot compute: ${message}`;
   console.log(line);
   console.error(line);
   process.exit(1);

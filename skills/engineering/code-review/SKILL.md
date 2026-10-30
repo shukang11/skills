@@ -73,7 +73,7 @@ node .agents/skills/code-review/scripts/fix-proof.mjs \
 - `{files}` is replaced with the space-separated, quoted test files. No `{files}` in the command: it does not run.
 - Add `--lockfile <path>` when the range diff touches exactly one lockfile; dependencies are reinstalled only when that blob changed.
 - It recognises JS/TS, Go, Python, Rust, Java, and Kotlin test files by default. For anything else, replace the whole rule with `--tests '<regex>'`.
-- Output containing "无法计算" (cannot compute) means the script gave up: hand it to the human and stop. Never write that up as "no test changes".
+- Output starting with "cannot compute:" means the script gave up: hand it to the human and stop. Never write that up as "no test changes".
 - The per-commit verdict names differ from the range verdict names. Do not interchange them.
 
 Verdict → what goes in the report:

@@ -7,8 +7,8 @@ Group by `(file, old_string)`.
 
 ## Drop before the user ever sees a list
 
-These are discarded. Count them (`不要做 / 已丢弃: N`). Do **not** put
-them in 建议跟这次改 or 可选以后:
+These are discarded. Count them (`not doing / discarded: N`). Do **not** put
+them in follow this change or optional later:
 
 - `risk: behavior` or `risk: scope-creep`
 - Findings that would edit tests, fixtures, or error / missing / empty
@@ -41,22 +41,22 @@ User-facing buckets (not Applied / Not applied):
 
 | Bucket | What belongs |
 |---|---|
-| 建议跟这次改 | Cleanup gear + user wants edits: high-confidence, in-scope, behavior-preserving residue or tidy-ups. Stale comments that are now false. Residue gear + report-only: almost always empty. |
-| 可选以后 | Identical new-code duplication; empty forwards; diverged copies that are safe but not worth this commit; stale comments the user did not ask to fix now. |
-| 不要做 / 已丢弃 | Everything in “Drop before the user ever sees a list”. |
+| Follow this change | Cleanup gear + user wants edits: high-confidence, in-scope, behavior-preserving residue or tidy-ups. Stale comments that are now false. Residue gear + report-only: almost always empty. |
+| Optional later | Identical new-code duplication; empty forwards; diverged copies that are safe but not worth this commit; stale comments the user did not ask to fix now. |
+| Not doing / discarded | Everything in “Drop before the user ever sees a list”. |
 
 `kind` from reviewers, when present:
 
-- `stale-comment` → 建议跟这次改 only in cleanup-with-apply; else 可选以后
-- `empty-forward` → 可选以后 (never 挡合入)
-- `diverged-copy` → 可选以后, or 建议跟这次改 if cleanup gear, tiny, `risk: safe`
-- `identical-dup` → 可选以后 only
+- `stale-comment` → follow this change only in cleanup-with-apply; else optional later
+- `empty-forward` → optional later (never blocks a merge)
+- `diverged-copy` → optional later, or follow this change if cleanup gear, tiny, `risk: safe`
+- `identical-dup` → optional later only
 - `other` → discard in residue; allow in cleanup if it still passes contract
 
 ## Apply policy
 
 - Mode C: apply nothing.
-- apply=false / 评估 / 提出意见: apply nothing; still fill the verdict
+- apply=false / evaluate / give opinions: apply nothing; still fill the verdict
   report.
 - Residue gear: apply nothing unless the user explicitly asked to fix
   leftover comments / empty forwards **now**. Even then, do not extract
@@ -64,6 +64,6 @@ User-facing buckets (not Applied / Not applied):
 - Cleanup gear with apply: high-confidence, in-scope, behavior-preserving
   reuse / quality / efficiency only. Structure only for empty forwards.
 
-Verdict is 不挡合入 unless the user treated this run as a merge gate and
-a 建议跟这次改 item remains unfixed after an apply they requested.
+The verdict does not block a merge unless the user treated this run as a merge gate and
+a follow-this-change item remains unfixed after an apply they requested.
 Simplify does not block merges over optional hygiene.

@@ -11,19 +11,19 @@ Never silently expand to the whole repository.
 3. Else → **mode A** (current diff).
 
 A focus hint (“memory”, “naming”, “stop applying”) is not a path.
-`apply=false` / “只评估不要改” / “提出意见” forces report-only after
-reviews. “评估相关改动” is still mode A, not mode C.
+`apply=false` / "evaluate only, do not change" / "just give me opinions" forces report-only after
+reviews. "evaluate the related changes" is still mode A, not mode C.
 
 ## Resolve gear: residue vs cleanup
 
 **Cleanup** when the user named a small scope and asked to tidy it
-(“收干净”, “simplify this file”, “polish X”), **and** eligible source
+("clean it up", "simplify this file", "polish X"), **and** eligible source
 files ≤ 12 and review size ≤ ~800 lines.
 
 **Residue** when any of:
 
 - Mode A or B eligible source files > 12 or review size > ~800 lines
-- The user asked to evaluate / 评估 / 提出意见 on the current change
+- The user asked to evaluate / give opinions on the current change
   without asking to tidy a named small scope
 - The diff is clearly one feature landing (new protocol, many templates,
   tests + impl + docs together)
@@ -31,7 +31,7 @@ files ≤ 12 and review size ≤ ~800 lines.
 In residue gear, do not ingest the whole tree with four extract-helpers
 lenses. Switch to residue even if mode is A. Mode B over the size cap:
 do not four-lens the whole module; use residue, or split only if the
-user named a subset and asked to 收干净 that subset.
+user named a subset and asked to clean up that subset.
 
 ## Residue means
 
@@ -78,7 +78,7 @@ Never suggest in residue:
   Do not edit callers unless a finding only switches them to an existing
   helper inside scope.
 - Over the size cap → residue (see above), unless the user named a
-  smaller subset to 收干净.
+  smaller subset to clean up.
 - Exclude the same generated/vendor set as mode A.
 
 ## Mode C — project map (read-only)
