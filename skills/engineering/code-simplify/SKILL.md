@@ -57,6 +57,15 @@ was pulled in during unrelated feature work, stop and do nothing.
    (skip when report-only). Report with the template below. Do not ask
    mid-run questions.
 
+## Constraint comments
+
+A comment that says `do not remove`, `do not change this wording`, or
+`talk to X before changing` is a constraint nobody enforces. Offer the
+cheapest mechanism that would: a type, a lint rule, a test. If the
+constraint gets encoded, delete the comment with it. If it can't, keep
+the comment and report it as an unenforced constraint. Never delete a
+constraint just to make the diff quieter.
+
 ## Scope payload to every reviewer
 
 - Absolute project root

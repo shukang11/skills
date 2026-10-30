@@ -15,8 +15,8 @@
 | Matt Pocock | [`mattpocock/skills`](https://github.com/mattpocock/skills) @ [`5beb35b`](https://github.com/mattpocock/skills/commit/5beb35b040e3de97e54fa9e386d7e42d15c295c2)，2026-10-19，38 个 |
 | poteto | [`poteto/plugins`](https://github.com/poteto/plugins) @ [`74dd229`](https://github.com/poteto/plugins/commit/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12)，2026-06-06，69 个（不含 pstack） |
 | pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)，2026-10-10，51 个（v0.15.16） |
-| 已吸收 | 52 |
-| 未标记 | 72 |
+| 已吸收 | 56 |
+| 未标记 | 68 |
 
 处置只有三格：`已吸收`、`不需要`、`未标记`。
 
@@ -55,7 +55,7 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 | `unslop` | poteto `unslop`（本地额外遵循 ASD-STE100 标准） |
 | `agent-ready-repository` | 无 |
 
-判据 21 条在 `skills/judgment/`，都是斜杠技能，和 poteto 的 21 条 `principle-*` 同名，一一对得上。上游另有两条并进本地判据：`principle-foundational-thinking` 进 `principle-model-the-domain`，`principle-subtract-before-you-add` 进 `principle-laziness-protocol`。`principle-experience-first` 未吸收。`arena` 独立成技能，和 `compare-shapes` 分工：并行跑完整候选走 `arena`，手工形状对照走 `compare-shapes`。
+判据 22 条在 `skills/judgment/`，都是斜杠技能，和 poteto 的 21 条 `principle-*` 同名，一一对得上。上游另有两条并进本地判据：`principle-foundational-thinking` 进 `principle-model-the-domain`，`principle-subtract-before-you-add` 进 `principle-laziness-protocol`。`principle-experience-first` 未吸收。`arena` 独立成技能，和 `compare-shapes` 分工：并行跑完整候选走 `arena`，手工形状对照走 `compare-shapes`。
 
 ## Matt Pocock
 
@@ -132,7 +132,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [architect](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/architect/SKILL.md) | `pstack/skills/architect` | 先画类型、签名和模块，再边实现边守着 | `architect` | 已吸收 |
 | [arena](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/arena/SKILL.md) | `pstack/skills/arena` | 同一任务并行几个方案，选一个底，再并入落选里值得留的部分 | `arena` | 已吸收 |
 | [automate-me](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/automate-me/SKILL.md) | `pstack/skills/automate-me` | 把个人习惯收成或更新一个 mode 技能 | — | 未标记 |
-| [benchmark-checklist](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/benchmark-checklist/SKILL.md) | `pstack/skills/benchmark-checklist` | 报性能数字前逐条核对：限流点、是否调优、是否越界、错误数、可重复性、端到端相关性、活有没有真跑 | — | 未标记 |
+| [benchmark-checklist](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/benchmark-checklist/SKILL.md) | `pstack/skills/benchmark-checklist` | 报性能数字前逐条核对：限流点、是否调优、是否越界、错误数、可重复性、端到端相关性、活有没有真跑 | `principle-explain-the-number` | 已吸收 |
 | [blast-radius](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/blast-radius/SKILL.md) | `pstack/skills/blast-radius` | 小改动上线前查它会炸到哪，并把「凭什么安全」那一条事实用真实代码跑出来 | `blast-radius` | 已吸收 |
 | [bro](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/bro/SKILL.md) | `pstack/skills/bro` | 把上一条消息用大白话重说一遍 | — | 未标记 |
 | [correct](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/correct/SKILL.md) | `pstack/skills/correct` | 把 agent 反复犯的错按类改造仓库：架构→类型→lint→测试→文档，并证明新检查会在真实历史错误上失败 | `correct` | 已吸收 |
@@ -142,7 +142,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [interrogate](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/interrogate/SKILL.md) | `pstack/skills/interrogate` | 多模型对抗审查，找代码盲区 | `interrogate` | 已吸收 |
 | [maintain-verification-skill](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/maintain-verification-skill/SKILL.md) | `pstack/skills/maintain-verification-skill` | 定期对账 verify 技能与功能地图：每个功能一路源码加一路真机，最多一个修正 PR | `maintain-verification-skill` | 已吸收 |
 | [make-bot-ui](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/make-bot-ui/SKILL.md) | `pstack/skills/make-bot-ui` | 做一页按钮能唤 Grok Bot 的界面，含 sender-key 交接与 Tailscale | — | 未标记 |
-| [no-comments](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/no-comments/SKILL.md) | `pstack/skills/no-comments` | 派 Comment Sicko 清注释，接受的发现就地修，约束型注释先编码成机制再删 | — | 未标记 |
+| [no-comments](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/no-comments/SKILL.md) | `pstack/skills/no-comments` | 派 Comment Sicko 清注释，接受的发现就地修，约束型注释先编码成机制再删 | `code-simplify` | 已吸收 |
 | [poteto-help](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/poteto-help/SKILL.md) | `pstack/skills/poteto-help` | pstack 上手路由：问你想干什么，给出该敲哪条命令 | — | 未标记 |
 | [poteto-mode](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/poteto-mode/SKILL.md) | `pstack/skills/poteto-mode` | 统一风格的入口。本地入口是 kstack-mode | `kstack-mode` | 已吸收 |
 | [principle-attack-the-premise](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-attack-the-premise/SKILL.md) | `pstack/skills/principle-attack-the-premise` | 同一前提下两次修法都没过同一道门，先普查再质疑前提 | `principle-attack-the-premise` | 已吸收 |
@@ -150,7 +150,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [principle-build-the-lever](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-build-the-lever/SKILL.md) | `pstack/skills/principle-build-the-lever` | 先做能完成或证明这件事的工具 | `principle-build-the-lever` | 已吸收 |
 | [principle-encode-lessons-in-structure](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-encode-lessons-in-structure/SKILL.md) | `pstack/skills/principle-encode-lessons-in-structure` | 重复出现的教训写成结构，而不是再写一句说明 | `principle-encode-lessons-in-structure` | 已吸收 |
 | [principle-exhaust-the-design-space](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-exhaust-the-design-space/SKILL.md) | `pstack/skills/principle-exhaust-the-design-space` | 没先例时做两三个对照方案再选 | `principle-exhaust-the-design-space` | 已吸收 |
-| [principle-experience-first](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-experience-first/SKILL.md) | `pstack/skills/principle-experience-first` | 产品和体验取舍时，先保用户感受 | — | 未标记 |
+| [principle-experience-first](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-experience-first/SKILL.md) | `pstack/skills/principle-experience-first` | 产品和体验取舍时，先保用户感受 | `principle-experience-first` | 已吸收 |
 | [principle-explain-the-number](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-explain-the-number/SKILL.md) | `pstack/skills/principle-explain-the-number` | 信、报、用任何数字前先说出限流点，并排除「测的不是这件事」 | `principle-explain-the-number` | 已吸收 |
 | [principle-fix-root-causes](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-fix-root-causes/SKILL.md) | `pstack/skills/principle-fix-root-causes` | 先复现，修产生点。本地不另建原则文件 | `principle-fix-root-causes` | 已吸收 |
 | [principle-foundational-thinking](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-foundational-thinking/SKILL.md) | `pstack/skills/principle-foundational-thinking` | 动笔前先定核心类型、数据结构和参与者 | `principle-model-the-domain` | 已吸收 |
@@ -176,7 +176,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [swarm](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/swarm/SKILL.md) | `pstack/skills/swarm` | 并行 N 个 worker，切片或赛马，父级收口成一份报告 | `swarm` | 已吸收 |
 | [tdd](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/tdd/SKILL.md) | `pstack/skills/tdd` | 先写失败测试再实现 | — | 未标记 |
 | [teach](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/teach/SKILL.md) | `pstack/skills/teach` | 先跑 how 和 why，再合成一份讲解，图逐张叠加着画 | `teach` | 已吸收 |
-| [technical-writing](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/technical-writing/SKILL.md) | `pstack/skills/technical-writing` | 分层写作标准：Diátaxis 选模式、Google 句式、STE 指令规则、Global English | — | 未标记 |
+| [technical-writing](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/technical-writing/SKILL.md) | `pstack/skills/technical-writing` | 分层写作标准：Diátaxis 选模式、Google 句式、STE 指令规则、Global English | `unslop` | 已吸收 |
 | [typescript-best-practices](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/typescript-best-practices/SKILL.md) | `pstack/skills/typescript-best-practices` | 读或改 TypeScript 时的写法约定 | `typescript-best-practices` | 已吸收 |
 | [unslop](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/unslop/SKILL.md) | `pstack/skills/unslop` | 去掉文字里的生成腔 | `unslop` | 已吸收 |
 | [why](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/why/SKILL.md) | `pstack/skills/why` | 追溯为什么长这样，证据来自提交、笔记和文档 | `why-this-way` | 已吸收 |

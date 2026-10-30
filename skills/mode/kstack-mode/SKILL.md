@@ -98,6 +98,7 @@ Playbook 跟本文件在同一目录：`playbooks/<name>.md`。判据是独立�
 - `principle-redesign-from-first-principles`：要把新需求接进既有设计时。
 - `principle-make-operations-idempotent`：写命令、脚本、循环或批量操作时。
 - `principle-migrate-callers-then-delete-legacy-apis`：换内部接口、改名、改签名之前。
+- `principle-experience-first`：产品、交互或功能范围的取舍出现时。
 
 ## 回复
 

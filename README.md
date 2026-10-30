@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景（50 个技能，一个入口）
+## 技能全景（51 个技能，一个入口）
 
 干活从 `/kstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
@@ -22,7 +22,7 @@
   │                wayfinder 清空地图后从 to-spec 接入
   │                figure-it-out 没有 playbook 对得上时，自己设计一条
   │
-  ├─ 判据（21） laziness-protocol  separate-before-serializing-shared-state
+  ├─ 判据（22） laziness-protocol  separate-before-serializing-shared-state
   │             sequence-verifiable-units  prove-it-works  attack-the-premise
   │             explain-the-number  test-behavior-not-implementation  model-the-domain
   │             exhaust-the-design-space  fix-root-causes  boundary-discipline
@@ -31,6 +31,7 @@
   │             minimize-reader-load  never-block-on-the-human
   │             outcome-oriented-execution  redesign-from-first-principles
   │             make-operations-idempotent  migrate-callers-then-delete-legacy-apis
+  │             experience-first
   │
   └─ 做到本职就停   how-it-works  why-this-way  teach  prototype  diagnosing-bugs
                     code-review  interrogate  blast-radius  code-simplify  correct
@@ -39,9 +40,9 @@
                     create-verification-skill  maintain-verification-skill
 ```
 
-判据 21 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`。
+判据 22 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`、`principle-experience-first`。
 
-跨叶子反复用、又不属于某一个叶子的放这里；只属于某一个叶子的判据写在那个叶子的正文里（`diagnosing-bugs` 的判据段、`code-review` 的 Standards 轴）。上游对照时，这 21 条和 poteto 的同名技能一一对得上。
+跨叶子反复用、又不属于某一个叶子的放这里；只属于某一个叶子的判据写在那个叶子的正文里（`diagnosing-bugs` 的判据段、`code-review` 的 Standards 轴）。上游对照时，这 22 条和 poteto 的同名技能一一对得上。
 
 上游对照在 `docs/upstream.md`。Matt Pocock 和 poteto 的技能路径钉在某一次提交上。处置列用来标「不需要」。下次对名单时，表里没有的路径就是新增。
 
@@ -83,7 +84,7 @@
 .\manage-skills.ps1 -Install clarify-decisions,unslop
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `50`，且 `test -L ~/.agents/skills/shukang`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `51`，且 `test -L ~/.agents/skills/shukang`
 - **卸载整库**：`./scripts/install.sh --uninstall --user`
 - **卸载单个链接**：`./scripts/install.sh --uninstall --user unslop`（整库链接里的技能不会因此被拆出）
 
@@ -126,4 +127,4 @@ npx --yes github:shukang11/skills --project .
 
 1. **从入口进**（一套任务走完）：`/kstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
 2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
-3. **直接点判据**（只校准一件事）：`/principle-*` 共 21 条，见上面清单。同样不走 playbook。
+3. **直接点判据**（只校准一件事）：`/principle-*` 共 22 条，见上面清单。同样不走 playbook。

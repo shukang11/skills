@@ -15,6 +15,8 @@ disable-model-invocation: true
 - **证据跟数字一起留**。跑了几次、区间、限流点。放笔记或附在链接里，不塞进 PR 正文。
 - **体量越界先怀疑数字**。省下的时间大于那一段本身的耗时，说明测到了别的东西，比如缓存、空操作或一个 bug。
 
+要跑一次性能对比、或要报一个基准数字时，按 [references/benchmark-questions.md](references/benchmark-questions.md) 的七问走。
+
 ## 收工
 
 - 回复里每个数字带单位、次数、区间和一个点名过的限流点。
