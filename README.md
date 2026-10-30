@@ -6,9 +6,9 @@
 
 ---
 
-## 技能全景（17 个技能，一个入口）
+## 技能全景（50 个技能，一个入口）
 
-干活从 `/kstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 和四条原则跟入口在同一目录，没有单独的斜杠命令。
+干活从 `/kstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
 ```text
 入口  kstack-mode
@@ -17,15 +17,31 @@
   │             review  simplify  handoff  authoring  repo-audit  investigate
   │
   ├─ 会交给下一步   clarify-decisions → domain-modeling → compare-shapes → to-spec
-  │                → codebase-design → tdd
+  │                → codebase-design → architect
+  │                arena 与 compare-shapes 同格：候选值得各跑一整次时用它
   │                wayfinder 清空地图后从 to-spec 接入
+  │                figure-it-out 没有 playbook 对得上时，自己设计一条
   │
-  └─ 做到本职就停   how-it-works  why-this-way  prototype  diagnosing-bugs
-                    code-review  code-simplify  handoff  writing-for-agents
-                    agent-ready-repository
+  ├─ 判据（21） laziness-protocol  separate-before-serializing-shared-state
+  │             sequence-verifiable-units  prove-it-works  attack-the-premise
+  │             explain-the-number  test-behavior-not-implementation  model-the-domain
+  │             exhaust-the-design-space  fix-root-causes  boundary-discipline
+  │             type-system-discipline  build-the-lever
+  │             encode-lessons-in-structure  guard-the-context-window
+  │             minimize-reader-load  never-block-on-the-human
+  │             outcome-oriented-execution  redesign-from-first-principles
+  │             make-operations-idempotent  migrate-callers-then-delete-legacy-apis
+  │
+  └─ 做到本职就停   how-it-works  why-this-way  teach  prototype  diagnosing-bugs
+                    code-review  interrogate  blast-radius  code-simplify  correct
+                    handoff  writing-for-agents  agent-ready-repository  unslop
+                    swarm  show-me-your-work  typescript-best-practices
+                    create-verification-skill  maintain-verification-skill
 ```
 
-原则在 `skills/mode/kstack-mode/principles/`：`laziness-protocol`、`separate-before-serializing-shared-state`、`sequence-verifiable-units`、`prove-it-works`。步骤点名时才读。
+判据 21 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`。
+
+跨叶子反复用、又不属于某一个叶子的放这里；只属于某一个叶子的判据写在那个叶子的正文里（`diagnosing-bugs` 的判据段、`code-review` 的 Standards 轴）。上游对照时，这 21 条和 poteto 的同名技能一一对得上。
 
 上游对照在 `docs/upstream.md`。Matt Pocock 和 poteto 的技能路径钉在某一次提交上。处置列用来标「不需要」。下次对名单时，表里没有的路径就是新增。
 
@@ -59,17 +75,17 @@
 只链接其中几个时，每个技能一个链接：
 
 ```bash
-./scripts/install.sh --user clarify-decisions tdd
+./scripts/install.sh --user clarify-decisions unslop
 ```
 
 ```powershell
 .\manage-skills.ps1 -Install all
-.\manage-skills.ps1 -Install clarify-decisions,tdd
+.\manage-skills.ps1 -Install clarify-decisions,unslop
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `17`，且 `test -L ~/.agents/skills/shukang`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `50`，且 `test -L ~/.agents/skills/shukang`
 - **卸载整库**：`./scripts/install.sh --uninstall --user`
-- **卸载单个链接**：`./scripts/install.sh --uninstall --user tdd`（整库链接里的技能不会因此被拆出）
+- **卸载单个链接**：`./scripts/install.sh --uninstall --user unslop`（整库链接里的技能不会因此被拆出）
 
 ### 项目级（拷贝）
 
@@ -77,12 +93,12 @@
 
 ```bash
 ./scripts/install.sh --project /path/to/repo
-./scripts/install.sh --project /path/to/repo tdd clarify-decisions
+./scripts/install.sh --project /path/to/repo unslop clarify-decisions
 ```
 
 ```powershell
 .\manage-skills.ps1 -Install all -Project "D:\wiki\project\spec-anchor"
-.\manage-skills.ps1 -Install tdd -Project "D:\wiki\project\spec-anchor"
+.\manage-skills.ps1 -Install unslop -Project "D:\wiki\project\spec-anchor"
 ```
 
 没有克隆时，在目标仓库里用 npx（改动推到 GitHub 之后才走这条）：
@@ -94,14 +110,14 @@ npx --yes github:shukang11/skills --project .
 落点是普通目录，不是指向技能仓库的链接：
 
 ```text
-<仓库>/.agents/skills/tdd/
+<仓库>/.agents/skills/unslop/
 ├── SKILL.md
 └── references/    # 技能自带的参考文件会一起复制
 ```
 
-- **验证**：`test ! -L <仓库>/.agents/skills/tdd && test -f <仓库>/.agents/skills/tdd/SKILL.md`
+- **验证**：`test ! -L <仓库>/.agents/skills/unslop && test -f <仓库>/.agents/skills/unslop/SKILL.md`
 - **更新**：对同一仓库再执行一次安装命令
-- **卸载**：`./scripts/install.sh --uninstall --project /path/to/repo tdd`
+- **卸载**：`./scripts/install.sh --uninstall --project /path/to/repo unslop`
 - **查看**：`./scripts/install.sh --list` 或 `./scripts/install.sh --list --project /path/to/repo`
 
 ---
@@ -109,4 +125,5 @@ npx --yes github:shukang11/skills --project .
 ## 日常调用姿势
 
 1. **从入口进**（一套任务走完）：`/kstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
-2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/tdd`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
+2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
+3. **直接点判据**（只校准一件事）：`/principle-*` 共 21 条，见上面清单。同样不走 playbook。

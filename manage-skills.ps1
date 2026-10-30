@@ -22,9 +22,9 @@
 .EXAMPLE
     .\manage-skills.ps1 -List
     .\manage-skills.ps1 -Install all
-    .\manage-skills.ps1 -Install clarify-decisions,tdd
-    .\manage-skills.ps1 -Install tdd -Project "D:\wiki\project\spec-anchor"
-    .\manage-skills.ps1 -Uninstall tdd -Project "D:\wiki\project\spec-anchor"
+    .\manage-skills.ps1 -Install clarify-decisions,unslop
+    .\manage-skills.ps1 -Install unslop -Project "D:\wiki\project\spec-anchor"
+    .\manage-skills.ps1 -Uninstall unslop -Project "D:\wiki\project\spec-anchor"
 #>
 
 [CmdletBinding(DefaultParameterSetName = "List")]

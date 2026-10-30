@@ -57,4 +57,4 @@ Status: proposed
 
 1. **提取信息**：解析对话中的核心共识、测试策略与范围限制。本轮若有 `prototypes/compare-shapes-<slug>/decision.md`，取舍以该文件为准，写进 Implementation Decisions。
 2. **生成并落盘**：将合成好的内容写入 `.agents/notes/proposed/<yyyy-mm-dd-slug>.md`。
-3. **输出摘要与路径**：向用户展示落盘文档的相对/绝对路径，并提示下一步可以衔接的技能（如 `codebase-design` 或 `tdd`）。
+3. **输出摘要与路径**：向用户展示落盘文档的相对/绝对路径，并提示下一步可以衔接的技能（如 `codebase-design`）。

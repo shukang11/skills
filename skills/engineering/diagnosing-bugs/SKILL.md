@@ -25,7 +25,7 @@ disable-model-invocation: true
 ## 收工检查
 
 - 红信号在修复前红、修复后绿，两次都实际跑过，输出摘要写在回复里。
-- 红信号是测试的，把它留在修复提交里当回归测试：在父提交上红、在本提交上绿。spec-anchor 项目的周期审查会用 `fix-proof` 复核这一点。
+- 红信号是测试的，把它留在修复提交里当回归测试：在父提交上红、在本提交上绿。[../code-review/scripts/fix-proof.mjs](../code-review/scripts/fix-proof.mjs) 会复核这一点。
 - 红信号不是测试的，提交信息带 `Tested: <怎么验证的>`。
 - 项目根 `AGENTS.md` 有修复提交约定（标题前缀、账本 trailer）的，按约定写。
 - 排错用的临时日志与脚本已清掉。
