@@ -36,14 +36,34 @@ for n,p in playbooks.items():
 entry_txt = pathlib.Path(skills[entry]['path']).read_text(encoding='utf-8')
 for m in set(re.findall(r'playbooks/([a-z0-9-]+)\.md', entry_txt)):
     if m in playbooks: edges.append(dict(s=entry, t='pb:'+m, k='routes'))
+def _sections(t):
+    parts = re.split(r'^## (.+)$', t, flags=re.M)
+    out = {}
+    for i in range(1, len(parts), 2):
+        out[parts[i].strip()] = parts[i + 1]
+    return out
+
+_entry_txt = pathlib.Path(skills[entry]['path']).read_text(encoding='utf-8')
+_entry_secs = _sections(_entry_txt)
+for _name in set(SK.findall(_entry_txt)):
+    if _name not in skills or _name == entry:
+        continue
+    if re.search(rf'`{re.escape(_name)}`', _entry_secs.get('Non-negotiables', '')):
+        edges.append(dict(s=entry, t=_name, k='trigger'))
+    elif re.search(rf'`{re.escape(_name)}`', _entry_secs.get('Layers', '') + _entry_secs.get('Principles', '')):
+        edges.append(dict(s=entry, t=_name, k='registry'))
+    else:
+        edges.append(dict(s=entry, t=_name, k='routes'))
+
 for n,i in skills.items():
-    src=entry if n==entry else n
+    if n == entry:
+        continue
+    src=n
     for ln in pathlib.Path(i['path']).read_text(encoding='utf-8').splitlines():
         low=ln.lower()
         for t in set(SK.findall(ln)):
             if t==n or t not in skills: continue
-            if n==entry: k='routes'
-            elif any(w in low for w in ('read ','open ','call ','hand ')): k='calls'
+            if any(w in low for w in ('read ','open ','call ','hand ')): k='calls'
             else: k='mentions'
             edges.append(dict(s=src, t=t, k=k))
         for m in LINK.findall(ln):
@@ -52,7 +72,7 @@ for n,i in skills.items():
         for m in REF.findall(ln):
             rid=str(pathlib.Path(i['path']).parent/m)
             if pathlib.Path(rid).is_file(): edges.append(dict(s=src, t=rid, k='reads'))
-prio={'routes':0,'calls':1,'mentions':2,'reads':3}
+prio={'routes':0,'trigger':1,'calls':2,'registry':3,'mentions':4,'reads':5}
 seen=set(); ded=[]
 for e in sorted(edges,key=lambda x:prio[x['k']]):
     key=(e['s'],e['t'])
@@ -160,7 +180,7 @@ const W = () => canvas.clientWidth, H = () => canvas.clientHeight;
 const labelOf = n => n.label || n.id;
 const radius = n => 4 + Math.min(9, Math.sqrt(n.in || 0) * 2.6);
 
-function isRegistry(e) { return e.k === 'routes' && e.s.kind === 'entry' && e.t.kind !== 'playbook'; }
+function isRegistry(e) { return e.k === 'registry'; }
 function visible(n) { return n.kind === 'reference' ? showReads : true; }
 function edgeVisible(e) {
   if (!visible(e.s) || !visible(e.t)) return false;
@@ -223,7 +243,7 @@ function draw() {
     const mid = (x1 + x2) / 2;
     ctx.globalAlpha = hot ? .95 : (selected ? .05 : (isRegistry(e) ? .12 : .22));
     ctx.strokeStyle = e.k === 'reads' || e.k === 'mentions' ? '#3a4a68'
-      : isRegistry(e) ? '#4d5f80' : '#7f97c4';
+      : e.k === 'trigger' ? '#b98cf0' : isRegistry(e) ? '#4d5f80' : '#7f97c4';
     ctx.lineWidth = (hot ? 1.7 : 1) / cam.k;
     ctx.setLineDash(e.k === 'mentions' || e.k === 'reads' ? [3 / cam.k, 4 / cam.k] : []);
     ctx.beginPath(); ctx.moveTo(e.s.x + radius(e.s) * (forward ? 1 : -1), e.s.y);
@@ -372,6 +392,7 @@ document.getElementById('legend').innerHTML =
   Object.keys(COLOR).map(k => '<div class="lg"><span class="dot" style="background:' + COLOR[k] +
     '"></span>' + KIND[k] + '</div>').join('') +
   '<div class="lg" style="margin-top:5px"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#7f97c4" stroke-width="1.6"/></svg>playbook step or hand-off</div>' +
+  '<div class="lg"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#b98cf0" stroke-width="1.6"/></svg>situation trigger (Non-negotiables)</div>' +
   '<div class="lg"><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#4d5f80" stroke-width="1.4"/></svg>entry registry edge (toggle)</div>' +
   '<div class="lg"><svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill="#334" stroke="#94a3b8" stroke-dasharray="2 2"/></svg>manual only: nothing routes to it</div>';
 document.getElementById('meta').innerHTML =
@@ -390,7 +411,7 @@ window.addEventListener('resize', () => { resize(); fit(); });
 # manual = 只有入口注册表提到它，没有任何 playbook 或技能真的指向它
 entry_ids = {n['id'] for n in nodes if n['kind'] == 'entry'}
 def is_registry(e):
-    return e['k'] == 'routes' and e['s'] in entry_ids and by_kind(e['t']) != 'playbook'
+    return e['k'] == 'registry'
 def by_kind(i):
     for n in nodes:
         if n['id'] == i: return n['kind']

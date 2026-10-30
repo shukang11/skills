@@ -54,6 +54,32 @@ When a leaf suggests the next skill, the current playbook's remaining steps win.
 - `code-simplify` never appears in a feature's steps. If it gets pulled in mid-feature, it stops by its own activation rule.
 - `unslop` dries out docs, specs, and text output under ASD-STE100. It never changes business logic.
 
+## Non-negotiables
+
+Situation first, skill second. These are triggers, not steps: they fire whenever the situation occurs, inside any playbook. In the reply, name the trigger you fired and the choice it changed.
+
+- Any code whose data shape is not settled: name the shape and its organizing structure first, per `principle-model-the-domain`.
+- Code that changes what crosses a function boundary, or a design nobody has settled: `architect`, or `codebase-design` when only the module boundary is in question.
+- Work that fans out: `swarm` for coverage slices and races, `arena` for a bake-off whose winner you then graft.
+- A diff or design worth attacking rather than checking: `interrogate`. An answer that hinges on someone's word rather than a run: `blast-radius`.
+- No bundled playbook fits, or the work is a large migration, an ambitious multi-part change, or something a human reviews after stepping away: `figure-it-out`.
+- A long run, an unattended run, or work someone will audit later: keep the trail with `show-me-your-work`.
+- Any prose that leaves the session, the reply included: `unslop`. Agent-facing docs and `SKILL.md`: `writing-for-agents`.
+- Changing an internal interface, a name, or a signature: `principle-migrate-callers-then-delete-legacy-apis` — migrate the callers and delete the old surface in the same wave.
+- Writing a command, a script, a loop, or a batch migration: `principle-make-operations-idempotent`.
+- Any non-trivial edit, migration, analysis, or check: `principle-build-the-lever` — build the tool that does or proves it, rather than working by hand.
+- Context filling up, a long file, or a fan-out being planned: `principle-guard-the-context-window`.
+- Reviewing or shaping code that is hard to trace: `principle-minimize-reader-load`.
+- Folding a new requirement into an existing design: `principle-redesign-from-first-principles`.
+- A product, interaction, or scope trade-off: `principle-experience-first`.
+- About to trust, report, or act on a measured number: `principle-explain-the-number`, and its seven questions.
+- Two fixes under one premise that failed the same gate: `principle-attack-the-premise`.
+- The same instruction written a second time: `principle-encode-lessons-in-structure`.
+- A planned rewrite or migration with phase boundaries: `principle-outcome-oriented-execution`.
+- Wiring validation, error handling, or a framework adapter: `principle-boundary-discipline`. Designing types or a signature: `principle-type-system-discipline`.
+- Two or more shapes still open on novel work: `principle-exhaust-the-design-space`.
+- Tempted to ask about something reversible: `principle-never-block-on-the-human`.
+
 ## Picking a playbook
 
 Write the matched playbook's steps verbatim into the todo list first, then add this task's own todos. A step you decide to skip stays in the list with `skip:` and one reason.
@@ -99,6 +125,13 @@ Read a principle in full only when you use it. In the reply, cite only the ones 
 - `principle-make-operations-idempotent`: writing commands, scripts, loops, or batch operations.
 - `principle-migrate-callers-then-delete-legacy-apis`: before changing an internal interface or signature.
 - `principle-experience-first`: when a product, interaction, or scope tradeoff shows up.
+
+## Autonomy
+
+- Reversible work, and external actions like updating a ticket or kicking off a run, proceed without asking. Show the result, let the human course-correct.
+- Irreversible writes stop: force-push to a shared branch, a deploy, deleting data, sending a message to a customer. `principle-never-block-on-the-human`.
+- Session overrides win: "don't stop", "I'm going to bed", "run until done" means keep going until the predicate holds.
+- "No" is an acceptable answer. Asked whether to do something, or handed a direction, give your real judgement: decline, push back, or say it does not earn its place. Agreement is not the default.
 
 ## Writing the reply
 
