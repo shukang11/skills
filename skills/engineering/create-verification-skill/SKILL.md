@@ -42,3 +42,5 @@ Run its own instructions end to end once: launch, doctor, drive ONE mapped featu
 ## 5. Offer the maintenance loop
 
 Point the user at `/maintain-verification-skill` for keeping the map honest as the app changes. Suggest a cadence only if they ask.
+
+When the risk lives on paths nobody drives — an interleaving, a retry that overlaps, a lock that expires mid-write — this skill's driving cannot reach it. Say so, and point at `/create-formal-verification-skill`, which states a scope and checks every case inside it.

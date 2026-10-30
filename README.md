@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景（55 个技能，一个入口）
+## 技能全景（57 个技能，一个入口）
 
 干活从 `/pstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
@@ -38,7 +38,8 @@
                     handoff  writing-for-agents  agent-ready-repository  unslop
                     sharpen  in-your-own-words  ketchup  swarm  show-me-your-work
                     reflect  typescript-best-practices  create-verification-skill
-                    maintain-verification-skill
+                    maintain-verification-skill  create-formal-verification-skill
+                    maintain-formal-verification-skill
 ```
 
 判据 22 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`、`principle-experience-first`。
@@ -87,7 +88,7 @@
 .\manage-skills.ps1 -Install clarify-decisions,unslop
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `55`，且 `test -L ~/.agents/skills/shukang`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `57`，且 `test -L ~/.agents/skills/shukang`
 - **卸载整库**：`./scripts/install.sh --uninstall --user`
 - **卸载单个链接**：`./scripts/install.sh --uninstall --user unslop`（整库链接里的技能不会因此被拆出）
 

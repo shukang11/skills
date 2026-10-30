@@ -28,7 +28,7 @@ You may skip levels and open a leaf a step names directly.
 1. **Entry**. This file. A human wakes it explicitly; it never self-triggers from a description.
 2. **Playbook**. The order of steps for one task, not a slash command.
 3. **Leaves that hand work to the next step**. `wayfinder`, `clarify-decisions`, `domain-modeling`, `compare-shapes`, `arena`, `to-spec`, `codebase-design`, `architect`, `figure-it-out`.
-4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `ketchup`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `typescript-best-practices`.
+4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `ketchup`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `create-formal-verification-skill`, `maintain-formal-verification-skill`, `typescript-best-practices`.
 5. **Judgment**. `../../judgment/<name>/SKILL.md`, standalone skills you can call with `/`. A criterion used across several leaves lives there; a criterion that belongs to one leaf lives in that leaf's body (`diagnosing-bugs`' criteria, `code-review`'s Standards axis).
 
 Root cause and red signals live in `diagnosing-bugs`. Domain structure in `domain-modeling`. Module boundaries in `codebase-design`. Faithful simulation in `prototype`. Diff review in `code-review`. Leftover residue in `code-simplify`. Removing AI tells in `unslop`. Session handoff in `handoff`. Those nine do not get a separate judgment skill.
@@ -74,6 +74,7 @@ Situation first, skill second. These are triggers, not steps: they fire whenever
 - Any non-trivial edit, migration, analysis, or check: `principle-build-the-lever` — build the tool that does or proves it, rather than working by hand.
 - Context filling up, a long file, or a fan-out being planned: `principle-guard-the-context-window`.
 - Reviewing or shaping code that is hard to trace: `principle-minimize-reader-load`.
+- A promise tests cannot reach, because the break lives on an interleaving, an ordering, a retry, or a state machine: `create-formal-verification-skill`. Code a formal check already covers, after a merge or a refactor that skipped it: `maintain-formal-verification-skill`.
 - Folding a new requirement into an existing design: `principle-redesign-from-first-principles`.
 - A product, interaction, or scope trade-off: `principle-experience-first`.
 - About to trust, report, or act on a measured number: `principle-explain-the-number`, and its seven questions.
