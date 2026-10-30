@@ -6,7 +6,7 @@
 
 ---
 
-## 技能全景（54 个技能，一个入口）
+## 技能全景（55 个技能，一个入口）
 
 干活从 `/pstack-mode` 进。它按任务选一个 playbook，再打开下面的叶子。playbook 跟入口在同一目录，判据在 `skills/judgment/`。
 
@@ -36,8 +36,8 @@
   └─ 做到本职就停   how-it-works  why-this-way  teach  prototype  diagnosing-bugs
                     code-review  interrogate  blast-radius  code-simplify  correct
                     handoff  writing-for-agents  agent-ready-repository  unslop
-                    sharpen  in-your-own-words  swarm  show-me-your-work  reflect
-                    typescript-best-practices  create-verification-skill
+                    sharpen  in-your-own-words  ketchup  swarm  show-me-your-work
+                    reflect  typescript-best-practices  create-verification-skill
                     maintain-verification-skill
 ```
 
@@ -87,7 +87,7 @@
 .\manage-skills.ps1 -Install clarify-decisions,unslop
 ```
 
-- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `54`，且 `test -L ~/.agents/skills/shukang`
+- **验证**：`find -L ~/.agents/skills/shukang -name SKILL.md | wc -l` 应输出 `55`，且 `test -L ~/.agents/skills/shukang`
 - **卸载整库**：`./scripts/install.sh --uninstall --user`
 - **卸载单个链接**：`./scripts/install.sh --uninstall --user unslop`（整库链接里的技能不会因此被拆出）
 
@@ -129,5 +129,5 @@ npx --yes github:shukang11/skills --project .
 ## 日常调用姿势
 
 1. **从入口进**（一套任务走完）：`/pstack-mode`，后面加一句任务。入口选 playbook，再按步骤读叶子。
-2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/sharpen`、`/in-your-own-words`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
+2. **直接点叶子**（只做这一件事）：`/how-it-works`、`/why-this-way`、`/compare-shapes`、`/clarify-decisions`、`/to-spec`、`/unslop`、`/sharpen`、`/in-your-own-words`、`/ketchup`、`/handoff`、`/agent-ready-repository` 等。这时不走 playbook。
 3. **直接点判据**（只校准一件事）：`/principle-*` 共 22 条，见上面清单。同样不走 playbook。

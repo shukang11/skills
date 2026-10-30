@@ -28,7 +28,7 @@ You may skip levels and open a leaf a step names directly.
 1. **Entry**. This file. A human wakes it explicitly; it never self-triggers from a description.
 2. **Playbook**. The order of steps for one task, not a slash command.
 3. **Leaves that hand work to the next step**. `wayfinder`, `clarify-decisions`, `domain-modeling`, `compare-shapes`, `arena`, `to-spec`, `codebase-design`, `architect`, `figure-it-out`.
-4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `typescript-best-practices`.
+4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `interrogate`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `ketchup`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `typescript-best-practices`.
 5. **Judgment**. `../../judgment/<name>/SKILL.md`, standalone skills you can call with `/`. A criterion used across several leaves lives there; a criterion that belongs to one leaf lives in that leaf's body (`diagnosing-bugs`' criteria, `code-review`'s Standards axis).
 
 Root cause and red signals live in `diagnosing-bugs`. Domain structure in `domain-modeling`. Module boundaries in `codebase-design`. Faithful simulation in `prototype`. Diff review in `code-review`. Leftover residue in `code-simplify`. Removing AI tells in `unslop`. Session handoff in `handoff`. Those nine do not get a separate judgment skill.
@@ -51,6 +51,7 @@ When a leaf suggests the next skill, the current playbook's remaining steps win.
 - When `codebase-design` hits a major or breaking decision, hand it back to `to-spec` first, then keep designing.
 - After `prototype`, a contract worth keeping moves to the design or feature playbook. The simulation files stay in `prototypes/`.
 - `code-review` reads notes; it never calls `to-spec`.
+- `ketchup` looks back over this chat to the user's last message. `handoff` writes forward for the next agent. `show-me-your-work` keeps the decision log while the run is happening. Three directions, three skills: never run two of them to cover one.
 - `code-simplify` never appears in a feature's steps. If it gets pulled in mid-feature, it stops by its own activation rule.
 - `unslop` dries out docs, specs, and text output under ASD-STE100. It never changes business logic.
 
@@ -66,6 +67,7 @@ Situation first, skill second. These are triggers, not steps: they fire whenever
 - A diff or design worth attacking rather than checking: `interrogate`. An answer that hinges on someone's word rather than a run: `blast-radius`.
 - No bundled playbook fits, or the work is a large migration, an ambitious multi-part change, or something a human reviews after stepping away: `figure-it-out`.
 - A long run, an unattended run, or work someone will audit later: keep the trail with `show-me-your-work`.
+- Coming back to a chat you left running, or asking what changed since your last message: `ketchup`, in plain words, with every call waiting on the user listed so each is decidable from the reply alone.
 - Any prose that leaves the session, the reply included: `unslop`. Agent-facing docs and `SKILL.md`: `writing-for-agents`.
 - Changing an internal interface, a name, or a signature: `principle-migrate-callers-then-delete-legacy-apis` — migrate the callers and delete the old surface in the same wave.
 - Writing a command, a script, a loop, or a batch migration: `principle-make-operations-idempotent`.
