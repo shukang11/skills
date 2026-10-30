@@ -1,8 +1,8 @@
 # Repo audit
 
-仓库能不能让 Agent 开工。只读，停在建议表。
+Can an agent start work in this repo? Read-only; stop at the recommendation table.
 
-1. 读 `agent-ready-repository`。不执行整改，不代排优先级。
-2. 用户接受建议、要开始整改时，读 `correct`：按错误类从架构→类型→lint→测试→文档逐级修，并证明每条新检查会在真实历史错误上失败。
+1. Read `agent-ready-repository`. Do not execute remediation, do not sequence the priorities.
+2. When the user accepts the recommendations and wants to start, read `correct`: fix each mistake class at the highest level that works (architecture, then types, then lint, then tests, with docs last) and prove each new check fails on a real past mistake.
 
-收工：建议表在回复里。每一条都有可裁决的出口。没有建议时写明审计范围。
+Done when: the recommendation table is in the reply, every row carries a decidable exit, and an audit that found nothing states its scope.

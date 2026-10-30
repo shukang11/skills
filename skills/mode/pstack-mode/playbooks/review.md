@@ -1,11 +1,11 @@
 # Review
 
-审查一段 diff。不改代码。
+Review a diff. No code changes.
 
-1. 读 `code-review`。基准点没给时先向用户要。没有 Spec 就只走 Standards 轴，并在回复里写明。
-2. diff 里有 `.ts`/`.tsx` 时读 `typescript-best-practices`。否则 skip。
-3. 这次 diff 动到测试时，读 `principle-test-behavior-not-implementation`。否则 skip。
-4. 要多个模型对抗审查时，读 `interrogate`。它不改代码，只出四桶结论。否则 skip。
-5. 小 diff 不放心，或上线前要算影响面时，读 `blast-radius`。否则 skip。
+1. Read `code-review`. If no fixed point was given, ask for one. With no spec, run the Standards axis alone and say so in the reply.
+2. Read `typescript-best-practices` when the diff touches `.ts`/`.tsx`. Else skip.
+3. Read `principle-test-behavior-not-implementation` when the diff touches tests. Else skip.
+4. Read `interrogate` when you want several models trying to break it. It changes no code and returns four buckets. Else skip.
+5. Read `blast-radius` when a small diff worries you, or you need the impact surface before shipping. Else skip.
 
-收工：两轴的发现分开列。没有发现时写明基准点和空 diff 或空发现，不写「看起来没问题」。
+Done when: the two axes' findings are listed separately. An empty review states the fixed point and either an empty diff or no findings; it never says "looks fine".

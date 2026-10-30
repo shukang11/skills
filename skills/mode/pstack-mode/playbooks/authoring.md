@@ -1,8 +1,8 @@
 # Authoring
 
-写或改给 Agent 看的文档。
+Writing or editing docs an agent reads.
 
-1. 读 `writing-for-agents`，再改 `SKILL.md`、`AGENTS.md`、README 或 SPEC。入口和 playbook 只决定何时打开它，不把叶子里的判据搬过来重写一遍。
-2. 文档写完后读 `unslop`，消除 AI 生成腔与冗余表达，遵循 ASD-STE100 规范。
+1. Read `writing-for-agents`, then edit the `SKILL.md`, `AGENTS.md`, README, or SPEC. The entry and the playbook only decide when to open it; they never restate its criteria.
+2. When the draft is done, read `unslop` to strip AI tells and redundant wording under ASD-STE100.
 
-收工：改过的文件路径在回复里。删掉的段落能说出留、挪走，还是因为换一个强模型结果也不会变。
+Done when: the changed file paths are in the reply, and for every paragraph you deleted you can say whether it stays, moves, or goes because a stronger model makes it unnecessary.

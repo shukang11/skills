@@ -1,8 +1,8 @@
 # Handoff
 
-会话的中断或接续。两件事不要做在同一步。
+Interrupting or resuming a session. The two are never the same step.
 
-1. 用户要暂停、上下文将满，或还没有一份交接：读 `handoff`，写出交接文档和开场块。
-2. 用户要接续，并且给了交接路径：只读那份文档，按它的开场块恢复现场。不另写一份交接。
+1. The user wants to pause, the context is nearly full, or no handoff exists yet: read `handoff` and write the handoff doc plus the opening block.
+2. The user wants to resume and gave a handoff path: read only that doc and restore the state from its opening block. Do not write a second handoff.
 
-收工：暂停时回复里有绝对路径和开场块。接续时回复里有读过的路径，以及文档里第一条要复验的命令跑过没有。
+Done when: on a pause, the reply carries the absolute path and the opening block. On a resume, the reply carries the path you read and whether the doc's first re-verification command has been run.

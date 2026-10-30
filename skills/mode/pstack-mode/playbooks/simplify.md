@@ -1,7 +1,7 @@
 # Simplify
 
-清理已经落地的残留。用户没明确要求清理、收紧或 simplify 时，不要进这个 playbook。
+Clean up residue that already landed. Do not enter this playbook unless the user explicitly asked to clean up, tighten, or simplify.
 
-1. 读 `code-simplify`。它要求停就停，不改写成一次功能实现。
+1. Read `code-simplify`. When it says stop, stop; never turn the cleanup into a feature implementation.
 
-收工：按该技能自己的收工条件。它说没改，回复里就写没改。
+Done when: the skill's own completion conditions hold. When it changed nothing, the reply says it changed nothing.
