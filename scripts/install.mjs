@@ -22,6 +22,8 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = join(repoRoot, 'skills');
 const USER_NAMESPACE = 'shukang';
 const SKIP_DIRS = new Set(['node_modules', '.git']);
+// 发现技能时靠 SKIP_DIRS 跳过；拷贝时 cpSync 不看它，所以过滤要另设一份。
+const SKIP_COPY = new Set([...SKIP_DIRS, '.DS_Store']);
 
 function usage() {
   return `用法:
@@ -270,7 +272,7 @@ function copySkill(base, skill) {
   const tmp = join(base, `.${skill.name}.installing`);
   rmSync(tmp, { recursive: true, force: true });
   try {
-    cpSync(skill.dir, tmp, { recursive: true });
+    cpSync(skill.dir, tmp, { recursive: true, filter: (src) => !SKIP_COPY.has(basename(src)) });
     const existing = lstatOrNull(dest);
     if (existing?.isSymbolicLink()) rmSync(dest);
     else if (existing) rmSync(dest, { recursive: true, force: true });
