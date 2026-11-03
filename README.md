@@ -34,12 +34,12 @@
   │             experience-first
   │
   └─ 做到本职就停   how-it-works  why-this-way  teach  prototype  diagnosing-bugs
-                    code-review  interrogate  blast-radius  code-simplify  correct
+                    code-review  blast-radius  code-simplify  correct
                     handoff  writing-for-agents  agent-ready-repository  unslop
                     sharpen  in-your-own-words  ketchup  swarm  show-me-your-work
                     reflect  typescript-best-practices  create-verification-skill
                     maintain-verification-skill  create-formal-verification-skill
-                    maintain-formal-verification-skill
+                    maintain-formal-verification-skill  statechart
 ```
 
 判据 22 条都在 `skills/judgment/`，都是 `principle-*` 独立技能，可以 `/` 直点：`principle-laziness-protocol`、`principle-separate-before-serializing-shared-state`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-attack-the-premise`、`principle-explain-the-number`、`principle-test-behavior-not-implementation`、`principle-model-the-domain`、`principle-exhaust-the-design-space`、`principle-fix-root-causes`、`principle-boundary-discipline`、`principle-type-system-discipline`、`principle-build-the-lever`、`principle-encode-lessons-in-structure`、`principle-guard-the-context-window`、`principle-minimize-reader-load`、`principle-never-block-on-the-human`、`principle-outcome-oriented-execution`、`principle-redesign-from-first-principles`、`principle-make-operations-idempotent`、`principle-migrate-callers-then-delete-legacy-apis`、`principle-experience-first`。

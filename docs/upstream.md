@@ -140,7 +140,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [create-verification-skill](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/create-verification-skill/SKILL.md) | `pstack/skills/create-verification-skill` | 生成项目本地的 verify 技能：启动、doctor、驱动真实 app、留证据、铺功能地图 | `create-verification-skill` | 已吸收 |
 | [figure-it-out](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/figure-it-out/SKILL.md) | `pstack/skills/figure-it-out` | 没有更窄的 playbook 时，给大迁移或大改动写可审计的步骤 | `figure-it-out` | 已吸收 |
 | [how](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/how/SKILL.md) | `pstack/skills/how` | 说明现在怎么工作、落在哪、该放哪一层 | `how-it-works` | 已吸收 |
-| [interrogate](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/interrogate/SKILL.md) | `pstack/skills/interrogate` | 多模型对抗审查，找代码盲区 | `interrogate` | 已吸收 |
+| [interrogate](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/interrogate/SKILL.md) | `pstack/skills/interrogate` | 多模型对抗审查，找代码盲区 | — | 不需要 |
 | [maintain-verification-skill](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/maintain-verification-skill/SKILL.md) | `pstack/skills/maintain-verification-skill` | 定期对账 verify 技能与功能地图：每个功能一路源码加一路真机，最多一个修正 PR | `maintain-verification-skill` | 已吸收 |
 | [make-bot-ui](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/make-bot-ui/SKILL.md) | `pstack/skills/make-bot-ui` | 做一页按钮能唤 Grok Bot 的界面，含 sender-key 交接与 Tailscale | — | 不需要 |
 | [no-comments](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/no-comments/SKILL.md) | `pstack/skills/no-comments` | 派 Comment Sicko 清注释，接受的发现就地修，约束型注释先编码成机制再删 | `code-simplify` | 已吸收 |
@@ -187,7 +187,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [ketchup-video](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/ketchup-video/SKILL.md) | `pstack/skills/ketchup-video` | 同上，改成短字幕幻灯片视频，待决项以文字放下面 | — | 未标记 |
 | [maintain-formal-verification-skill](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/maintain-formal-verification-skill/SKILL.md) | `pstack/skills/maintain-formal-verification-skill` | 代码变了把模型对齐回去，重跑，判定每次失败是漂移还是 bug | `maintain-formal-verification-skill` | 已吸收 |
 | [sharpen](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/sharpen/SKILL.md) | `pstack/skills/sharpen` | 把提示词改深不改大：专家会多做哪一步、从什么原始材料起手、用什么方法、外部怎么验 | `sharpen` | 已吸收 |
-| [statechart](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/statechart/SKILL.md) | `pstack/skills/statechart` | 把 TLA+ 模型检查结果画成 Mermaid 状态图，标出破规则的状态和最短到达路径 | — | 未标记 |
+| [statechart](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/statechart/SKILL.md) | `pstack/skills/statechart` | 把 TLA+ 模型检查结果画成 Mermaid 状态图，标出破规则的状态和最短到达路径 | `statechart` | 已吸收 |
 
 跳过的 7 条，理由是本地没有它们赖以成立的那层东西：
 
@@ -201,12 +201,12 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 
 0.15.16 到 0.15.36 之间，路径没变但正文变了的几处，表上看不出来，记在这里：
 
-- **`interrogate` 重写**：结论只留跑得出的发现（每条带命令和输出），四桶改成 Intent／Findings／Dropped，删掉 4 个 `references/`（244 行）。本地已同步，并替换了三处：席位改按 `arena` Phase A step 3 选、去掉 `generalPurpose` 这类 harness 专名、保留 `../code-review/scripts/fix-proof.mjs` 作为「测试钉住了这个改动」的检查。
+- **`interrogate` 重写**：结论只留跑得出的发现（每条带命令和输出），四桶改成 Intent／Findings／Dropped，删掉 4 个 `references/`（244 行）。本地已同步，并替换了三处：席位改按 `arena` Phase A step 3 选、去掉 `generalPurpose` 这类 harness 专名、保留 `../code-review/scripts/fix-proof.mjs` 作为「测试钉住了这个改动」的检查。后于 2026-11 从本地移除：前提是两个模型家族都可用，单族时它没法满足自己的核心条件；删它带了 `review` playbook 第 4 步、入口的叶子清单与触发句、`architect` 的对抗压力句。要「对抗 debug」时走 `diagnosing-bugs`，要「证明这没事」时走 `blast-radius`。
 - **`arena` 的 cross-judge 收紧**：不许与父模型同族，同族席位跳过，全族都够不着就跳过评审并说明。本地已同步。
 - **`swarm` 精简**：只删了自己那套模型规则行和收尾表格，本地本来就没有，无需动作。
 - **四条原则改成短推理**（attack-the-premise、fix-root-causes、test-behavior-not-implementation、type-system-discipline）：本地版本更细、带可执行步骤，不整体替换。补进本地的是 `principle-fix-root-causes` 的「guard 只在它处理的状态合法时才算修」，和 `principle-test-behavior-not-implementation` 的「只改内部实现时应当继续通过」。
 - **两条 formal 技能的本地化**：输出路径从 `.cursor/skills/verify-<app>/` 改成 `.agents/verify/<app>-formal/`，与本地 `create-verification-skill` 的落点并排；删掉「TLA+ 是默认」的硬指定，改成先盘点仓库和机器上已有的工具；加了 `Provisioning` 一段，工具一律不静默安装、装之前问一次、拒绝就走「生成输入跑真代码」的回退。状态词不另起一套：`maintain-formal-verification-skill` 的 `in sync / updated / bug / blocked` 对本地三态 `clean / changed / blocked` 写了一一映射，只有 `bug` 是它独有的。上游那条 `statechart` 交叉引用已删。
-- **`statechart` 先观望**：本体是 407 个文件、3.8MB 的 TypeScript 编译器，8 个 pass、11 个 frontend、4 个 backend，带 TLC 抓取器和两千多行测试，还要 Java、mise 和 Pele 渲染器。那份重量买的是通用性（陌生仓库、陌生规格、陌生 TLC 版本），不是这个想法本身。翻转条件只有两个：仓库里出现第一个 `.tla` 文件，或者读检查结果的人不会读 TLA+。两者都不成立时，形式化验证的判断层在 `create-formal-verification-skill` 里已经够用。要收也只收两句话：报告自带 Mermaid 状态图，破规则的状态标出来并给最短路径、用读者的词。
+- **`statechart` 已收（2026-11）**：推翻原先的观望。全量 vendor 407 文件：`SKILL.md`、`references/render.md`、`scripts/`（8 个 pass、11 个 frontend、4 个 backend）与上游 2000 行金测试。体量看着吓人，但 3.8MB 里 3.6MB 是 `scripts/test/corpus/` 的 golden，编译器本体只有 208KB，砍测试就买不回「上游漂移时能自证」。本地只改一处：`Run` 段的「首跑用 mise 装 TLC 和 Java」改成先盘点 `java`／`tla2tools.jar`／`mise`，缺就报价问一次，全都没有就把 spec 交给读者而不是假称出了图，与本仓库 `Provisioning` 纪律对齐。接线四处：入口叶子清单与触发行、`create-formal-verification-skill` 的「Readable without the tool」把反例转成状态图、README。验证：`node --test` 跑通 60 条离线用例，48 条需要 `TLA2TOOLS` 的跳过。带上 JDK 与 `TLA2TOOLS=<tla2tools.jar>` 后全套 367 条：366 通过，1 条 `SIGINT` 竞态在外部卷上偶发；单跑 `cli.test.ts` 126/126 通过两次。重跑前要 `npm i`：`fast-check` 是 devDependency，`node_modules` 不入库。
 
 ### cursor-team-kit（18）
 

@@ -37,7 +37,7 @@ Name the tool, what it costs to install, how long its first run takes, and wheth
 - **Able to fail.** A check you have never seen fail proves nothing. Show each property failing on a broken variant of the code it guards: a removed check, a reordered step, a widened type.
 - **Findings stay findings.** When the current code breaks the property, report it with the counterexample in the code's terms. Do not weaken the property or the model until it passes, and do not change product code unless the user asks.
 - **Honest about scope.** Say what is verified, under which bounds and assumptions, and what is left out. A pass covers the model or the bound, not the whole system.
-- **Readable without the tool.** State the property and the harm in one plain sentence each. Tell a counterexample as a short sequence of steps in the code's words.
+- **Readable without the tool.** State the property and the harm in one plain sentence each. Tell a counterexample as a short sequence of steps in the code's words. When the break is a bad order of events, hand the sequence over through the `statechart` skill, which draws it as states and arrows in the reader's words.
 - **Cheap to rerun.** One command, a pinned tool version, and a run short enough that the next agent uses it on every relevant change.
 - **Kept in step with the code.** Record which files and functions each check covers, and the commit at which you last confirmed the verification describes them.
 
