@@ -4,14 +4,21 @@ The skill-specific branch of [`writing-for-agents`](SKILL.md): what changes when
 
 ## Invocation
 
-Two choices, trading the two loads:
+Codex reads invocation policy from `agents/openai.yaml`, beside `SKILL.md`:
 
-- A **model-invoked** skill keeps a `description`, so the agent can fire it autonomously, and other skills can reach it. You can still type its name: model-invocation always _includes_ user reach; a description only ever adds agent discovery, never removes the human's. The description is the skill's top-level context pointer, forced to stay loaded at all times: permanent context load in exchange for discoverability. A model-invoked skill whose content is all reference is also one home for shared reference: another skill can invoke it, so reference needed by several skills lives in one place. Mechanics: omit `disable-model-invocation`, and write a model-facing description carrying the trigger branches (the pointer-writing rules in `SKILL.md` apply in full).
-- A **user-invoked** skill strips the description from the agent's reach: only the human typing its name can invoke it, and no other skill can. Zero context load, but it spends cognitive load: you are the index that must remember it exists. Mechanics: set `disable-model-invocation: true`; the `description` becomes human-facing: a one-line summary, trigger lists stripped.
+```yaml
+policy:
+  allow_implicit_invocation: false
+```
 
-Pick model-invocation only when the agent must reach the skill on its own, or another skill must. If it only ever fires by hand, make it user-invoked and pay no context load.
+- **Automatic invocation**: set the value to `true`. Codex can include the skill in the model context for automatic selection. Keep the description precise and tied to a distinct task.
+- **Explicit invocation**: set the value to `false`. Codex does not inject the skill into the model context by default. The human can still invoke it with `$skill-name` or the skill picker. This is the default choice for this repository. A missing policy defaults to automatic invocation in Codex, so every skill carries an explicit value.
 
-Shared reference that two user-invoked skills both need can live in neither: with no descriptions, neither can fire the other. Push it to a plain file outside the skill system: external reference any skill can point at.
+`disable-model-invocation: true` in `SKILL.md` is retained for Claude Code. It does not replace Codex's policy. Claude Code's explicit-invocation semantics must not be assumed to describe Codex.
+
+The source repository's `scripts/configure-codex-skills.py` owns the Codex allowlist. Run it to check every skill; use `--write` to apply the policy. New skills default to explicit invocation. The script preserves custom configuration by refusing to overwrite additional fields; merge those by hand.
+
+Explicit invocation controls discovery. It does not prevent an already selected playbook from reading another skill's `SKILL.md` by a concrete file path. Keep shared references reachable by file links. This lets a manually selected router read its leaves without making every leaf automatically discoverable.
 
 ## Splitting by invocation
 
@@ -19,4 +26,4 @@ The invocation cut of splitting (the sequence cut lives in `SKILL.md`): split of
 
 ## Router skills
 
-When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each, so the human has one skill to remember instead of many. It can only hint, never fire them: user-invoked skills have no description, so nothing but the human can reach them.
+When explicit-only skills multiply past what you can remember, use a **router skill**: one explicitly invoked skill that names its leaves and gives their file paths. In Codex, the selected router reads those files as reference. This does not require enabling automatic discovery for the leaves.

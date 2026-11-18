@@ -2,8 +2,8 @@
 
 Contracts and spec only. This playbook writes no implementation.
 
-1. Read `how-it-works` when existing code is involved. Skip when starting from scratch.
-2. Read `clarify-decisions` when the call is not settled. Skip when it is.
+1. Read `how` when existing code is involved. Skip when starting from scratch.
+2. Read `grilling` when the call is not settled. Skip when it is.
 3. Read `domain-modeling` when terms or state do not line up. Skip when they do.
 4. Read `compare-shapes` when two or more shapes remain; switch to `arena` when candidates deserve full attempts or a cross-family check. Skip when the shape is already unique.
 5. Read `to-spec`. The trade-offs in `prototypes/compare-shapes-*/decision.md` go into Implementation Decisions.

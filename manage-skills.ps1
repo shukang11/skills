@@ -22,7 +22,7 @@
 .EXAMPLE
     .\manage-skills.ps1 -List
     .\manage-skills.ps1 -Install all
-    .\manage-skills.ps1 -Install clarify-decisions,unslop
+    .\manage-skills.ps1 -Install grilling,unslop
     .\manage-skills.ps1 -Install unslop -Project "D:\wiki\project\spec-anchor"
     .\manage-skills.ps1 -Uninstall unslop -Project "D:\wiki\project\spec-anchor"
 #>

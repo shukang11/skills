@@ -13,10 +13,12 @@ Textual instructions are easy to miss. Structural mechanisms enforce the rule wi
 **Pattern:**
 When you catch yourself writing the same instruction a second time:
 1. Ask: can this be a lint rule, a metadata flag, a runtime check, or a script?
-2. If yes, encode it. Delete the instruction
+2. If yes, encode it at the existing owner. Keep the explanation in one authoritative place.
 3. If no (requires judgment), make the instruction more prominent and add an example of the failure mode
 
 **Pick the strongest mechanism.** When more than one mechanism would work, choose the strongest the situation allows (an unrepresentable state that cannot compile, then a lint or banned API that fails CI, then a canonical helper, then a runtime check), because agents copy whatever the surrounding code already does and a weaker guard becomes the next template.
+
+Reuse an existing check or entry point before adding another tool. Verify that the mechanism rejects the known mistake and accepts the corresponding valid case. Run it through the entry future agents will actually use. A check that is only documented has not replaced the repeated instruction.
 
 **Corollary:** If the fix is structural, only use the structural fix. The instruction is the symptom.
 
@@ -27,4 +29,4 @@ When the human intervenes or tests fail, decide if it's a one-off or a pattern. 
 - Recording without routing (a brain note about a lint rule that should exist is wasted unless the lint rule gets implemented)
 - Fixing without generalizing (fixing one instance while leaving the recurring pattern intact)
 
-**Reply:** name the mechanism the lesson got encoded into, or why it can only be an instruction. An instruction that needs judgment says so; one that could be a check does not get to stay text. When the same instruction showed up a second time and you left it alone, say why.
+**Reply:** name the recurring mistake, its owning mechanism, and the invalid/valid checks actually run. If the rule needs judgment, record that reason and link the single instruction that remains.

@@ -37,7 +37,7 @@ Build only this directory. Do not touch `handoff/active.md`, do not create `hand
 
 | Type | When | How it resolves |
 |---|---|---|
-| `grilling` | The decision is one a conversation can settle. The default | Read `clarify-decisions` and `domain-modeling`. Write the Answer only after the human confirms |
+| `grilling` | The decision is one a conversation can settle. The default | Read the `grilling` skill and `domain-modeling`. Write the Answer only after the human confirms |
 | `prototype` | The decision needs the logic or interaction seen before it can be made | Read `prototype`. The Answer points at `prototypes/index.html` and the behaviour the human picked |
 | `research` | The decision is stuck on a fact outside the repo | The agent looks it up; the Answer carries the finding and the path or link it came from |
 | `task` | Nothing to decide, but one thing blocks the decision | Do the unblocking work; the Answer says what was done |
@@ -84,7 +84,7 @@ Blocked by:
 No `map.md` yet:
 
 1. Ask for the destination. No tickets before the human names it.
-2. When the whole route is one question that can be asked now and settled in one session, stop and go to `clarify-decisions` instead.
+2. When the whole route is one question that can be asked now and settled in one session, stop and go to `grilling` instead.
 3. Otherwise write the map and the tickets that can be asked now. Keep the fog in "Not yet specified". Anything beyond the destination goes to Out of scope, not to an open ticket.
 4. Reply with the frontier tickets' titles and paths. This session writes no Answer.
 

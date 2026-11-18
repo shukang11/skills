@@ -11,13 +11,13 @@
 
 | | |
 | --- | --- |
-| 快照日 | 2026-10-30 |
-| Matt Pocock | [`mattpocock/skills`](https://github.com/mattpocock/skills) @ [`5beb35b`](https://github.com/mattpocock/skills/commit/5beb35b040e3de97e54fa9e386d7e42d15c295c2)，2026-10-19，38 个 |
-| poteto | [`poteto/plugins`](https://github.com/poteto/plugins) @ [`74dd229`](https://github.com/poteto/plugins/commit/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12)，2026-06-06，69 个（不含 pstack） |
-| pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)，2026-10-29，58 个（v0.15.36） |
-| 已吸收 | 62 |
-| 不需要 | 7 |
-| 未标记 | 62 |
+| 快照日 | 2026-11-04 |
+| Matt Pocock | [`mattpocock/skills`](https://github.com/mattpocock/skills) @ [`4ae2317`](https://github.com/mattpocock/skills/commit/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d)，2026-10-31，39 个 |
+| poteto | [`poteto/plugins`](https://github.com/poteto/plugins) @ [`74dd229`](https://github.com/poteto/plugins/commit/74dd2291e8e37b12fd6dc49b2acbd655c6bdaf12)，2026-06-06，35 个（不含 pstack 的 34 条） |
+| pstack | [`cursor/plugins`](https://github.com/cursor/plugins) @ [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)，2026-10-29，58 个（v0.15.36）＋ `pstack/automations/benny` 3 个 |
+| 已吸收 | 64 |
+| 不需要 | 6 |
+| 未标记 | 65 |
 
 处置只有三格：`已吸收`、`不需要`、`未标记`。标了`不需要`的都在表后附了理由。
 
@@ -48,13 +48,12 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 | 本地 | 上游角色 |
 | --- | --- |
 | `pstack-mode` | Matt `ask-matt`、poteto `poteto-mode` |
-| `how-it-works` | poteto `how` |
-| `why-this-way` | poteto `why` |
 | `compare-shapes` | poteto `arena`、`principle-exhaust-the-design-space` |
-| `clarify-decisions` | Matt `grill-me`、`grilling`、`grill-with-docs` |
 | `code-simplify` | 无 |
 | `unslop` | poteto `unslop`（本地额外遵循 ASD-STE100 标准） |
 | `agent-ready-repository` | 无 |
+
+2026-11 改名，向官方名对齐：`how-it-works` → `how`、`why-this-way` → `why`、`clarify-decisions` → `grilling`。三条与上游同名，因此不再列在上表。`grilling` 一条接住 Matt 的 `grill-me`、`grilling`、`grill-with-docs` 三个角色。
 
 判据 22 条在 `skills/judgment/`，都是斜杠技能，和 poteto 的 21 条 `principle-*` 同名，一一对得上。上游另有两条并进本地判据：`principle-foundational-thinking` 进 `principle-model-the-domain`，`principle-subtract-before-you-add` 进 `principle-laziness-protocol`。`principle-experience-first` 未吸收。`arena` 独立成技能，和 `compare-shapes` 分工：并行跑完整候选走 `arena`，手工形状对照走 `compare-shapes`。
 
@@ -69,7 +68,7 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 | [codebase-design](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/codebase-design/SKILL.md) | `skills/engineering/codebase-design` | 按深模块来设计或改进接口 | `codebase-design` | 已吸收 |
 | [diagnosing-bugs](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/diagnosing-bugs/SKILL.md) | `skills/engineering/diagnosing-bugs` | 难 bug 和性能回退的诊断循环 | `diagnosing-bugs` | 已吸收 |
 | [domain-modeling](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/domain-modeling/SKILL.md) | `skills/engineering/domain-modeling` | 术语、词汇表和架构决策记录 | `domain-modeling` | 已吸收 |
-| [grill-with-docs](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/grill-with-docs/SKILL.md) | `skills/engineering/grill-with-docs` | 盘问方案，同时写下词汇表和决策 | `clarify-decisions、domain-modeling` | 已吸收 |
+| [grill-with-docs](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/grill-with-docs/SKILL.md) | `skills/engineering/grill-with-docs` | 盘问方案，同时写下词汇表和决策 | `grilling、domain-modeling` | 已吸收 |
 | [implement-spec](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/implement-spec/SKILL.md) | `skills/engineering/implement-spec` | 在一条集成分支上实现整份规格和票 | — | 未标记 |
 | [implement](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/implement/SKILL.md) | `skills/engineering/implement` | 按规格或票实现一块工作 | — | 未标记 |
 | [improve-codebase-architecture](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/improve-codebase-architecture/SKILL.md) | `skills/engineering/improve-codebase-architecture` | 扫可加深的模块，做成 HTML 报告再逐个盘问 | — | 未标记 |
@@ -89,15 +88,15 @@ poteto 里有两条同名不同路径，对的时候以路径为准：
 
 | 技能 | 路径 | 做什么 | 本地 | 处置 |
 | --- | --- | --- | --- | --- |
-| [grill-me](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/grill-me/SKILL.md) | `skills/productivity/grill-me` | 把方案盘问清楚 | `clarify-decisions` | 已吸收 |
-| [grilling](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/grilling/SKILL.md) | `skills/productivity/grilling` | 对计划或决定做对抗式盘问 | `clarify-decisions` | 已吸收 |
+| [grill-me](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/grill-me/SKILL.md) | `skills/productivity/grill-me` | 把方案盘问清楚 | `grilling` | 已吸收 |
+| [grilling](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/grilling/SKILL.md) | `skills/productivity/grilling` | 对计划或决定做对抗式盘问 | `grilling` | 已吸收 |
 | [handoff](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/handoff/SKILL.md) | `skills/productivity/handoff` | 把当前会话压成给下一个代理的交接 | `handoff` | 已吸收 |
 | [teach](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/teach/SKILL.md) | `skills/productivity/teach` | 在当前工作区里教一个概念 | — | 未标记 |
 | [to-questionnaire](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/to-questionnaire/SKILL.md) | `skills/productivity/to-questionnaire` | 把答不了的决定做成给别人填的问卷 | — | 未标记 |
 | [wait-what](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/wait-what/SKILL.md) | `skills/productivity/wait-what` | 上一句没说清，换个说法再讲一遍 | — | 未标记 |
 | [writing-for-agents](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/productivity/writing-for-agents/SKILL.md) | `skills/productivity/writing-for-agents` | 写给代理看的技能和仓库说明 | `writing-for-agents` | 已吸收 |
 
-Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 workspace：`MISSION.md`、`lessons/*.html`、`learning-records/`、`reference/`，跨多次会话教一个人一个新领域，靠间隔重复和检索练习。pstack 的是讲清一段代码：跑 `how-it-works` 和 `why-this-way`，再合成一份讲解。本地 `teach` 对齐 pstack 那条。将来要收 Matt 的，本地得改名，例如 `tutor`。
+Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 workspace：`MISSION.md`、`lessons/*.html`、`learning-records/`、`reference/`，跨多次会话教一个人一个新领域，靠间隔重复和检索练习。pstack 的是讲清一段代码：跑 `how` 和 `why`，再合成一份讲解。本地 `teach` 对齐 pstack 那条。将来要收 Matt 的，本地得改名，例如 `tutor`。
 
 ### misc（4）
 
@@ -108,7 +107,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [scaffold-exercises](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/misc/scaffold-exercises/SKILL.md) | `skills/misc/scaffold-exercises` | 生成带题目、解答和讲解的练习目录 | — | 未标记 |
 | [setup-pre-commit](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/misc/setup-pre-commit/SKILL.md) | `skills/misc/setup-pre-commit` | 装 Husky、lint-staged、类型检查和测试钩子 | — | 未标记 |
 
-### in-progress（7）
+### in-progress（8）
 
 | 技能 | 路径 | 做什么 | 本地 | 处置 |
 | --- | --- | --- | --- | --- |
@@ -116,17 +115,27 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [claude-handoff](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/claude-handoff/SKILL.md) | `skills/in-progress/claude-handoff` | 把当前对话交给一个马上开工的后台代理 | — | 未标记 |
 | [loop-me](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/loop-me/SKILL.md) | `skills/in-progress/loop-me` | 围绕想做的工作流反复盘问规格 | — | 未标记 |
 | [setup-ts-deep-modules](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/setup-ts-deep-modules/SKILL.md) | `skills/in-progress/setup-ts-deep-modules` | 用 dependency-cruiser 把 TypeScript 包收成深模块 | — | 未标记 |
+| [software-factory](https://github.com/mattpocock/skills/blob/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/in-progress/software-factory/SKILL.md) | `skills/in-progress/software-factory` | 软件工厂的共同语言：它跑哪些 task（review、explore、implement、ratchet）、由什么 trigger 起一次 run、接哪些服务（ticket tracker、git host、orchestrator） | — | 未标记 |
 | [writing-beats](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/writing-beats/SKILL.md) | `skills/in-progress/writing-beats` | 把素材排成一连串节拍 | — | 未标记 |
 | [writing-fragments](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/writing-fragments/SKILL.md) | `skills/in-progress/writing-fragments` | 先挖写作素材，不急着定结构 | — | 未标记 |
 | [writing-shape](https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/in-progress/writing-shape/SKILL.md) | `skills/in-progress/writing-shape` | 把素材逐段收成文章 | — | 未标记 |
 
 这些目录名是 `in-progress`。Matt 自己还没当成稳定技能。
 
+2026-10-19 到 2026-10-31，路径没变但正文变了的几处：
+
+- **「每个子代理从空上下文起」这一波**：`code-review`、`codebase-design/DESIGN-IT-TWICE.md`、`implement-spec`、`improve-codebase-architecture`、`research`、`wayfinder`、`chief-of-staff`、`grilling` 各加一句，要求子代理开新上下文窗口；`implement-spec` 另外把「每个票用一个 implementer 子代理」改成明确的新建一个。本地 `code-review`、`wayfinder`、`codebase-design` 都已经是分子代理跑，但没收这条措辞。
+- **`setup-matt-pocock-skills` 的 tracker 约定变厚**：`issue-tracker-github.md` 把 **Blocking** 从 wayfinder 段提到 Conventions，补了 `gh` 2.94+ 的 `--blocked-by`／`--add-blocked-by`、老 `gh` 的 REST 写法、`issue_dependencies_summary.blocked_by` 与 `--json blockedBy` 要过滤 OPEN 的坑；`close --comment` 在已关闭的 issue 上会丢评论但仍退 0，改成先 comment 再 close；加了一条「别往 `mattpocock/skills` 提 issue，fork 里先 `gh repo view` 确认目标库」；SKILL.md 加了「选了 GitHub／GitLab 却没有对应 remote 就先接线，`gh repo view` 打不出项目就停下」和「老 `CONTEXT.md`／`CONTEXT-MAP.md` 用 `git mv` 改成 `GLOSSARY` 名并改 `docs/agents/domain.md` 里的引用」。
+- **`issue-tracker-gitlab.md` 修了个错命令**：`glab mr list -F json` 改成 `-O json`。
+- **`chief-of-staff`**：wiki 改成先用用户或其他代理已有的那本，没有才新建；并新增 Procedures 段，按相对路径读 `../retro/SKILL.md`、`../to-spec/SKILL.md`、`../to-tickets/SKILL.md`、`../implement-spec/SKILL.md`，等于把这个技能接到了 matt 的整条流水线上。
+
+本地这几条暂不跟：「每个子代理新开上下文」属措辞层面的强化，本地各技能子代理本来就是独立起的；`glab` 那条错命令将来收 `setup-matt-pocock-skills` 时一并带过来。
+
 ## poteto
 
-### pstack（58）
+### pstack（61）
 
-表里原有 51 行钉在 `cursor/plugins` @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)＝ v0.15.16（2026-10-10），末尾 7 行新增钉在 [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)＝ v0.15.36（2026-10-29）。v0.9.0 的 34 条都在，没有删除。
+表里原有 51 行钉在 `cursor/plugins` @ [`00b14f1`](https://github.com/cursor/plugins/commit/00b14f1df36b32a8dd1529324a3a459f6563b127)＝ v0.15.16（2026-10-10），中间 7 行钉在 [`4dd1d05`](https://github.com/cursor/plugins/commit/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe)＝ v0.15.36（2026-10-29），末尾 3 行是同一版本里 `pstack/automations/benny/` 下的，前几次快照只数了 `pstack/skills/`，漏了。2026-11-04 复核：`cursor/plugins` main 走到 [`fd268b8`](https://github.com/cursor/plugins/commit/fd268b808c786469e6dd8c8d9db864d0de4d669e)（2026-11-03），`pstack/` 与 `4dd1d05` 无差异，`plugin.json` 仍是 0.15.36，因此提交号不改。v0.9.0 的 34 条都在，没有删除。
 
 | 技能 | 路径 | 做什么 | 本地 | 处置 |
 | --- | --- | --- | --- | --- |
@@ -135,11 +144,11 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [automate-me](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/automate-me/SKILL.md) | `pstack/skills/automate-me` | 把个人习惯收成或更新一个 mode 技能 | — | 不需要 |
 | [benchmark-checklist](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/benchmark-checklist/SKILL.md) | `pstack/skills/benchmark-checklist` | 报性能数字前逐条核对：限流点、是否调优、是否越界、错误数、可重复性、端到端相关性、活有没有真跑 | `principle-explain-the-number` | 已吸收 |
 | [blast-radius](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/blast-radius/SKILL.md) | `pstack/skills/blast-radius` | 小改动上线前查它会炸到哪，并把「凭什么安全」那一条事实用真实代码跑出来 | `blast-radius` | 已吸收 |
-| [bro](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/bro/SKILL.md) | `pstack/skills/bro` | 把上一条消息用大白话重说一遍 | — | 不需要 |
+| [bro](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/bro/SKILL.md) | `pstack/skills/bro` | 把上一条消息用大白话重说一遍 | `bro` | 已吸收 |
 | [correct](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/correct/SKILL.md) | `pstack/skills/correct` | 把 agent 反复犯的错按类改造仓库：架构→类型→lint→测试→文档，并证明新检查会在真实历史错误上失败 | `correct` | 已吸收 |
 | [create-verification-skill](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/create-verification-skill/SKILL.md) | `pstack/skills/create-verification-skill` | 生成项目本地的 verify 技能：启动、doctor、驱动真实 app、留证据、铺功能地图 | `create-verification-skill` | 已吸收 |
 | [figure-it-out](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/figure-it-out/SKILL.md) | `pstack/skills/figure-it-out` | 没有更窄的 playbook 时，给大迁移或大改动写可审计的步骤 | `figure-it-out` | 已吸收 |
-| [how](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/how/SKILL.md) | `pstack/skills/how` | 说明现在怎么工作、落在哪、该放哪一层 | `how-it-works` | 已吸收 |
+| [how](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/how/SKILL.md) | `pstack/skills/how` | 说明现在怎么工作、落在哪、该放哪一层 | `how` | 已吸收 |
 | [interrogate](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/interrogate/SKILL.md) | `pstack/skills/interrogate` | 多模型对抗审查，找代码盲区 | — | 不需要 |
 | [maintain-verification-skill](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/maintain-verification-skill/SKILL.md) | `pstack/skills/maintain-verification-skill` | 定期对账 verify 技能与功能地图：每个功能一路源码加一路真机，最多一个修正 PR | `maintain-verification-skill` | 已吸收 |
 | [make-bot-ui](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/make-bot-ui/SKILL.md) | `pstack/skills/make-bot-ui` | 做一页按钮能唤 Grok Bot 的界面，含 sender-key 交接与 Tailscale | — | 不需要 |
@@ -170,7 +179,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [principle-subtract-before-you-add](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-subtract-before-you-add/SKILL.md) | `pstack/skills/principle-subtract-before-you-add` | 先删死重和多余校验，再加新的 | `principle-laziness-protocol` | 已吸收 |
 | [principle-test-behavior-not-implementation](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-test-behavior-not-implementation/SKILL.md) | `pstack/skills/principle-test-behavior-not-implementation` | 测试像用户那样调用并断言精确结果；导入全返回 undefined 还能过的测试要重写或删 | `principle-test-behavior-not-implementation` | 已吸收 |
 | [principle-type-system-discipline](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/principle-type-system-discipline/SKILL.md) | `pstack/skills/principle-type-system-discipline` | 用类型让不合法状态写不出来 | `principle-type-system-discipline` | 已吸收 |
-| [recall](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/recall/SKILL.md) | `pstack/skills/recall` | 从自己的聊天记录与共享记录重建最近上下文，交一份当前状态胶囊 | — | 不需要 |
+| [recall](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/recall/SKILL.md) | `pstack/skills/recall` | 从自己的聊天记录与共享记录重建最近上下文，交一份当前状态胶囊 | `recall` | 已吸收 |
 | [reflect](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/reflect/SKILL.md) | `pstack/skills/reflect` | 用三个子代理看会话，把教训写回已有技能 | `reflect` | 已吸收 |
 | [setup-pstack](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/setup-pstack/SKILL.md) | `pstack/skills/setup-pstack` | 给 pstack 各角色选模型 | — | 不需要 |
 | [show-me-your-work](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/show-me-your-work/SKILL.md) | `pstack/skills/show-me-your-work` | 长时间工作记一张决策表：做了什么、为什么、证据 | `show-me-your-work` | 已吸收 |
@@ -180,7 +189,7 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [technical-writing](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/technical-writing/SKILL.md) | `pstack/skills/technical-writing` | 分层写作标准：Diátaxis 选模式、Google 句式、STE 指令规则、Global English | `unslop` | 已吸收 |
 | [typescript-best-practices](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/typescript-best-practices/SKILL.md) | `pstack/skills/typescript-best-practices` | 读或改 TypeScript 时的写法约定 | `typescript-best-practices` | 已吸收 |
 | [unslop](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/unslop/SKILL.md) | `pstack/skills/unslop` | 去掉文字里的生成腔 | `unslop` | 已吸收 |
-| [why](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/why/SKILL.md) | `pstack/skills/why` | 追溯为什么长这样，证据来自提交、笔记和文档 | `why-this-way` | 已吸收 |
+| [why](https://github.com/cursor/plugins/blob/00b14f1df36b32a8dd1529324a3a459f6563b127/pstack/skills/why/SKILL.md) | `pstack/skills/why` | 追溯为什么长这样，证据来自提交、笔记和文档 | `why` | 已吸收 |
 | [create-formal-verification-skill](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/create-formal-verification-skill/SKILL.md) | `pstack/skills/create-formal-verification-skill` | 在测试摸不到的地方挑一条「坏了要命」的承诺，选工具做形式化验证，留下一份项目本地技能 | `create-formal-verification-skill` | 已吸收 |
 | [in-your-own-words](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/in-your-own-words/SKILL.md) | `pstack/skills/in-your-own-words` | 开工前复述它理解的目标和问题，只复述不盘问 | `in-your-own-words` | 已吸收 |
 | [ketchup](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/ketchup/SKILL.md) | `pstack/skills/ketchup` | 用大白话汇报「上一条消息之后变了什么」，并把等你拍板的事列全（本地砍掉视觉与视频部分） | `ketchup` | 已吸收 |
@@ -188,16 +197,19 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 | [maintain-formal-verification-skill](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/maintain-formal-verification-skill/SKILL.md) | `pstack/skills/maintain-formal-verification-skill` | 代码变了把模型对齐回去，重跑，判定每次失败是漂移还是 bug | `maintain-formal-verification-skill` | 已吸收 |
 | [sharpen](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/sharpen/SKILL.md) | `pstack/skills/sharpen` | 把提示词改深不改大：专家会多做哪一步、从什么原始材料起手、用什么方法、外部怎么验 | `sharpen` | 已吸收 |
 | [statechart](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/skills/statechart/SKILL.md) | `pstack/skills/statechart` | 把 TLA+ 模型检查结果画成 Mermaid 状态图，标出破规则的状态和最短到达路径 | `statechart` | 已吸收 |
+| [reproduce-and-fix-issues](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/automations/benny/skills/reproduce-and-fix-issues/SKILL.md) | `pstack/automations/benny/skills/reproduce-and-fix-issues` | 从 Slack 报障复现问题、核已有修法，前后对照都有证据才开一张有边界的 draft PR | — | 未标记 |
+| [setup-benny](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/automations/benny/skills/setup-benny/SKILL.md) | `pstack/automations/benny/skills/setup-benny` | 配 Benny 的 Slack、tracker、仓库、路由、控制、模型与预算 | — | 未标记 |
+| [triage-issue-reports](https://github.com/cursor/plugins/blob/4dd1d05818d19792e7cd6e818f1667f95f7e1dbe/pstack/automations/benny/skills/triage-issue-reports/SKILL.md) | `pstack/automations/benny/skills/triage-issue-reports` | Slack 报障只给一个结论：查证据、按原因路由、去重后建票 | — | 未标记 |
 
-跳过的 7 条，理由是本地没有它们赖以成立的那层东西：
+跳过的 5 条，理由是本地没有它们赖以成立的那层东西：
 
 - `automate-me`：靠 cursor 的 `agent-transcripts` 挖偏好生成 `-mode` 技能。本地 `pstack-mode` 就是那个 mode，转录路径也不通用。
-- `bro`：7 行「用大白话重述上一条」，`unslop` 已经覆盖。
 - `make-bot-ui`：Grok Bot webhook 加 Tailscale，纯 cursor 生态。
 - `poteto-help`：pstack 自家的上手路由，本地 `pstack-mode` 就是入口。
-- `recall`：绑死 `~/.cursor/projects/*/agent-transcripts` 与七类 MCP。本地 `handoff` 管往后交，往前捞是另一件事。
 - `setup-pstack`：按角色写一份模型规则文件，本地没有那一层。
 - `tdd`：已删掉，纪律落在 `bug-fix` playbook 和 `diagnosing-bugs` 里。
+
+`recall` 于 2026-11 收回。上游只读 `~/.cursor/projects/*/agent-transcripts`。本地改成先盘点这台机器上真有的会话库（pi、Cursor、Claude Code、Codex、OpenClaw），路径在 `skills/productivity/recall/references/stores.md`。没有转录的库（Gemini 的 `.project_root`、Antigravity 的 sqlite）只报「在，但读不了」，不编对话。共享记录仍交给 `why`。`handoff` 管往后交，`ketchup` 管这一场，`recall` 管开工前把前几场捞回来。
 
 0.15.16 到 0.15.36 之间，路径没变但正文变了的几处，表上看不出来，记在这里：
 

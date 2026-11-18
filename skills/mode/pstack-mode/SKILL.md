@@ -9,6 +9,8 @@ argument-hint: "the task in one line"
 
 You are the orchestrator. Pick a playbook, read it in full, then open the leaf skills its steps name. The entry never does a leaf's job for it.
 
+Choose by the actual change, not the milestone name. Reuse settled decisions, contracts, and matching run evidence. Open conditional leaves only when their trigger applies. If a structure-only task needs a behaviour change, name the switch to bug-fix or feature.
+
 ## Finding the files
 
 Playbooks sit next to this file: `playbooks/<name>.md`. Judgment skills are standalone skills at `../../judgment/<name>/SKILL.md`.
@@ -27,8 +29,8 @@ You may skip levels and open a leaf a step names directly.
 
 1. **Entry**. This file. A human wakes it explicitly; it never self-triggers from a description.
 2. **Playbook**. The order of steps for one task, not a slash command.
-3. **Leaves that hand work to the next step**. `wayfinder`, `clarify-decisions`, `domain-modeling`, `compare-shapes`, `arena`, `to-spec`, `codebase-design`, `architect`, `figure-it-out`.
-4. **Leaves that stop when their own job is done**. `how-it-works`, `why-this-way`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `ketchup`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `create-formal-verification-skill`, `maintain-formal-verification-skill`, `statechart`, `typescript-best-practices`.
+3. **Leaves that hand work to the next step**. `wayfinder`, `grilling`, `domain-modeling`, `compare-shapes`, `arena`, `to-spec`, `codebase-design`, `architect`, `figure-it-out`.
+4. **Leaves that stop when their own job is done**. `how`, `why`, `teach`, `prototype`, `diagnosing-bugs`, `code-review`, `blast-radius`, `code-simplify`, `correct`, `handoff`, `recall`, `writing-for-agents`, `agent-ready-repository`, `unslop`, `sharpen`, `in-your-own-words`, `ketchup`, `bro`, `swarm`, `show-me-your-work`, `reflect`, `create-verification-skill`, `maintain-verification-skill`, `create-formal-verification-skill`, `maintain-formal-verification-skill`, `statechart`, `typescript-best-practices`.
 5. **Judgment**. `../../judgment/<name>/SKILL.md`, standalone skills you can call with `/`. A criterion used across several leaves lives there; a criterion that belongs to one leaf lives in that leaf's body (`diagnosing-bugs`' criteria, `code-review`'s Standards axis).
 
 Root cause and red signals live in `diagnosing-bugs`. Domain structure in `domain-modeling`. Module boundaries in `codebase-design`. Faithful simulation in `prototype`. Diff review in `code-review`. Leftover residue in `code-simplify`. Removing AI tells in `unslop`. Session handoff in `handoff`. Those nine do not get a separate judgment skill.
@@ -46,12 +48,12 @@ Three skills fan out. Pick by what you need; never stack them.
 When a leaf suggests the next skill, the current playbook's remaining steps win.
 
 - `wayfinder` resolves one decision ticket per session. Once the map is clear, continue from `to-spec`, and write no implementation in a map session.
-- The conclusions of `clarify-decisions`, `domain-modeling`, and `compare-shapes` go to `to-spec` to land on disk.
+- The conclusions of `grilling`, `domain-modeling`, and `compare-shapes` go to `to-spec` to land on disk.
 - After `to-spec`, go to `codebase-design` for the public contract.
 - When `codebase-design` hits a major or breaking decision, hand it back to `to-spec` first, then keep designing.
 - After `prototype`, a contract worth keeping moves to the design or feature playbook. The simulation files stay in `prototypes/`.
 - `code-review` reads notes; it never calls `to-spec`.
-- `ketchup` looks back over this chat to the user's last message. `handoff` writes forward for the next agent. `show-me-your-work` keeps the decision log while the run is happening. Three directions, three skills: never run two of them to cover one.
+- `ketchup` looks back over this chat to the user's last message. `handoff` writes forward for the next agent. `recall` rebuilds context from earlier sessions before you act. `show-me-your-work` keeps the decision log while the run is happening. Four directions: never run two of them to cover one.
 - `code-simplify` never appears in a feature's steps. If it gets pulled in mid-feature, it stops by its own activation rule.
 - `unslop` dries out docs, specs, and text output under ASD-STE100. It never changes business logic.
 
@@ -68,18 +70,20 @@ Situation first, skill second. These are triggers, not steps: they fire whenever
 - No bundled playbook fits, or the work is a large migration, an ambitious multi-part change, or something a human reviews after stepping away: `figure-it-out`.
 - A long run, an unattended run, or work someone will audit later: keep the trail with `show-me-your-work`.
 - Coming back to a chat you left running, or asking what changed since your last message: `ketchup`, in plain words, with every call waiting on the user listed so each is decidable from the reply alone.
+- Starting or resuming work whose recent context is not in this chat, or the user asks where they left off or what they have been working on: `recall`. A handoff path stays the handoff playbook.
+- The user asks what you just said, or a reply landed as noise: `bro`, restating that same message in plainer words instead of adding new material.
 - Any prose that leaves the session, the reply included: `unslop`. Agent-facing docs and `SKILL.md`: `writing-for-agents`.
 - Changing an internal interface, a name, or a signature: `principle-migrate-callers-then-delete-legacy-apis` — migrate the callers and delete the old surface in the same wave.
 - Writing a command, a script, a loop, or a batch migration: `principle-make-operations-idempotent`.
 - Any non-trivial edit, migration, analysis, or check: `principle-build-the-lever` — build the tool that does or proves it, rather than working by hand.
 - Context filling up, a long file, or a fan-out being planned: `principle-guard-the-context-window`.
-- Reviewing or shaping code that is hard to trace: `principle-minimize-reader-load`.
+- Reviewing or changing code whose layers or mutable state are hard to trace: `principle-minimize-reader-load`.
 - A promise tests cannot reach, because the break lives on an interleaving, an ordering, a retry, or a state machine: `create-formal-verification-skill`. Code a formal check already covers, after a merge or a refactor that skipped it: `maintain-formal-verification-skill`. A counterexample the reader must decide on, or a bug best told as a path through states: `statechart`.
 - Folding a new requirement into an existing design: `principle-redesign-from-first-principles`.
 - A product, interaction, or scope trade-off: `principle-experience-first`.
 - About to trust, report, or act on a measured number: `principle-explain-the-number`, and its seven questions.
-- Two fixes under one premise that failed the same gate: `principle-attack-the-premise`.
-- The same instruction written a second time: `principle-encode-lessons-in-structure`.
+- Two fixes under one premise that failed the same check: `principle-attack-the-premise` before another patch.
+- A recurring mistake, correction, or repeated instruction: `principle-encode-lessons-in-structure`.
 - A planned rewrite or migration with phase boundaries: `principle-outcome-oriented-execution`.
 - Wiring validation, error handling, or a framework adapter: `principle-boundary-discipline`. Designing types or a signature: `principle-type-system-discipline`.
 - Two or more shapes still open on novel work: `principle-exhaust-the-design-space`.
@@ -95,7 +99,7 @@ Write the matched playbook's steps verbatim into the todo list first, then add t
 - The destination is clear but the route will not fit one session → [playbooks/wayfinder.md](playbooks/wayfinder.md)
 - A faithful HTML simulation of product logic or interaction → [playbooks/prototype.md](playbooks/prototype.md)
 - External behaviour unchanged, structure only → [playbooks/refactor.md](playbooks/refactor.md)
-- Review a diff without touching code → [playbooks/review.md](playbooks/review.md)
+- Review a committed or working-tree change without touching code → [playbooks/review.md](playbooks/review.md)
 - The user explicitly asks to clean up residue, tighten, or simplify → [playbooks/simplify.md](playbooks/simplify.md)
 - Interrupted, handing off, or picking up an existing handoff → [playbooks/handoff.md](playbooks/handoff.md)
 - Writing or editing a `SKILL.md`, `AGENTS.md`, README, or SPEC → [playbooks/authoring.md](playbooks/authoring.md)

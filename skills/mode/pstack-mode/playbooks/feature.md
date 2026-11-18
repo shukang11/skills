@@ -2,8 +2,8 @@
 
 New or changed behaviour that lands in code. Open the skills in order; do not restate their criteria here.
 
-1. Read `how-it-works` for the subsystem this touches. Skip when there is no existing code.
-2. Read `clarify-decisions` when the product or structural call is not settled. Skip when it is. No implementation before the interview closes.
+1. Read `how` for the subsystem this touches. Skip when there is no existing code.
+2. Read `grilling` when the product or structural call is not settled. Skip when it is. No implementation before the interview closes.
 3. Read `domain-modeling` when terms or state do not line up. Skip when they do.
 4. Read `compare-shapes` when two or more implementation shapes remain; switch to `arena` when a candidate deserves a whole attempt, or the pick needs another model family. Skip when the shape is already unique. The deliverable is the chosen shape, not production code.
 5. Read `to-spec` when the agreement is not yet a matching spec under `.agents/notes/proposed/`. Skip when it is. The trade-offs in `prototypes/compare-shapes-*/decision.md` go into Implementation Decisions.

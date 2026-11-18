@@ -7,7 +7,7 @@ argument-hint: "which settled discussion becomes the spec"
 
 # To spec
 
-Once requirements and architecture are settled in discussion (for example through `clarify-decisions`), fold every agreement, boundary, and test decision from this conversation into one rigorous spec.
+Once requirements and architecture are settled in discussion (for example through `grilling`), fold every agreement, boundary, and test decision from this conversation into one rigorous spec.
 
 ## Working rules
 

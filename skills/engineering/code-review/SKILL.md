@@ -1,13 +1,13 @@
 ---
 name: code-review
-description: "Review the diff between HEAD and a fixed point along two axes: Standards (does the code follow this repo's documented standards and avoid classic smells?) and Spec (does it faithfully implement what the spec asked for?). Reports the axes separately; never reranks them against each other."
+description: "Review a pinned commit or working-tree change along two axes: Standards (repo conventions and code quality) and Spec (fidelity to requirements). Include staged, unstaged, and untracked task files when reviewing current work. Report the axes separately."
 disable-model-invocation: true
 argument-hint: "which diff, and the fixed point"
 ---
 
 # Code Review
 
-Two independent axes over the diff between `HEAD` and the fixed point the user supplies:
+Two independent axes over a named baseline, candidate, and file scope:
 
 - **Standards**: does the code follow this project's documented standards, and is it free of classic smells?
 - **Spec**: does it faithfully implement the behaviour and acceptance criteria the spec asked for?
@@ -16,11 +16,34 @@ Review the axes independently and report them in separate sections. Never let on
 
 ## Process
 
-### 1. Pin the fixed point
+### 1. Pin the review scope
 
-- Take the fixed point the user gave (`main`, a branch, a tag, `HEAD~5`, a SHA). If none was given, ask.
-- Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Note the commit list with `git log <fixed-point>..HEAD --oneline`.
-- Confirm the ref resolves and the diff is non-empty before going further. A bad ref or an empty diff fails here, not halfway through the review.
+Use the user's baseline or the task's recorded baseline. For current uncommitted work, use `HEAD` when the task names no earlier baseline. Ask only when the intended historical comparison remains ambiguous.
+
+- **Committed candidate:** resolve both endpoints to SHAs. Use `git diff <base-sha> <candidate-sha>`. For branch changes, resolve and record the merge-base first. An exact baseline stays exact.
+- **Working-tree candidate:** include committed changes since the baseline, staged changes, unstaged changes, and non-ignored untracked files within the task scope. A clean `git diff` alone does not prove an empty scope.
+- Record the selected paths and exclude unrelated concurrent work. Review a shared file's relevant changes together when they cannot be attributed safely; state the attribution limit.
+
+For a working-tree review on POSIX with Python 3.9 or newer, capture the selected state with the bundled helper:
+
+```bash
+python3 .agents/skills/code-review/scripts/review-scope.py capture \
+  --repo . --base HEAD --path src --path tests \
+  --output /tmp/task-review.json
+```
+
+Replace the example paths with the task's actual files or directories. Keep the report outside the checkout and private. The helper records hashes, tracked diffs, staging, and untracked paths. It leaves Git's index unchanged.
+
+Submodules, nested repositories, and conflicted index entries need separate review scopes; the helper rejects them. Missing local Git objects are an evidence gap, and capture does not fetch them.
+
+Read every listed untracked file. Binary changes carry hashes and modes; inspect them with the relevant tool. The report is a manifest and diff, not a complete source archive. Recheck the viewed state before reporting:
+
+```bash
+python3 .agents/skills/code-review/scripts/review-scope.py verify \
+  --report /tmp/task-review.json
+```
+
+If the state changed, review the new delta and capture a new report before declaring the candidate reviewed. A failed capture or unresolved ref is an evidence gap. On unsupported systems, record equivalent file hashes and Git state with available tools. A genuinely empty scope names both endpoints and the paths checked.
 
 ### 2. Find the spec
 
@@ -59,13 +82,13 @@ Match each smell against the diff: what it is → how to fix it.
 - **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Behaviour evidence (only when the range contains production code changes)
+### 4. Behaviour evidence (when production code changes)
 
-The diff alone cannot tell "a test pins this change" from "the test went green along with it". The script checks out the fixed point in a temporary worktree, overlays only the test-side files, and runs the suite twice, so red and green do the talking.
+The diff alone cannot tell whether a test detects this change. Reuse relevant before/after evidence when it identifies the reviewed inputs. For a committed range, the script checks out the baseline in a temporary worktree, overlays only test-side files, and runs both endpoints.
 
 ```bash
 node .agents/skills/code-review/scripts/fix-proof.mjs \
-  --range <fixed-point>..HEAD \
+  --range <base-sha>..<candidate-sha> \
   --cmd '<test command per file, containing {files}>' \
   --setup '<install command>'
 ```
@@ -73,7 +96,8 @@ node .agents/skills/code-review/scripts/fix-proof.mjs \
 - `{files}` is replaced with the space-separated, quoted test files. No `{files}` in the command: it does not run.
 - Add `--lockfile <path>` when the range diff touches exactly one lockfile; dependencies are reinstalled only when that blob changed.
 - It recognises JS/TS, Go, Python, Rust, Java, and Kotlin test files by default. For anything else, replace the whole rule with `--tests '<regex>'`.
-- Output starting with "cannot compute:" means the script gave up: hand it to the human and stop. Never write that up as "no test changes".
+- The script accepts committed ranges only. For uncommitted changes, use isolated copies of the recorded baseline and candidate, or matching existing run evidence. Preserve staging and unrelated edits.
+- Output starting with "cannot compute:" is an evidence gap. Report the cause and continue other review checks. Never interpret it as "no test changes" or use a committed `HEAD` run to certify uncommitted files.
 - The per-commit verdict names differ from the range verdict names. Do not interchange them.
 
 Verdict → what goes in the report:
@@ -91,15 +115,24 @@ The note line can be any line from the stack, such as `name: 'AssertionError'`. 
 
 ### 5. Report both axes, separately
 
+For each behavioural difference, cite the applicable spec and any user-approved decision before assigning a defect:
+
+- **Contract defect**: the implementation violates an established requirement; report `[Missing]`, `[Drift]`, or `[Scope-Creep]`.
+- **Policy disagreement**: the independent expectation assumes an unsettled or different policy; report `[Policy]` with the decision needed.
+- **Evidence gap**: the requirement or input meaning lacks support; report `[Evidence gap]` with the missing evidence.
+
+An independent expectation is not itself an approved requirement. Preserve original counterexamples and cite each decision that changes the applicable policy. Keep approved policy differences visible without labelling them implementation defects.
+
 ```markdown
 ## Standards Review (conventions and architecture quality)
 - [Hard / Heuristic] file:line - the violation or smell, with the fix you suggest.
 
 ## Spec Review (fidelity to the requirement)
 - [Missing / Drift / Scope-Creep] against the spec line: what is missing, drifted, or beyond scope.
+- [Policy / Evidence gap] the differing assumption, decision source, or evidence needed.
 ```
 
-Close with one line per axis naming that axis's worst issue. Never produce a single cross-axis ranking.
+Name the baseline, candidate, scope, and actual checks. Close with one line per axis naming its worst issue and unresolved evidence gaps. Never produce a single cross-axis ranking.
 
 ## Why two axes
 

@@ -84,11 +84,11 @@ You win twice: fewer tokens, and a sharper hook for the agent to hang its thinki
 
 ## House conventions
 
-- Every skill here sets `disable-model-invocation: true`. Which skill gets read, and when, comes from `pstack-mode`'s playbook, never from the model choosing a description.
+- For Codex, set `policy.allow_implicit_invocation` in each skill's `agents/openai.yaml`. The source repository's `scripts/configure-codex-skills.py` owns the small automatic-invocation allowlist; all other skills use `false`. Keep `disable-model-invocation: true` for Claude Code compatibility; it does not control Codex discovery. See [SKILL-MECHANICS.md](SKILL-MECHANICS.md) for explicit invocation and file references.
 - The delete test, per paragraph: would a stronger model behave differently without it? If not, delete the paragraph rather than shortening it.
 - A principle with no criterion and no completion check is a slogan. Measured here: "dispatch a fresh session to verify before claiming done" was written clearly and then skipped six times out of six under pressure. The same check handed to a script judged correctly nine times out of nine. Write the check, not the reminder.
 - A skill's `name` must equal its directory name; the installer rejects a mismatch. Skill names are a flat namespace, so a duplicate name fails the install instead of shadowing.
-- Default skeleton:
+- Default `SKILL.md` skeleton (Codex also needs the separate `agents/openai.yaml` policy above):
 
 ```markdown
 ---

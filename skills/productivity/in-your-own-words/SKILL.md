@@ -20,7 +20,7 @@ Use the user's own nouns. Where you replaced one, say which word you replaced an
 
 ## Bounds
 
-- **This skill produces a restatement and stops.** No questions, no plan, no spec, no code. A restatement that turns into an interview is `clarify-decisions`; one that lands on disk is `to-spec`.
+- **This skill produces a restatement and stops.** No questions, no plan, no spec, no code. A restatement that turns into an interview is `grilling`; one that lands on disk is `to-spec`.
 - **Do not ask for confirmation.** The point is to surface a misreading where it costs one message, so write it down and let the user correct it.
 - **Keep fact and inference apart.** Mark anything you inferred, so a wrong inference is visible instead of buried.
 - **Do not pad.** Two short paragraphs and the assumption lines. A restatement longer than the request it restates is not a restatement.

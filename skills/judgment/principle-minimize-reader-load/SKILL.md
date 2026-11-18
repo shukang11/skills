@@ -15,6 +15,8 @@ Maintainability is the work a reader must do to understand code. Track two axes:
 - **Name the invariant at the boundary,** not in every consumer, so the reader learns it once.
 - Before adding a layer or a piece of state, ask: does it reduce reader load elsewhere by at least as much?
 
-**The test:** can a new reader answer "where does X come from?" and "what can change X?" in under 30 seconds? If not, cut layers or cut state.
+**The check:** trace one affected operation before and after the change. Show which layers a reader follows and which mutable state can affect the answer. Explain the concrete reduction or the cost an added boundary removes elsewhere.
 
-**Reply:** name the layer you collapsed and the state you scoped down, or why the current shape stays. When you added a layer or a piece of state, say what reader cost it removes elsewhere.
+Use "can a new reader answer in 30 seconds?" as a reading prompt, not a timed acceptance gate. Base the conclusion on the trace and ownership evidence.
+
+**Reply:** name the layer you collapsed or the state you scoped down, or why the current shape stays. When you add a layer or state, identify the reader cost it removes elsewhere.
