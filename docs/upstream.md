@@ -122,6 +122,8 @@ Matt 的 `teach` 和 pstack 的 `teach` 同名不同义。Matt 的是教学 work
 
 这些目录名是 `in-progress`。Matt 自己还没当成稳定技能。
 
+表里原有 38 行钉在 `mattpocock/skills` @ [`5beb35b`](https://github.com/mattpocock/skills/commit/5beb35b040e3de97e54fa9e386d7e42d15c295c2)（2026-10-19）；本轮新增与复核的 `software-factory` 钉在 [`4ae2317`](https://github.com/mattpocock/skills/commit/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d)（2026-10-31），正文变化记在下面。
+
 2026-10-19 到 2026-10-31，路径没变但正文变了的几处：
 
 - **「每个子代理从空上下文起」这一波**：`code-review`、`codebase-design/DESIGN-IT-TWICE.md`、`implement-spec`、`improve-codebase-architecture`、`research`、`wayfinder`、`chief-of-staff`、`grilling` 各加一句，要求子代理开新上下文窗口；`implement-spec` 另外把「每个票用一个 implementer 子代理」改成明确的新建一个。本地 `code-review`、`wayfinder`、`codebase-design` 都已经是分子代理跑，但没收这条措辞。

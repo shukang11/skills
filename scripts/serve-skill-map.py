@@ -14,8 +14,8 @@ the parsing rules. It only decides *when* to run that script:
 - a poller watches skills/ and the build script, rebuilds on change, and pushes
   `reload` over SSE so every open tab refreshes itself
 - nothing in the repository is written: the build lands in a temp directory, the
-  page and its data are held in memory. `skill-map.html` stays committed as-is and
-  only changes when you run the build script yourself.
+  page and its data are held in memory. `skill-map.html` is no longer a repo file:
+  it is gitignored, and only an explicit `--out` makes the build write one.
 - the one-line notes on the skill cards live in NOTES below and are injected into
   the page per request, so the SKILL.md files stay English and a note change is a
   restart, not an edit to 70 files.
