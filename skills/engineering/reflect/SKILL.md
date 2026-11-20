@@ -12,13 +12,15 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ## 1. Locate the active transcript
 
-Before fanning out, find this conversation's transcript under the harness's session directory for this project: `~/.pi/agent/sessions/--<cwd-slug>--/`. The slug is the absolute cwd with each `/` turned into `-` and the whole thing wrapped in double dashes, so `/Users/you/proj` becomes `--Users-you-proj--`. Only look inside this project's slug directory. Globbing across other projects reads unrelated private chats.
+Resolve at the first of these that yields a complete transcript of *this* conversation:
 
-```bash
-ls -t ~/.pi/agent/sessions/--$(pwd | sed 's|^/||; s|/|-|g')--/*.jsonl | head -10
-```
+1. **A path or id you were handed.** The author named a transcript, session id, or export; or the current harness exposed this session's id or log path to you. Open that file directly, with no directory scan.
+2. **The store the current harness writes.** Read [references/session-locator.md](references/session-locator.md) and take the row for the harness you are running in. The session's own metadata decides, not file recency: its id, its project path, and the first user request together.
+3. **A digest.** When no store holds a complete, matching transcript, continue on a tight digest of what this conversation already carries, and say `partial` in the reply.
 
-Read the first JSONL line of each candidate. Take the file whose `type` is `session`, whose `cwd` is this project, and whose opening user message matches this conversation. If none matches, pass a tight digest of the session instead.
+Partial evidence stays labeled. A digest run cites no transcript line number, no tool result, and no file read that the digest does not show; a skill counts as read or used only when the evidence is there. An archived conversation from an earlier day is a different session, however close its topic.
+
+Done when the transcript handed to the reviewers is either a matched file path or an explicitly partial digest.
 
 ## 2. Spawn three reviewers in parallel
 
@@ -30,7 +32,7 @@ One message, three reviewers in parallel, on different model families when you h
 | Tooling | `references/tooling-reviewer.md` |
 | Divergent | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the response body.
+Pass each template verbatim, substituting the transcript path or digest where marked. When you pass a digest, say in the same brief that it is partial and may have dropped turns, so reviewers quote what they can see and mark the rest unverified. Reviewers return findings in the response body.
 
 ## 3. Synthesize
 
