@@ -18,7 +18,7 @@ This file answers: when the project already uses spec-anchor, what does the audi
 
 ## Aligning categories with the evolution principles
 
-A problem that violates an evolution principle starts its Problem cell with "Principle N", the same wording `code-review` and the periodic review use. The principle texts and their test questions are in `.agents/skills/spec-anchor/references/evolution-principles.md`. A problem matching no principle is described plainly; never force it into one.
+A problem that violates an evolution principle starts its Problem cell with "Principle N", the same wording spec-anchor's bundled `code-review` skill and the periodic review use. The principle texts and their test questions are in `.agents/skills/spec-anchor/references/evolution-principles.md`. A problem matching no principle is described plainly; never force it into one.
 
 ## Where exits land
 
